@@ -1,0 +1,15 @@
+# Generated at runtime -- not part of the reviewable artefact
+__pycache__/
+*.pyc
+.pytest_cache/
+*.db
+*.db.key
+*.db.pseudonyms.json
+:memory:.key
+:memory:.pseudonyms.json
+logs/*.log
+.env
+docker/__pycache__/
+
+# Keep the evaluation report CSVs -- they are cited evidence (Ch4/5/6),
+# not disposable run artefacts, so they are intentionally NOT ignored.

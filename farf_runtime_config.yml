@@ -1,0 +1,30 @@
+# farf_runtime_config.yaml
+federation:
+  orgs: ["org_a", "org_b", "org_c"]
+  quorum_threshold: 0.6          # fraction of orgs needed for ledger consensus
+attack_mode:
+  active: "prompt_injection"      # prompt_injection | toctou | trust_boundary | memory_manipulation | composite | none
+  injection_variants: ["substring", "paraphrase", "homoglyph"]  # which detector variants to exercise
+  intensity: "slow_drip"          # burst | slow_drip | steady
+risk_tiering:
+  low:    { autonomy: "full", token_cap_per_action: 2000 }
+  medium: { autonomy: "oversight", token_cap_per_action: 4000, human_alert: true }
+  high:   { autonomy: "hitl_required", token_cap_per_action: 8000, approval_timeout_s: 300 }
+detection_thresholds:
+  cusum_slack: 0.5
+  volume_cap_mode: "adaptive"     # adaptive | static
+  static_volume_cap: 50
+fail_safe_defaults:
+  trust_protocol_on_kms_failure: "closed"
+  taint_unresolved_default: "tainted"
+  fars_stale_after_s: 120
+  fars_stale_action: "downgrade_one_tier"
+cost_ceilings:
+  token_budget_per_org_per_day: 500000
+  token_budget_action: "throttle_to_low_autonomy"   # throttle_to_low_autonomy | hard_block
+  model_routing:
+    default: "small"
+    escalate_on: ["ambiguous_classification", "high_risk_tier"]
+logging:
+  level: "INFO"
+  sink: "json_stdout"              # json_stdout | cloudwatch | stackdriver | azure_monitor

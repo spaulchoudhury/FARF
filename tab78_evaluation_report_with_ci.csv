@@ -1,0 +1,15 @@
+Evaluation Dimension,Metric,N Repeats,N Trials/Repeat,Mean,SD,95% CI Low,95% CI High
+Security Effectiveness,Attack Detection Rate (ADR),20,200,1.0,0.0,1.0,1.0
+Security Effectiveness,Precision,20,200,0.8214,0.0287,0.808,0.8348
+Security Effectiveness,Recall,20,200,1.0,0.0,1.0,1.0
+Security Effectiveness,F1-Score,20,200,0.9017,0.0174,0.8935,0.9098
+Trust Assurance,Credential Verification Success Rate,20,200,1.0,0.0,1.0,1.0
+Trust Assurance,"Trust Establishment Latency (ms, mean)",20,200,0.1315,0.0049,0.1293,0.1338
+Trust Assurance,Delegation Integrity Rate,20,80,1.0,0.0,1.0,1.0
+Orchestration Effectiveness,Policy Enforcement Accuracy,20,300,1.0,0.0,1.0,1.0
+Orchestration Effectiveness,Behavioural Anomaly Detection Rate,20,100,1.0,0.0,1.0,1.0
+Orchestration Effectiveness,Behavioural False Positive Rate,20,100,0.0039,0.008,0.0001,0.0076
+Orchestration Effectiveness,Workflow Completion Rate,20,50,1.0,0.0,1.0,1.0
+Provenance Integrity,Provenance Identification Accuracy,20,150,1.0,0.0,1.0,1.0
+Provenance Integrity,Taint Containment Rate,20,50,1.0,0.0,1.0,1.0
+Provenance Integrity,Privilege Path Reconstruction Accuracy,20,150,1.0,0.0,1.0,1.0

@@ -1,0 +1,75 @@
+# Implements ADR-016 (ARCHITECTURE_DECISIONS_1.md): "GitHub Actions (cloud-
+# neutral) is the CI runner, executing tools/farf_security_lint.py as a
+# pre-merge gate on every pull request... plus a second, deploy-time
+# invocation immediately before any infrastructure-as-code apply step."
+#
+# This file implements the pre-merge gate (job 1) in full, since that's
+# code this repo actually owns. The pre-deploy gate (job 2) is left as a
+# documented stub -- ADR-016 ties it to "Terraform for AWS/GCP, Bicep for
+# Azure," which don't exist in this repo yet (cloud build hasn't started
+# provisioning). Wire job 2's `needs:`/trigger into whichever IaC workflow
+# gets added, rather than guessing its shape now.
+
+name: FARF CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+jobs:
+  lint-and-test:
+    name: VAST lint + pytest (pre-merge gate)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install pytest scipy pandas   # test-only deps, per TEST_PROTOCOL.md
+
+      # ADR-016: "tools/farf_security_lint.py ... as a pre-merge gate on
+      # every pull request against the codebase." A non-zero exit fails
+      # the job -- lint.py's own main()/sys.exit(main()) already provides
+      # the exit code this depends on; no wrapping needed.
+      - name: Run VAST-style security lint (farf_security_lint.py)
+        run: python tools/farf_security_lint.py
+
+      - name: Run test suite (tests/)
+        run: python -m pytest tests/ -v
+
+      - name: Run Tab 7.8 metrics harness
+        run: python -m pytest tests/test_06_tab78_evaluation_metrics.py -v
+
+  pre-deploy-gate:
+    name: Pre-deploy lint gate (stub -- wire to IaC workflow when it exists)
+    # ADR-016's second invocation: "immediately before any
+    # infrastructure-as-code apply step... so a lint failure blocks
+    # deployment, not just merge." This job intentionally does nothing yet
+    # beyond re-running the same lint check, on the same trigger as
+    # lint-and-test, as a placeholder -- swap the `on:`/`needs:` here for
+    # whatever triggers the real `terraform apply` / `bicep deploy` step
+    # once that workflow exists, so lint failure genuinely blocks it
+    # rather than merely running in parallel with it.
+    runs-on: ubuntu-latest
+    needs: lint-and-test
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - name: Re-run lint immediately before (future) IaC apply
+        run: python tools/farf_security_lint.py
+      - name: TODO
+        run: |
+          echo "Wire this job to block the real terraform apply / bicep deploy step once that workflow is added (ADR-016)." 
