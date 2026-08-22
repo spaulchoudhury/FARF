@@ -1,0 +1,77 @@
+services:
+  federation-bus:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: farf-federation-bus
+    command: ["python", "docker/bus_service.py"]
+    environment:
+      - FARF_AUDIT_DB=/data/farf_audit.db
+      - FARF_QUORUM_MODE=pbft_dynamic
+      - PORT=8000
+    ports:
+      - "8000:8000"
+    volumes:
+      - farf-audit-data:/data
+    networks:
+      - farf-net
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+  org-a:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: farf-org-a
+    command: ["python", "docker/org_client.py"]
+    environment:
+      - FARF_BUS_URL=http://federation-bus:8000
+      - FARF_ORG=OrgA
+      - FARF_PEER_ORG=OrgB
+    depends_on:
+      federation-bus:
+        condition: service_healthy
+    networks:
+      - farf-net
+
+  org-b:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: farf-org-b
+    command: ["python", "docker/org_client.py"]
+    environment:
+      - FARF_BUS_URL=http://federation-bus:8000
+      - FARF_ORG=OrgB
+      - FARF_PEER_ORG=OrgC
+    depends_on:
+      federation-bus:
+        condition: service_healthy
+    networks:
+      - farf-net
+
+  org-c:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: farf-org-c
+    command: ["python", "docker/org_client.py"]
+    environment:
+      - FARF_BUS_URL=http://federation-bus:8000
+      - FARF_ORG=OrgC
+      - FARF_PEER_ORG=
+    depends_on:
+      federation-bus:
+        condition: service_healthy
+    networks:
+      - farf-net
+
+networks:
+  farf-net:
+    driver: bridge
+
+volumes:
+  farf-audit-data:
