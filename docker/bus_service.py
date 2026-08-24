@@ -104,6 +104,35 @@ def send():
     return jsonify(result), 200
 
 
+@app.route("/propose_reinstatement", methods=["POST"])
+def propose_reinstatement():
+    """
+    ADR-004/ADR-006 partition testing support. Thin wrapper around the
+    existing, unmodified FederationBus.propose_federation_reinstatement() --
+    added for this testing session, not part of the original v7.9.10 shim.
+    """
+    data = request.get_json(force=True)
+    org = data["org"]
+    with _lock:
+        result = bus.propose_federation_reinstatement(org)
+    return jsonify(result), 200
+
+
+@app.route("/witness", methods=["POST"])
+def witness():
+    """
+    Thin wrapper around FederationBus.sign_and_witness_federation_reinstatement()
+    -- signs with the witnessing org's bus-held DID key (same disclosed
+    bus-side-signing boundary as /send, see module docstring) and submits
+    the vote. Returns whether quorum has committed yet.
+    """
+    data = request.get_json(force=True)
+    proposal_id, witnessing_org = data["proposal_id"], data["witnessing_org"]
+    with _lock:
+        result = bus.sign_and_witness_federation_reinstatement(proposal_id, witnessing_org)
+    return jsonify(result), 200
+
+
 @app.route("/fars", methods=["GET"])
 def fars():
     with _lock:

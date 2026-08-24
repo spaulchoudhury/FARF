@@ -1,0 +1,46 @@
+# docker/docker-compose.scale-test.yml
+#
+# ADR-004 / item-1 scaling test: extends the base 3-org topology to 5 orgs
+# to check PBFT-dynamic's quorum math (recommended_quorum_for_pbft) holds
+# at N > 3 over a REAL Docker network, not just the analytical table in
+# tools/quorum_policy_comparison.py.
+#
+# Usage (from the repo root, the folder containing docker-compose.yml's
+# sibling federation_bus.py):
+#   docker compose -f docker/docker-compose.yml -f docker/docker-compose.scale-test.yml up --build
+#
+# This ADDS org-d and org-e as two more services alongside the existing
+# org-a/org-b/org-c -- it does not modify docker-compose.yml itself.
+
+services:
+  org-d:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: farf-org-d
+    command: ["python", "docker/org_client.py"]
+    environment:
+      - FARF_BUS_URL=http://federation-bus:8000
+      - FARF_ORG=OrgD
+      - FARF_PEER_ORG=OrgE
+    depends_on:
+      federation-bus:
+        condition: service_healthy
+    networks:
+      - farf-net
+
+  org-e:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: farf-org-e
+    command: ["python", "docker/org_client.py"]
+    environment:
+      - FARF_BUS_URL=http://federation-bus:8000
+      - FARF_ORG=OrgE
+      - FARF_PEER_ORG=
+    depends_on:
+      federation-bus:
+        condition: service_healthy
+    networks:
+      - farf-net
