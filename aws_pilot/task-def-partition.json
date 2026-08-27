@@ -1,0 +1,31 @@
+{
+  "family": "<farf-prototype>-partition-test",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::<AWS_ACCOUNT_ID>:role/farfPilotTaskExecutionRole",
+  "containerDefinitions": [{
+    "name": "partition-test",
+    "image": "<AWS_ACCOUNT_ID>.dkr.ecr.ap-south-1.amazonaws.com/<farf-prototype>-org-b:v1",
+    "command": ["python", "aws_pilot/adr004_partition_client.py"],
+    "environment": [
+      {"name": "FARF_BUS_URL", "value": "https://<farf-prototype>-bus-<GCP_PROJECT_NUMBER>.asia-south1.run.app"},
+      {"name": "FARF_ORG", "value": "PilotOrgB-Partition"},
+      {"name": "FARF_PEER_ORG", "value": "PilotOrgA"},
+      {"name": "FARF_N_LATENCY_TRIALS", "value": "200"},
+      {"name": "FARF_LOG_FORMAT", "value": "json"},
+      {"name": "FARF_LOOP_INTERVAL_SECONDS", "value": "6"},
+      {"name": "FARF_LOOP_ITERATIONS", "value": "100"},
+      {"name": "FARF_PENTEST_MODE", "value": "1"}
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/<farf-prototype>-partition-test",
+        "awslogs-region": "ap-south-1",
+        "awslogs-stream-prefix": "partition-test"
+      }
+    }
+  }]
+}

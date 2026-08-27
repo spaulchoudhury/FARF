@@ -8,11 +8,10 @@ deployed image (docker/bus_service.py's /propose_reinstatement, /witness,
 in-process test harnesses with no HTTP layer at all and cannot run
 against this deployment without a much larger rewrite.
 
-PART 1 -- Re-runs the same 2-of-3-refused / 3-of-3-committed quorum
-correctness check as test_adr004_partition.py Part 1, but against the
-real Cloud Run URL instead of local Docker -- confirms the logic is
-correct under Cloud Run's actual container lifecycle (cold starts,
-concurrency=80, request routing), not just locally.
+PART 1 -- Re-runs the quorum correctness check as test_adr004_partition.py
+Part 1, but against the real Cloud Run URL instead of local Docker. The
+expected commit point is read from the deployed service because
+pbft_dynamic uses 3 votes for six organizations, rather than unanimity.
 
 PART 2 -- Real WAN /send round-trip latency, same methodology as
 test_adr004_latency.py, but hitting the internet instead of a local
@@ -36,8 +35,7 @@ def part1_quorum_over_cloud_run(base):
     orgs = status["registered_orgs"]
     print("Currently registered:", orgs)
 
-    # Top up to 3 orgs if the egress test only registered 2, so this is a
-    # like-for-like comparison with the Docker 2-of-3/3-of-3 result.
+    # Top up to 3 orgs if the egress test only registered 2.
     if len(orgs) < 3:
         r = requests.post(f"{base}/register_org", json={"org": "PilotOrgC"}, timeout=15)
         print("Registered PilotOrgC:", r.json())
@@ -50,22 +48,19 @@ def part1_quorum_over_cloud_run(base):
     print("Proposal:", prop)
     proposal_id = prop["proposal_id"]
 
-    for i, org in enumerate(orgs[:len(orgs) - 1], start=1):
+    quorum_required = int(status["quorum_required"])
+    for i, org in enumerate(orgs, start=1):
         w = requests.post(f"{base}/witness",
                            json={"proposal_id": proposal_id, "witnessing_org": org},
                            timeout=15).json()
         print(f"Witness {i}/{len(orgs)} ({org}): {w}")
-        assert w["committed"] is False, (
-            f"FAIL: committed before full unanimity at witness {i}/{len(orgs)} -- "
-            "quorum bypassed over Cloud Run."
+        expected_committed = i >= quorum_required
+        assert w["committed"] is expected_committed, (
+            f"FAIL: expected committed={expected_committed} at witness "
+            f"{i}/{len(orgs)} with quorum={quorum_required}, got {w['committed']}."
         )
-    w_final = requests.post(f"{base}/witness",
-                             json={"proposal_id": proposal_id, "witnessing_org": orgs[-1]},
-                             timeout=15).json()
-    print(f"Witness {len(orgs)}/{len(orgs)} ({orgs[-1]}): {w_final}")
-    assert w_final["committed"] is True, "FAIL: did not commit at full unanimity over Cloud Run"
-    print("Confirmed: same quorum correctness holds over real Cloud Run hosting, "
-          "not just local Docker. PART 1 PASSED.")
+    print("Confirmed: dynamic quorum committed exactly at the configured threshold "
+          "over real Cloud Run hosting, not just local Docker. PART 1 PASSED.")
 
 
 def part2_real_wan_latency(base, n_trials):

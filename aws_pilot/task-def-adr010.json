@@ -1,0 +1,46 @@
+{
+    "family":  "<farf-prototype>-adr010",
+    "networkMode":  "awsvpc",
+    "requiresCompatibilities":  [
+                                    "FARGATE"
+                                ],
+    "cpu":  "256",
+    "memory":  "512",
+    "executionRoleArn":  "arn:aws:iam::<AWS_ACCOUNT_ID>:role/farfPilotTaskExecutionRole",
+    "containerDefinitions":  [
+                                 {
+                                     "name":  "adr010-probe",
+                                     "image":  "<AWS_ACCOUNT_ID>.dkr.ecr.ap-south-1.amazonaws.com/<farf-prototype>-org-b:v2-adr010",
+                                     "command":  [
+                                                     "python",
+                                                     "aws_pilot/adr010_boundary_probe.py"
+                                                 ],
+                                     "environment":  [
+                                                         {
+                                                             "value":  "https://<farf-prototype>-bus-<GCP_PROJECT_NUMBER>.asia-south1.run.app",
+                                                             "name":  "FARF_BUS_URL"
+                                                         },
+                                                         {
+                                                             "value":  "PilotOrgB-ADR010",
+                                                             "name":  "FARF_ORG"
+                                                         },
+                                                         {
+                                                             "value":  "PilotOrgA",
+                                                             "name":  "FARF_PEER_ORG"
+                                                         },
+                                                         {
+                                                             "value":  "json",
+                                                             "name":  "FARF_LOG_FORMAT"
+                                                         }
+                                                     ],
+                                     "logConfiguration":  {
+                                                              "logDriver":  "awslogs",
+                                                              "options":  {
+                                                                              "awslogs-group":  "/ecs/<farf-prototype>-partition-test",
+                                                                              "awslogs-region":  "ap-south-1",
+                                                                              "awslogs-stream-prefix":  "partition-test"
+                                                                          }
+                                                          }
+                                 }
+                             ]
+}

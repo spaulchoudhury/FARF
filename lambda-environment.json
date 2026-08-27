@@ -1,0 +1,7 @@
+{
+  "Variables": {
+    "FARF_BUS_URL": "https://<farf-prototype>-bus-<GCP_PROJECT_NUMBER>.asia-south1.run.app",
+    "FARF_ORG": "PilotOrgB-Lambda",
+    "FARF_PEER_ORG": "PilotOrgA"
+  }
+}

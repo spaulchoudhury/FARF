@@ -55,6 +55,15 @@ class ActionEvent:
     payload: Dict
     timestamp: float = field(default_factory=time.time)
     taint_score: float = 0.0
+    # ADR-010 (cross-cloud build, additive): True when this action's
+    # sender org differs from its recipient org, i.e. this hop crosses
+    # an organisational boundary -- and in a genuine two-cloud
+    # deployment, a network boundary too (ADR-001/ADR-004). Deliberately
+    # defaults to False and does not feed any existing PolicyRule
+    # predicate: this is observational only (see evaluate()'s logging
+    # below), not a new blocking rule, so it can't silently change any
+    # already-cited Tab 7.8/7.9 decision outcome.
+    crosses_org_boundary: bool = False
 
 
 # Required payload fields per action_type -- used by the fail-closed
@@ -244,6 +253,27 @@ class SecureOrchestrationLayer:
         self.rules.append(rule)
 
     def evaluate(self, event: ActionEvent) -> Decision:
+        # ADR-010 (cross-cloud build, additive, observational only): a
+        # TOCTOU-relevant action_type crossing an org boundary is exactly
+        # the case where the check-to-use window is widest in a real
+        # two-cloud deployment (ADR-004's partition handling applies to
+        # this same hop). This logs the fact -- it does not gate, block,
+        # or otherwise change the decision below, deliberately, so it
+        # can't silently alter the already-cited Tab 7.8/7.9 statistics
+        # (same academic-integrity concern as the ADR-006 quorum-default
+        # question).
+        _TOCTOU_RELEVANT_ACTION_TYPES = {"execute_action", "memory_recall_use"}
+        if event.crosses_org_boundary and event.action_type in _TOCTOU_RELEVANT_ACTION_TYPES:
+            log.warning("cross_boundary_toctou_reverification", extra={
+                "event": "cross_boundary_toctou_reverification",
+                "agent_id": event.agent_id, "org": event.org,
+                "action_type": event.action_type,
+                "resource_hash_at_check": event.payload.get("resource_hash_at_check"),
+                "resource_hash_at_use": event.payload.get("resource_hash_at_use"),
+                "memory_hash_at_check": event.payload.get("memory_hash_at_check"),
+                "memory_hash_at_use": event.payload.get("memory_hash_at_use"),
+            })
+
         if event.agent_id in self.quarantined_agents:
             self._log(event, Decision.QUARANTINE, "agent_already_quarantined")
             return Decision.QUARANTINE

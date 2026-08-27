@@ -693,8 +693,14 @@ class FederationBus:
             self.tainted_messages += 1
 
         # 2. Secure orchestration & behavioural governance decision (agent-level)
+        # ADR-010 (cross-cloud build): records whether this hop crosses an
+        # org boundary -- in a genuine two-cloud deployment, also a network
+        # boundary (ADR-001/ADR-004). Observational only; does not change
+        # send()'s own control flow, only what evaluate() logs.
+        crosses_org_boundary = (from_org != to_org)
         event = ActionEvent(agent_id=from_agent, org=from_org, action_type=action_type,
-                             payload=payload, taint_score=taint_level)
+                             payload=payload, taint_score=taint_level,
+                             crosses_org_boundary=crosses_org_boundary)
 
         # Phase 1 item 2 (v7.4): mark every message BEFORE evaluating it,
         # so detection latency is measured from the first message

@@ -133,6 +133,98 @@ def witness():
     return jsonify(result), 200
 
 
+# ============================================================================
+# PENTEST-SUPPORT ROUTES -- gated, off by default, not part of the normal
+# federation-bus API surface. These exist ONLY to let pentest scripts
+# replicate their exact in-process attack scenarios over HTTP against a
+# real cross-cloud deployment. Each does something a legitimate client
+# should never need to do (register an identity without admitting it;
+# send a message with no signature) -- that's the point: the pentest is
+# checking that FederationBus's OWN guardrails still hold even when an
+# attacker can reach these calls directly, not that these calls are safe
+# to expose generally. Gated behind FARF_PENTEST_MODE=1 so a normal
+# deployment (including the earlier ADR-006 pilot) never has this attack
+# surface live; every route 404s unless the env var is set.
+# ============================================================================
+import os as _os
+_PENTEST_MODE = _os.environ.get("FARF_PENTEST_MODE") == "1"
+
+
+def _pentest_gate():
+    if not _PENTEST_MODE:
+        from flask import abort
+        abort(404)
+
+
+@app.route("/pentest/register_agent_structural", methods=["POST"])
+def pentest_register_agent_structural():
+    """
+    Registers an agent in the adversary model ONLY (bus.register_agent()) --
+    deliberately does NOT call admit_agent(), so the agent structurally
+    exists (as if its ID leaked via logs/DNS/docs, per PT-01's hypothesis)
+    but holds no credential and no session key. Never call this for a
+    legitimate agent; it exists so PT-01-style tests can set up the exact
+    "attacker knows the ID but never obtained a credential" precondition
+    over HTTP.
+    """
+    _pentest_gate()
+    data = request.get_json(force=True)
+    with _lock:
+        bus.register_agent(data["agent_id"], data["org"],
+                            base_privilege=data.get("base_privilege", 0.1))
+    return jsonify({"registered_structurally": True, "agent_id": data["agent_id"]}), 200
+
+
+@app.route("/pentest/send_raw", methods=["POST"])
+def pentest_send_raw():
+    """
+    Calls FederationBus.send() DIRECTLY -- no signature, no nonce, none of
+    /send's sign_and_send() convenience wrapper. This is deliberate: it
+    replicates PT-01's original in-process bus.send() call exactly, which
+    tests whether send()'s own admission gate (_is_admitted(), checked
+    BEFORE the signature check) fails closed on its own, independent of
+    the signing layer. /send (production route) would raise an unhandled
+    KeyError for an unadmitted from_agent, since sign_and_send() tries to
+    sign with a key that was never registered -- a real shim-level gap
+    this route exists specifically to test around, not to hide.
+    """
+    _pentest_gate()
+    data = request.get_json(force=True)
+    with _lock:
+        result = bus.send(
+            from_agent=data["from_agent"], from_org=data["from_org"],
+            to_agent=data["to_agent"], to_org=data["to_org"],
+            action_type=data["action_type"], payload=data.get("payload", {}),
+            taint_delta=data.get("taint_delta", 0.0),
+            signature=data.get("signature"), nonce=data.get("nonce"),
+        )
+    return jsonify(result), 200
+
+
+@app.route("/pentest/sign_only", methods=["POST"])
+def pentest_sign_only():
+    """
+    Produces a genuine bus-side signature over a caller-specified message
+    (via FederationBus.canonical_message_bytes + TrustProtocol.sign_message)
+    WITHOUT sending it -- exists so PT-08-style replay tests can obtain one
+    real, valid (signature, nonce) pair and then submit it via
+    /pentest/send_raw twice, to test whether the SECOND submission is
+    correctly rejected as a replay. Requires the agent to already be
+    admitted (a real key must exist to sign with) -- this does not let a
+    caller sign as an arbitrary/unadmitted identity, only as one that
+    already has a legitimate bus-held key.
+    """
+    _pentest_gate()
+    data = request.get_json(force=True)
+    payload_bytes = FederationBus.canonical_message_bytes(
+        data["from_agent"], data["to_agent"], data["action_type"],
+        data.get("payload", {}), data["nonce"],
+    )
+    with _lock:
+        signature = bus.trust.sign_message(data["from_agent"], payload_bytes)
+    return jsonify({"signature": signature, "nonce": data["nonce"]}), 200
+
+
 @app.route("/fars", methods=["GET"])
 def fars():
     with _lock:
