@@ -15,10 +15,12 @@ isolates the estimator itself; nothing else about the score changes.
 """
 
 from __future__ import annotations
+
 import statistics
 
-from fars import FARSEngine
 from synthetic_federation_topology import TopologyParams, generate_topology
+
+from fars import FARSEngine
 
 
 def compare_at_size(n_orgs: int, agents_per_org: int, n_trials: int = 15, seed_base: int = 7000):

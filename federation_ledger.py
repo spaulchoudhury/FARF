@@ -41,7 +41,6 @@ pentest's calibrated behaviour and the thesis's documented numbers).
 """
 import hashlib
 import secrets
-from typing import Dict, List, Optional
 
 from farf_logging import get_logger
 
@@ -53,10 +52,10 @@ GENESIS_HASH = "0" * 64
 class FederationLedger:
     def __init__(self, quorum: float = 2.0):
         self.quorum_required = quorum
-        self.proposals: Dict[str, Dict] = {}  # proposal_id -> {org, witnesses: {org: weight}, committed, reason}
-        self.chain: List[Dict] = []
+        self.proposals: dict[str, dict] = {}  # proposal_id -> {org, witnesses: {org: weight}, committed, reason}
+        self.chain: list[dict] = []
         self._last_hash = GENESIS_HASH
-        self.org_stake: Dict[str, float] = {}  # org -> stake weight; default 1.0 if absent
+        self.org_stake: dict[str, float] = {}  # org -> stake weight; default 1.0 if absent
 
     def set_stake(self, org: str, weight: float):
         self.org_stake[org] = weight
@@ -94,7 +93,7 @@ class FederationLedger:
         }
         return proposal_id
 
-    def witness(self, proposal_id: str, witnessing_org: str, weight: Optional[float] = None) -> Dict:
+    def witness(self, proposal_id: str, witnessing_org: str, weight: float | None = None) -> dict:
         """
         Records `witnessing_org`'s weighted vote for `proposal_id`. The
         accused org witnessing its OWN proposal counts (an org must be
@@ -131,7 +130,7 @@ class FederationLedger:
         return {"accepted": True, "witness_count": len(p["witnesses"]), "total_weight": round(total_weight, 4),
                  "quorum_required": self.quorum_required, "committed": p["committed"]}
 
-    def _commit_block(self, proposal_id: str, p: Dict):
+    def _commit_block(self, proposal_id: str, p: dict):
         witnesses_repr = sorted(f"{org}:{w}" for org, w in p["witnesses"].items())
         block_repr = f"{proposal_id}|{p['org']}|{witnesses_repr}|{p['reason']}|{self._last_hash}"
         block_hash = hashlib.sha256(block_repr.encode()).hexdigest()
@@ -141,7 +140,7 @@ class FederationLedger:
         })
         self._last_hash = block_hash
 
-    def verify_chain_integrity(self) -> Dict:
+    def verify_chain_integrity(self) -> dict:
         expected_prev = GENESIS_HASH
         for i, block in enumerate(self.chain):
             if block["prev_hash"] != expected_prev:

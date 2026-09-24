@@ -36,8 +36,6 @@ import sys
 import tempfile
 import traceback
 import types
-from typing import Dict, List
-
 
 # ---------------------------------------------------------------------
 # 1. The pytest shim itself -- registered into sys.modules BEFORE any
@@ -49,7 +47,6 @@ class Skipped(Exception):
     """Raised by the shim's pytest.skip(); caught by the runner and
     reported as SKIP rather than FAIL or PASS -- matches pytest's own
     three-way outcome, not a binary pass/fail."""
-    pass
 
 
 def _fixture(func=None, *, scope="function"):
@@ -97,11 +94,11 @@ sys.modules["pytest"] = _pytest_shim
 # ---------------------------------------------------------------------
 
 class _FixtureResolver:
-    def __init__(self, fixtures: Dict[str, callable]):
+    def __init__(self, fixtures: dict[str, callable]):
         self.fixtures = fixtures
-        self._module_scope_cache: Dict[str, object] = {}
+        self._module_scope_cache: dict[str, object] = {}
 
-    def resolve(self, name: str, teardown_stack: List):
+    def resolve(self, name: str, teardown_stack: list):
         if name == "tmp_path":
             d = pathlib.Path(tempfile.mkdtemp(prefix="farf_test_"))
             return d
@@ -134,12 +131,12 @@ class _FixtureResolver:
 #    pytest itself reports, not collapsed into a single pass/fail bit.
 # ---------------------------------------------------------------------
 
-def _collect_fixtures(module) -> Dict[str, callable]:
+def _collect_fixtures(module) -> dict[str, callable]:
     return {name: obj for name, obj in vars(module).items()
             if callable(obj) and getattr(obj, "_is_fixture", False)}
 
 
-def run_module(module, shared_fixtures: Dict[str, callable]) -> Dict[str, int]:
+def run_module(module, shared_fixtures: dict[str, callable]) -> dict[str, int]:
     fixtures = {**shared_fixtures, **_collect_fixtures(module)}
     resolver = _FixtureResolver(fixtures)
     counts = {"pass": 0, "fail": 0, "skip": 0}
@@ -154,7 +151,7 @@ def run_module(module, shared_fixtures: Dict[str, callable]) -> Dict[str, int]:
         param_name, param_values = getattr(func, "_parametrize", (None, [None]))
         for value in param_values:
             case_label = name if param_name is None else f"{name}[{value}]"
-            teardown_stack: List = []
+            teardown_stack: list = []
             try:
                 kwargs = {}
                 for p in sig_params:
@@ -166,7 +163,7 @@ def run_module(module, shared_fixtures: Dict[str, callable]) -> Dict[str, int]:
             except Skipped as exc:
                 print(f"  SKIP  {case_label}  ({exc})")
                 counts["skip"] += 1
-            except Exception:
+            except Exception:  # noqa: BLE001 -- this is the measured failing outcome for a test case, not a hidden bug
                 print(f"  FAIL  {case_label}")
                 traceback.print_exc()
                 counts["fail"] += 1
@@ -182,7 +179,7 @@ def run_module(module, shared_fixtures: Dict[str, callable]) -> Dict[str, int]:
     return counts
 
 
-def main(argv: List[str]) -> int:
+def main(argv: list[str]) -> int:
     import importlib
     repo_root = pathlib.Path(__file__).resolve().parent.parent
     sys.path.insert(0, str(repo_root))

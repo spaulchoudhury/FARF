@@ -16,12 +16,12 @@ Each function below corresponds to one node in the diagram:
         -> MAE & RMSE -> Statistical Conclusions
 """
 import math
-from typing import Dict, List
+
 import numpy as np
 from scipy import stats
 
 
-def descriptive_statistics(sample: List[float]) -> Dict:
+def descriptive_statistics(sample: list[float]) -> dict:
     """Diagram node: 'Descriptive Statistics — Mean, SD, 95% CI'."""
     arr = np.asarray(sample, dtype=float)
     n = len(arr)
@@ -35,7 +35,7 @@ def descriptive_statistics(sample: List[float]) -> Dict:
     return {"n": n, "mean": mean, "sd": sd, "ci_95": (float(ci[0]), float(ci[1]))}
 
 
-def normality_test(sample: List[float]) -> Dict:
+def normality_test(sample: list[float]) -> dict:
     """Diagram node: 'Normality Test -> Normal / Non-normal'.
     Uses Shapiro-Wilk, the standard small-sample normality test."""
     arr = np.asarray(sample, dtype=float)
@@ -46,7 +46,7 @@ def normality_test(sample: List[float]) -> Dict:
     return {"statistic": float(statistic), "p_value": float(p_value), "is_normal": p_value > 0.05}
 
 
-def paired_significance_test(sample_a: List[float], sample_b: List[float], is_normal: bool) -> Dict:
+def paired_significance_test(sample_a: list[float], sample_b: list[float], is_normal: bool) -> dict:
     """Diagram node: 'Paired t-test / Wilcoxon Signed-Rank Test' -> 'Significance Analysis'."""
     a, b = np.asarray(sample_a, dtype=float), np.asarray(sample_b, dtype=float)
     diffs = a - b
@@ -73,7 +73,7 @@ def paired_significance_test(sample_a: List[float], sample_b: List[float], is_no
             "significant": bool(p_value < 0.05)}
 
 
-def effect_size_cohens_d(sample_a: List[float], sample_b: List[float]) -> float:
+def effect_size_cohens_d(sample_a: list[float], sample_b: list[float]) -> float:
     """Diagram node: 'Effect Size' (Cohen's d for paired samples)."""
     diffs = np.asarray(sample_a, dtype=float) - np.asarray(sample_b, dtype=float)
     sd = np.std(diffs, ddof=1)
@@ -82,7 +82,7 @@ def effect_size_cohens_d(sample_a: List[float], sample_b: List[float]) -> float:
     return float(np.mean(diffs) / sd)
 
 
-def statistical_conclusion(desc_a: Dict, desc_b: Dict, sig: Dict, effect_size: float,
+def statistical_conclusion(desc_a: dict, desc_b: dict, sig: dict, effect_size: float,
                             label_a: str = "FARF-enabled", label_b: str = "baseline (no-FARF)") -> str:
     """Diagram node: 'Statistical Conclusions'."""
     direction = "higher" if desc_a["mean"] > desc_b["mean"] else "lower"
@@ -92,7 +92,7 @@ def statistical_conclusion(desc_a: Dict, desc_b: Dict, sig: Dict, effect_size: f
             f"{sig['test']} p={sig['p_value']:.4f} ({verdict}); Cohen's d={effect_size:.3f}.")
 
 
-def fars_predictive_validity(predicted_fars: List[float], observed_resilience: List[float]) -> Dict:
+def fars_predictive_validity(predicted_fars: list[float], observed_resilience: list[float]) -> dict:
     """
     Diagram (parallel) branch: 'Predicted FARS + Observed Attack Outcomes
     -> Pearson Correlation -> MAE & RMSE'.
@@ -108,7 +108,7 @@ def fars_predictive_validity(predicted_fars: List[float], observed_resilience: L
     return {"pearson_r": float(r), "p_value": float(p_value), "mae": mae, "rmse": rmse}
 
 
-def fars_discriminative_validity(predicted_fars: List[float], contained: List[bool]) -> Dict:
+def fars_discriminative_validity(predicted_fars: list[float], contained: list[bool]) -> dict:
     """
     Companion metric to fars_predictive_validity(), added because Pearson
     correlation is unreliable under range restriction (see

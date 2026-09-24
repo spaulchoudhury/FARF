@@ -24,7 +24,6 @@ Diagram sequence under test, in order:
 This is the only scenario that exercises all five FARF artefacts in a
 single run, so it is the primary end-to-end integration test.
 """
-import pytest
 from orchestration import Decision
 from tests.conftest import baseline_fars_ceiling
 
@@ -65,14 +64,14 @@ def test_step3_behaviour_monitor_activates_on_sustained_drift(fresh_bus):
 # ---------------------------------------------------------------------
 def test_step4_taint_engine_flags_origin(fresh_bus):
     bus, agents = fresh_bus
-    advisor, results = _inject_memory_manipulation(bus, agents)
+    _advisor, results = _inject_memory_manipulation(bus, agents)
 
     # Every propagated message must carry a non-zero taint level tracing
     # back to the compromised advisor's originating organisation.
     for org, result in results:
         assert result["taint_level"] > 0.0
 
-    origin_org = list(agents.keys())[0]
+    origin_org = next(iter(agents.keys()))
     first_message_id = None
     for mid, label in bus.taint.taints.items():
         if label.origin_org == origin_org:
@@ -101,7 +100,7 @@ def test_step5_privilege_path_analysis_reconstructs_propagation(fresh_bus):
 # ---------------------------------------------------------------------
 def test_step6_cross_org_taint_quarantine_contains_spread(fresh_bus):
     bus, agents = fresh_bus
-    advisor, results = _inject_memory_manipulation(bus, agents)
+    advisor, _results = _inject_memory_manipulation(bus, agents)
 
     # Once quarantined, the compromised advisor's outgoing propagation
     # edges must be severed -- i.e. containment actually happened, not

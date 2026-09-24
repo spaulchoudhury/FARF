@@ -32,16 +32,15 @@ import secrets
 import sqlite3
 import sys
 
-import pytest
-
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from federation_bus import FederationBus
-from main import build_federation
-from trust_protocol import DIDKeyIdentity, did_to_public_key, decode_signature
-from memory_store import MemoryStore
-from federation_ledger import FederationLedger
 from cryptography.exceptions import InvalidSignature
+
+from federation_bus import FederationBus
+from federation_ledger import FederationLedger
+from main import build_federation
+from memory_store import MemoryStore
+from trust_protocol import DIDKeyIdentity, decode_signature, did_to_public_key
 
 N_FUZZ_ITERATIONS = 200
 

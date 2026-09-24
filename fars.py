@@ -8,7 +8,7 @@ Federation Bus event so it can inform adaptive recovery decisions in
 near real time, using NetworkX for the topology term (as specified in
 the proposal) rather than a heavier graph-learning model.
 """
-from typing import Dict, List, Optional
+
 import networkx as nx
 
 from farf_logging import get_logger
@@ -17,7 +17,7 @@ log = get_logger(__name__)
 
 
 class FARSEngine:
-    def __init__(self, weights: Dict[str, float] = None):
+    def __init__(self, weights: dict[str, float] | None = None):
         self.weights = weights or {
             "connectivity": 0.25,
             "trust_health": 0.30,
@@ -67,7 +67,7 @@ class FARSEngine:
                     avg_conn = 0.0
                 else:
                     avg_conn = sum(nx.node_connectivity(undirected, s=a, t=b) for a, b in pairs) / len(pairs)
-        except Exception:
+        except (nx.NetworkXException, ValueError, ZeroDivisionError):
             avg_conn = 0.0
         return min(1.0, avg_conn / 4.0)  # normalise against a healthy small federation
 
@@ -108,7 +108,7 @@ class FARSEngine:
         return max(0.0, 1.0 - penalty)
 
     def _taint_containment_score(self, tainted_messages: int, total_messages: int,
-                                  max_blast_radius_fraction: float = 0.0) -> Dict[str, float]:
+                                  max_blast_radius_fraction: float = 0.0) -> dict[str, float]:
         """
         Blends two containment signals:
           - per-message: fraction of individual messages that stayed
@@ -146,7 +146,7 @@ class FARSEngine:
     def compute(self, graph: nx.DiGraph, quarantined_agents: int, total_agents: int,
                 tainted_messages: int, total_messages: int,
                 policy_violations: int, total_events: int,
-                max_blast_radius_fraction: float = 0.0) -> Dict:
+                max_blast_radius_fraction: float = 0.0) -> dict:
         c = self._connectivity_score(graph)
         containment = self._taint_containment_score(tainted_messages, total_messages, max_blast_radius_fraction)
         p = containment["blended"]
@@ -179,7 +179,7 @@ class FARSEngine:
         }
 
     @staticmethod
-    def compute_ewma(current_score: float, previous_ewma: Optional[float], alpha: float = 0.3) -> float:
+    def compute_ewma(current_score: float, previous_ewma: float | None, alpha: float = 0.3) -> float:
         """
         PENTEST FINDING (fixed, v7 / temporally-adaptive FARS): compute()
         above is a pure point-in-time snapshot recomputed from ALL-TIME
@@ -225,9 +225,9 @@ class DetectionLatencyTracker:
     measurable, reportable claim instead of a vague one.
     """
     def __init__(self):
-        self._first_seen_at: Dict[str, float] = {}
-        self._message_count: Dict[str, int] = {}
-        self.detections: List[Dict] = []
+        self._first_seen_at: dict[str, float] = {}
+        self._message_count: dict[str, int] = {}
+        self.detections: list[dict] = []
 
     def mark_message(self, key: str, now: float):
         """Call on every message attributed to `key`, BEFORE checking
@@ -237,7 +237,7 @@ class DetectionLatencyTracker:
             self._message_count[key] = 0
         self._message_count[key] += 1
 
-    def mark_detected(self, key: str, now: float, detector: str) -> Optional[Dict]:
+    def mark_detected(self, key: str, now: float, detector: str) -> dict | None:
         """Call the moment a detector trips for `key`. Deletes this
         key's tracking state afterward, so a FUTURE episode (after
         reinstatement) starts a fresh count rather than an inflated
@@ -255,8 +255,8 @@ class DetectionLatencyTracker:
         del self._message_count[key]
         return record
 
-    def stats_by_detector(self) -> Dict[str, Dict]:
-        by_detector: Dict[str, List[Dict]] = {}
+    def stats_by_detector(self) -> dict[str, dict]:
+        by_detector: dict[str, list[dict]] = {}
         for d in self.detections:
             by_detector.setdefault(d["detector"], []).append(d)
         result = {}
@@ -285,14 +285,14 @@ class RecoveryTimeTracker:
     of the FARS score itself.
     """
     def __init__(self):
-        self._started_at: Dict[str, float] = {}
-        self.completed: List[Dict] = []
+        self._started_at: dict[str, float] = {}
+        self.completed: list[dict] = []
 
     def mark_quarantined(self, key: str, now: float):
         if key not in self._started_at:
             self._started_at[key] = now
 
-    def mark_recovered(self, key: str, now: float) -> Optional[Dict]:
+    def mark_recovered(self, key: str, now: float) -> dict | None:
         started = self._started_at.pop(key, None)
         if started is None:
             return None
@@ -300,7 +300,7 @@ class RecoveryTimeTracker:
         self.completed.append(record)
         return record
 
-    def stats(self) -> Dict:
+    def stats(self) -> dict:
         if not self.completed:
             return {"count": 0, "mean_seconds": None, "min_seconds": None, "max_seconds": None}
         durations = [r["duration_seconds"] for r in self.completed]

@@ -25,9 +25,9 @@ Two generator families, matching README's own suggestion exactly:
 """
 
 from __future__ import annotations
+
 import random
 from dataclasses import dataclass
-from typing import List, Optional
 
 import networkx as nx
 
@@ -41,7 +41,7 @@ class TopologyParams:
     topology_type: str = "gnp"          # "gnp" | "barabasi_albert"
     p: float = 0.4                       # gnp edge probability
     m: int = 2                           # barabasi_albert attachment count
-    seed: Optional[int] = None
+    seed: int | None = None
     intra_org_privilege_range: tuple = (0.1, 0.25)   # matches main.py's 0.1/0.2 range
     cross_org_privilege_range: tuple = (0.2, 0.5)    # matches main.py's 0.3/0.4 range
 
@@ -97,7 +97,7 @@ def generate_topology(params: TopologyParams) -> FederatedAdversaryModel:
 
 
 def generate_corpus(n_topologies: int = 50, n_orgs_range: tuple = (2, 10),
-                     agents_per_org_range: tuple = (2, 3), seed: int = 42) -> List[FederatedAdversaryModel]:
+                     agents_per_org_range: tuple = (2, 3), seed: int = 42) -> list[FederatedAdversaryModel]:
     """
     Tab 7.6: "more than fifty automatically generated federation
     topologies containing between two and ten participating
@@ -122,7 +122,7 @@ def generate_corpus(n_topologies: int = 50, n_orgs_range: tuple = (2, 10),
     return topologies
 
 
-def summarise_corpus(topologies: List[FederatedAdversaryModel]) -> dict:
+def summarise_corpus(topologies: list[FederatedAdversaryModel]) -> dict:
     n_with_escalation = 0
     n_with_cross_org_attack = 0
     total_agents = []

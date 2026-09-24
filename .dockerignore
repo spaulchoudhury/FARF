@@ -1,0 +1,21 @@
+# Keep images small and keep secrets/evidence/scripts out of them.
+# Dockerfiles use `COPY . /app`, so anything in the repo folder is baked into the image
+# (and pushed to ECR / Artifact Registry) unless listed here.
+# NOTE: a pattern WITHOUT "**/" only matches at the top level of the folder.
+.venv/
+.git/
+**/__pycache__
+**/*.pyc
+**/*.zip
+**/*.db
+lambda_build/
+precheck_*/
+evidence_*/
+*.ps1
+**/*_Console_Output*.txt
+**/*.docx
+**/*.pdf
+**/partition_v*_log*.jsonl
+egress_saved.json
+sg_during_revoke.json
+validation/data/

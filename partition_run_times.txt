@@ -1,0 +1,4 @@
+# name,start,end,revoke,restore   (UTC)  -- recorded from the screen output of the two completed partition runs
+# run1: client timeout 8 s, readmit 100 s;  run2: client timeout 2 s, readmit 200 s
+run1,2026-09-20T19:02:40Z,2026-09-20T19:08:51Z,2026-09-20T19:03:32Z,2026-09-20T19:05:35Z
+run2,2026-09-20T19:26:03Z,2026-09-20T19:31:50Z,2026-09-20T19:26:59Z,2026-09-20T19:29:02Z

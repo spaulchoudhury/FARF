@@ -25,8 +25,8 @@ Bus. Three complementary mechanisms:
          each individual one is.
 """
 import time
+from collections.abc import Callable
 from dataclasses import dataclass, field
-from typing import Dict, List, Callable, Set, Optional
 from enum import Enum
 
 from farf_logging import get_logger
@@ -52,7 +52,7 @@ class ActionEvent:
     agent_id: str
     org: str
     action_type: str
-    payload: Dict
+    payload: dict
     timestamp: float = field(default_factory=time.time)
     taint_score: float = 0.0
     # ADR-010 (cross-cloud build, additive): True when this action's
@@ -71,7 +71,7 @@ class ActionEvent:
 # THREAT_MODEL.md): any NEW action_type not registered here defaults to
 # no schema check at all (fail-open) -- every new action_type introduced
 # into the federation MUST have a schema added here.
-DEFAULT_ACTION_SCHEMAS: Dict[str, Set[str]] = {
+DEFAULT_ACTION_SCHEMAS: dict[str, set[str]] = {
     "execute_action": {"resource_hash_at_check", "resource_hash_at_use"},
     "plan_forward": {"requested_privilege", "attempts_system_override"},
     "memory_recall_forward": {"requested_privilege", "attempts_system_override"},
@@ -91,7 +91,7 @@ class CUSUMDetector:
         self.target_mean = target_mean
         self.k = k          # slack — how much drift is tolerated per step
         self.h = h           # decision threshold
-        self._state: Dict[str, float] = {}
+        self._state: dict[str, float] = {}
 
     def update(self, agent_id: str, value: float) -> bool:
         prev = self._state.get(agent_id, 0.0)
@@ -128,7 +128,7 @@ class FanOutAnomalyDetector:
     def __init__(self, window: int = 20, cap: int = 6):
         self.window = window
         self.cap = cap
-        self._recent_targets: Dict[str, List[str]] = {}
+        self._recent_targets: dict[str, list[str]] = {}
 
     def update(self, key: str, target: str) -> bool:
         hist = self._recent_targets.setdefault(key, [])
@@ -153,7 +153,7 @@ class SlidingWindowVolumeDetector:
     def __init__(self, window: int = 20, cap: float = 0.5):
         self.window = window
         self.cap = cap
-        self._history: Dict[str, List[float]] = {}
+        self._history: dict[str, list[float]] = {}
 
     def update(self, key: str, value: float) -> bool:
         hist = self._history.setdefault(key, [])
@@ -167,13 +167,13 @@ class SlidingWindowVolumeDetector:
 
 
 class SecureOrchestrationLayer:
-    def __init__(self, action_schemas: Optional[Dict[str, Set[str]]] = None):
-        self.rules: List[PolicyRule] = []
+    def __init__(self, action_schemas: dict[str, set[str]] | None = None):
+        self.rules: list[PolicyRule] = []
         self.action_schemas = dict(action_schemas or DEFAULT_ACTION_SCHEMAS)
         self.cusum = CUSUMDetector()
         self.volume_detector = SlidingWindowVolumeDetector(window=20, cap=0.5)
         self.quarantined_agents = set()
-        self.audit_log: List[Dict] = []
+        self.audit_log: list[dict] = []
         self.governance_enabled = True
 
         # PENTEST FINDING (fixed, PT-05, capability-gated as of v5):
@@ -285,7 +285,13 @@ class SecureOrchestrationLayer:
                         self.quarantined_agents.add(event.agent_id)
                     self._log(event, rule.action, rule.name)
                     return rule.action
-            except Exception:
+            except Exception:  # noqa: BLE001 -- rule predicates are deliberately best-effort evaluators
+                log.warning("rule predicate failed during evaluation", extra={
+                    "event": "rule_predicate_failed",
+                    "agent_id": event.agent_id,
+                    "org": event.org,
+                    "action_type": event.action_type,
+                })
                 continue
 
         if self.cusum.update(event.agent_id, event.taint_score):
@@ -301,7 +307,7 @@ class SecureOrchestrationLayer:
         self._log(event, Decision.ALLOW, "no_violation")
         return Decision.ALLOW
 
-    def reinstate(self, agent_id: str, capability: Optional[str] = None):
+    def reinstate(self, agent_id: str, capability: str | None = None):
         """
         Adaptive recovery primitive: lifts quarantine and resets both
         drift detectors for `agent_id`.

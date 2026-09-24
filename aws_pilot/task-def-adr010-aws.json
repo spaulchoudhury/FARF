@@ -1,0 +1,25 @@
+{
+  "family": "<farf-prototype>-adr010-aws",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::$account-id:role/farfPilotTaskExecutionRole",
+  "containerDefinitions": [{
+    "name": "adr010-aws",
+    "image": "$account-id.dkr.ecr.ap-south-1.amazonaws.com/<farf-prototype>-org-b:v5-partition",
+    "command": ["python", "aws_pilot/adr010_boundary_probe_v2.py"],
+    "environment": [
+      { "name": "FARF_BUS_URL", "value": "https://<farf-prototype>-bus-<GCP_PROJECT_NUMBER>.asia-south1.run.app" },
+      { "name": "FARF_ORG", "value": "PT010OrgAWS" }
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/<farf-prototype>-org-b",
+        "awslogs-region": "ap-south-1",
+        "awslogs-stream-prefix": "adr010-aws"
+      }
+    }
+  }]
+}

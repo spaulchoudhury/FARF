@@ -1,0 +1,31 @@
+{
+  "family": "<farf-prototype>-partition-test-v5",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/farfPilotTaskExecutionRole",
+  "containerDefinitions": [{
+    "name": "partition-test",
+    "image": "$AWS_ACCOUNT_ID.dkr.ecr.ap-south-1.amazonaws.com/<farf-prototype>-org-b:v5-partition",
+    "command": [
+      "python", "aws_pilot/adr004_partition_client_v5.py",
+      "--url", "https://<farf-prototype>-bus-<GCP_PROJECT_NUMBER>.asia-south1.run.app",
+      "--iterations", "50",
+      "--interval-seconds", "5",
+      "--timeout-seconds", "2",
+      "--readmit-every-seconds", "200",
+      "--out", "/tmp/partition_v5_log.jsonl"
+    ],
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/<farf-prototype>-partition-test",
+        "awslogs-region": "ap-south-1",
+        "awslogs-stream-prefix": "partition-v5",
+        "mode": "non-blocking",
+        "max-buffer-size": "25m"
+      }
+    }
+  }]
+}

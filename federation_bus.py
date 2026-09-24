@@ -14,30 +14,34 @@ THREAT_MODEL.md. Everything tagged "PENTEST FINDING (fixed)" below
 closes a specific exploit in pentest/*.py; see that file for the
 runnable proof and THREAT_MODEL.md Section 4 for the write-up.
 """
-import hashlib
+import base64
 import functools
+import hashlib
 import json
 import os
-import base64
 import sqlite3
 import threading
 import time
 import uuid
-from typing import Dict, Optional, Set, List
 
-from trust_protocol import FederatedTrustProtocol, did_to_public_key, decode_signature
-from orchestration import (SecureOrchestrationLayer, ActionEvent, Decision,
-                            SlidingWindowVolumeDetector, FanOutAnomalyDetector)
-from taint_engine import TaintPropagationEngine
-from fars import FARSEngine, RecoveryTimeTracker, DetectionLatencyTracker
-from adversary_model import FederatedAdversaryModel
-from federation_ledger import FederationLedger
-from memory_store import MemoryStore
-from adaptive_detection import AdaptiveOrgVolumeDetector
 from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
+from adaptive_detection import AdaptiveOrgVolumeDetector
+from adversary_model import FederatedAdversaryModel
 from farf_logging import get_logger
+from fars import DetectionLatencyTracker, FARSEngine, RecoveryTimeTracker
+from federation_ledger import FederationLedger
+from memory_store import MemoryStore
+from orchestration import (
+    ActionEvent,
+    Decision,
+    FanOutAnomalyDetector,
+    SecureOrchestrationLayer,
+    SlidingWindowVolumeDetector,
+)
+from taint_engine import TaintPropagationEngine
+from trust_protocol import FederatedTrustProtocol, decode_signature, did_to_public_key
 
 log = get_logger(__name__)
 
@@ -123,9 +127,9 @@ class FederationBus:
         # quarantine episodes actually last as its own metric, distinct
         # from the steady-state score. See fars.py and THREAT_MODEL.md
         # 14.
-        self._fars_ewma: Optional[float] = None
+        self._fars_ewma: float | None = None
         self.fars_ewma_alpha = 0.3
-        self.fars_history: List[Dict] = []
+        self.fars_history: list[dict] = []
         self._fars_history_cap = 500
         self.recovery_tracker = RecoveryTimeTracker()
         self.detection_latency_tracker = DetectionLatencyTracker()
@@ -156,7 +160,7 @@ class FederationBus:
         # propose_federation_reinstatement()/witness_federation_reinstatement()
         # below and THREAT_MODEL.md Section 6.
         self.ledger = FederationLedger(quorum=2)
-        self.federation_wide_quarantined: Set[str] = set()
+        self.federation_wide_quarantined: set[str] = set()
 
         # PENTEST FINDING (fixed, PT-08 / Zero-Trust per-message signing):
         # admission previously only checked that a session TOKEN was
@@ -178,7 +182,7 @@ class FederationBus:
         # tests focused on the layer under test -- PT-08 is what actually
         # exercises this enforcement path end to end).
         self.require_message_signatures = require_message_signatures
-        self._message_nonce_expiry: Dict[str, float] = {}
+        self._message_nonce_expiry: dict[str, float] = {}
         self.message_nonce_ttl_seconds = message_nonce_ttl_seconds
 
         # PENTEST FINDING (fixed, PT-10 / Memory & Context Integrity,
@@ -188,7 +192,7 @@ class FederationBus:
         # memory_store.py's module docstring for the full design and
         # documented limitations.
         self.memory = MemoryStore()
-        self.memory_delegations: Dict[str, List[Dict]] = {}  # owner_agent_id -> [{delegate, keys, expires_at}]
+        self.memory_delegations: dict[str, list[dict]] = {}  # owner_agent_id -> [{delegate, keys, expires_at}]
 
         # PENTEST FINDING (fixed, PT-04): per-organisation rolling taint
         # volume, independent of any single agent's detectors, so an
@@ -225,7 +229,7 @@ class FederationBus:
         # PENTEST FINDING (fixed, PT-01): an agent may only be accepted
         # as `from_agent` in send() once it has presented a currently
         # valid credential via admit_agent(). {agent_id: {"org", "expires_at"}}
-        self.admitted_sessions: Dict[str, Dict] = {}
+        self.admitted_sessions: dict[str, dict] = {}
 
         self.total_messages = 0
         self.tainted_messages = 0
@@ -253,7 +257,7 @@ class FederationBus:
         # can be retried once the DB is writable again, without ever
         # re-raising past this point. See flush_buffered_audit_rows()
         # and pentest/pt21_audit_write_resilience.py.
-        self._audit_write_buffer: List[tuple] = []
+        self._audit_write_buffer: list[tuple] = []
         self._audit_write_failures = 0
 
         # LINDDUN fix (v7.5, Disclosure of information -- THREAT_MODEL.md
@@ -408,7 +412,7 @@ class FederationBus:
 
     # ---- identity admission (binds Trust Protocol to the message bus) --
     @_locked
-    def admit_agent(self, agent_id: str, org: str, vc) -> Dict:
+    def admit_agent(self, agent_id: str, org: str, vc) -> dict:
         """
         PENTEST FINDING (fixed, PT-01): send() used to accept any
         `from_agent` string with zero credential check -- the Trust
@@ -452,7 +456,7 @@ class FederationBus:
         return time.time() <= session["expires_at"]
 
     # ---- trust-boundary verification (routed through the same audit/FARS pipeline) --
-    def verify_trust_boundary(self, vc, issuer_org: str, requesting_agent: str = None) -> Dict:
+    def verify_trust_boundary(self, vc, issuer_org: str, requesting_agent: str | None = None) -> dict:
         """
         Verifies a credential via the Federated Trust Protocol AND records
         the outcome in the same audit trail / FARS inputs used for
@@ -472,7 +476,7 @@ class FederationBus:
 
     # ---- adaptive recovery, gated on re-attestation ---------------------
     @_locked
-    def reinstate_with_reattestation(self, agent_id: str, org: str, vc) -> Dict:
+    def reinstate_with_reattestation(self, agent_id: str, org: str, vc) -> dict:
         """
         PENTEST FINDING (fixed, PT-05): orchestration.reinstate() has no
         authorisation check at all -- anything with a reference to the
@@ -505,7 +509,7 @@ class FederationBus:
         return result
 
     # ---- federation-wide recovery, gated on independent quorum (PT-07 fix) --
-    def enable_pbft_quorum(self, n_orgs: Optional[int] = None) -> float:
+    def enable_pbft_quorum(self, n_orgs: int | None = None) -> float:
         """
         Opt-in (v7.1): switches the ledger's quorum_required from the
         fixed default (2.0) to the PBFT-proportional value for the
@@ -526,7 +530,7 @@ class FederationBus:
         return self.ledger.quorum_required
 
     @_locked
-    def propose_federation_reinstatement(self, org: str) -> Dict:
+    def propose_federation_reinstatement(self, org: str) -> dict:
         """Any org (typically the accused one) opens a recovery proposal."""
         proposal_id = self.ledger.propose_reinstatement(org)
         return {"proposed": True, "proposal_id": proposal_id, "quorum_required": self.ledger.quorum_required}
@@ -536,7 +540,7 @@ class FederationBus:
         body = {"proposal_id": proposal_id, "witnessing_org": witnessing_org, "nonce": nonce}
         return json.dumps(body, sort_keys=True).encode()
 
-    def sign_and_witness_federation_reinstatement(self, proposal_id: str, witnessing_org: str) -> Dict:
+    def sign_and_witness_federation_reinstatement(self, proposal_id: str, witnessing_org: str) -> dict:
         """Supported entry point: signs the attestation with witnessing_org's
         own org-level DID key (the same identity issue_credential() uses to
         sign VCs) and calls witness_federation_reinstatement()."""
@@ -551,7 +555,7 @@ class FederationBus:
 
     @_locked
     def witness_federation_reinstatement(self, proposal_id: str, witnessing_org: str,
-                                          signature: Optional[str] = None, nonce: Optional[str] = None) -> Dict:
+                                          signature: str | None = None, nonce: str | None = None) -> dict:
         """
         An org (ideally NOT the accused one) attests it has independently
         reviewed the proposal. Once the total weighted vote reaches
@@ -598,13 +602,21 @@ class FederationBus:
             if data.get("org") == org:
                 self.orchestration.reinstate(node, capability=self.orchestration._reinstate_capability)
                 self.recovery_tracker.mark_recovered(node, now)
+        # Clear the detector state that CAUSED the quarantine. Without this, the org-level volume window
+        # (and the fan-out window) still hold the tripped sums, so the first message after re-admission
+        # re-quarantines the organisation and the reinstatement is not durable. Agent-level detectors are
+        # already reset inside orchestration.reinstate().
+        self.org_volume_detector.reset(org)
+        for node, data in self.adversary_model.graph.nodes(data=True):
+            if data.get("org") == org:
+                self.fanout_detector.reset(node)
         self.federation_wide_quarantined.discard(org)
         self.recovery_tracker.mark_recovered(org, now)
 
     # ---- runtime message routing ---------------------------------------
     @staticmethod
     def canonical_message_bytes(from_agent: str, to_agent: str, action_type: str,
-                                 payload: Dict, nonce: str) -> bytes:
+                                 payload: dict, nonce: str) -> bytes:
         body = {"from": from_agent, "to": to_agent, "action_type": action_type,
                 "payload": payload, "nonce": nonce}
         return json.dumps(body, sort_keys=True).encode()
@@ -627,7 +639,7 @@ class FederationBus:
             del self._message_nonce_expiry[n]
 
     def sign_and_send(self, from_agent: str, from_org: str, to_agent: str, to_org: str,
-                       action_type: str, payload: Dict, taint_delta: float = 0.0) -> Dict:
+                       action_type: str, payload: dict, taint_delta: float = 0.0) -> dict:
         """Convenience wrapper: signs the message with from_agent's own
         registered key (see trust.register_agent_identity, set up
         automatically at admit_agent() time) and calls send(). This is
@@ -642,7 +654,7 @@ class FederationBus:
                           taint_delta=taint_delta, signature=signature, nonce=nonce)
 
     @_locked
-    def _block_pre_send(self, from_agent: str, to_agent: str, reason: str) -> Dict:
+    def _block_pre_send(self, from_agent: str, to_agent: str, reason: str) -> dict:
         """Shared helper for the fail-closed pre-send gates below --
         keeps the audit row + structured log + return value in sync
         for every early-BLOCK path instead of repeating all three at
@@ -655,8 +667,8 @@ class FederationBus:
                 "taint_level": 0.0, "reason": reason}
 
     def send(self, from_agent: str, from_org: str, to_agent: str, to_org: str,
-              action_type: str, payload: Dict, taint_delta: float = 0.0,
-              signature: Optional[str] = None, nonce: Optional[str] = None) -> Dict:
+              action_type: str, payload: dict, taint_delta: float = 0.0,
+              signature: str | None = None, nonce: str | None = None) -> dict:
         # 0. Identity admission gate -- fail CLOSED, before the message
         #    touches the taint graph or the orchestration layer at all.
         if not self._is_admitted(from_agent, from_org):
@@ -775,12 +787,12 @@ class FederationBus:
 
     # ---- memory / context integrity (v6, ASI06 fix) ----------------------
     @staticmethod
-    def canonical_memory_bytes(owner_agent_id: str, key: str, value: Dict, nonce: str) -> bytes:
+    def canonical_memory_bytes(owner_agent_id: str, key: str, value: dict, nonce: str) -> bytes:
         body = {"agent_id": owner_agent_id, "key": key, "value": value, "nonce": nonce}
         return json.dumps(body, sort_keys=True).encode()
 
-    def sign_and_write_memory(self, owner_agent_id: str, key: str, value: Dict,
-                               writer_agent_id: Optional[str] = None) -> Dict:
+    def sign_and_write_memory(self, owner_agent_id: str, key: str, value: dict,
+                               writer_agent_id: str | None = None) -> dict:
         """Supported entry point: signs the write with the WRITER's own
         registered key (defaults to owner_agent_id itself, i.e. a
         self-write) and calls write_memory(). If writer_agent_id differs
@@ -795,9 +807,9 @@ class FederationBus:
                                   signature=signature, nonce=nonce)
 
     @_locked
-    def write_memory(self, owner_agent_id: str, key: str, value: Dict,
-                      writer_agent_id: Optional[str] = None,
-                      signature: Optional[str] = None, nonce: Optional[str] = None) -> Dict:
+    def write_memory(self, owner_agent_id: str, key: str, value: dict,
+                      writer_agent_id: str | None = None,
+                      signature: str | None = None, nonce: str | None = None) -> dict:
         """
         PENTEST FINDING (fixed, PT-10): reuses the exact same Zero-Trust
         signing/replay machinery as send() (PT-08), applied to memory
@@ -843,14 +855,14 @@ class FederationBus:
     # ---- delegated memory writes (v7.1) -----------------------------------
     @staticmethod
     def canonical_grant_bytes(owner_agent_id: str, delegate_agent_id: str,
-                               keys: Optional[Set[str]], expires_at: float, nonce: str) -> bytes:
+                               keys: set[str] | None, expires_at: float, nonce: str) -> bytes:
         body = {"owner": owner_agent_id, "delegate": delegate_agent_id,
                 "keys": sorted(keys) if keys else None, "expires_at": expires_at, "nonce": nonce}
         return json.dumps(body, sort_keys=True).encode()
 
     def sign_and_grant_memory_delegation(self, owner_agent_id: str, delegate_agent_id: str,
-                                          keys: Optional[Set[str]] = None,
-                                          ttl_seconds: float = 300.0) -> Dict:
+                                          keys: set[str] | None = None,
+                                          ttl_seconds: float = 300.0) -> dict:
         """Supported entry point: owner_agent_id signs its own grant with
         its own key (never the delegate's) and calls grant_memory_delegation()."""
         import secrets as _secrets
@@ -863,8 +875,8 @@ class FederationBus:
 
     @_locked
     def grant_memory_delegation(self, owner_agent_id: str, delegate_agent_id: str,
-                                 keys: Optional[Set[str]] = None, expires_at: Optional[float] = None,
-                                 signature: Optional[str] = None, nonce: Optional[str] = None) -> Dict:
+                                 keys: set[str] | None = None, expires_at: float | None = None,
+                                 signature: str | None = None, nonce: str | None = None) -> dict:
         """
         An agent can only delegate write access to its OWN memory
         namespace, and only via a grant signed with its own key (never
@@ -898,12 +910,15 @@ class FederationBus:
     def _has_valid_memory_delegation(self, owner_agent_id: str, delegate_agent_id: str, key: str) -> bool:
         now = time.time()
         for grant in self.memory_delegations.get(owner_agent_id, []):
-            if grant["delegate"] == delegate_agent_id and grant["expires_at"] >= now:
-                if grant["keys"] is None or key in grant["keys"]:
-                    return True
+            if (
+                grant["delegate"] == delegate_agent_id
+                and grant["expires_at"] >= now
+                and (grant["keys"] is None or key in grant["keys"])
+            ):
+                return True
         return False
 
-    def read_memory(self, agent_id: str, key: str) -> Optional[Dict]:
+    def read_memory(self, agent_id: str, key: str) -> dict | None:
         """Returns the current record's value plus its content_hash --
         callers implementing a check/use pattern should capture
         content_hash at "check" time and pass both hashes through a
@@ -928,12 +943,12 @@ class FederationBus:
                 "writer_agent_id": record.writer_agent_id, "writer_did": record.writer_did,
                 "timestamp": record.timestamp}
 
-    def verify_memory_integrity(self, agent_id: str) -> Dict:
+    def verify_memory_integrity(self, agent_id: str) -> dict:
         return self.memory.verify_integrity(agent_id)
 
     @_locked
     def revoke_memory_record(self, agent_id: str, key: str, reason: str = "poisoned",
-                              mode: str = "tombstone") -> Dict:
+                              mode: str = "tombstone") -> dict:
         """
         v7.1 (10's documented gap, now closed): purges ONE
         specific already-written memory record without revoking the
@@ -986,7 +1001,7 @@ class FederationBus:
 
     @_locked
     def erase_memory_record(self, agent_id: str, key: str,
-                             reason: str = "gdpr_article_17") -> Dict:
+                             reason: str = "gdpr_article_17") -> dict:
         """
         v7.7 -- the actual GDPR Art. 17 "right to erasure" entry point
         (distinct from revoke_memory_record(), which only hides a
@@ -1006,7 +1021,7 @@ class FederationBus:
                                f"gdpr_erasure:{key}:{result['records_shredded']}_records")
         return result
 
-    def inspect_memory_history(self, agent_id: str, key: str) -> List[Dict]:
+    def inspect_memory_history(self, agent_id: str, key: str) -> list[dict]:
         """Compliance-reviewer view: walks the FULL chain for `key`
         (not just the current record), reporting each record's
         recoverability without ever attempting to decrypt an erased
@@ -1056,7 +1071,7 @@ class FederationBus:
         nonce, ct = raw[:12], raw[12:]
         return AESGCM(self._audit_encryption_key).decrypt(nonce, ct, None).decode()
 
-    def _write_audit_row(self, message_id: Optional[str], from_agent: str, to_agent: str,
+    def _write_audit_row(self, message_id: str | None, from_agent: str, to_agent: str,
                           decision: str, taint_level: float, reason: str):
         """
         v7.5 (LINDDUN fix): what's PERSISTED to disk here is
@@ -1159,7 +1174,7 @@ class FederationBus:
         return flushed
 
     @_locked
-    def flush_buffered_audit_rows(self) -> Dict:
+    def flush_buffered_audit_rows(self) -> dict:
         """
         Public, explicitly-callable retry path for rows that failed to
         persist earlier (e.g. an operator/health-check calling this
@@ -1174,7 +1189,7 @@ class FederationBus:
         return {"flushed": flushed, "pending": len(self._audit_write_buffer),
                 "total_failures_this_session": self._audit_write_failures}
 
-    def read_audit_log(self, resolve_identities: bool = False) -> List[Dict]:
+    def read_audit_log(self, resolve_identities: bool = False) -> list[dict]:
         """
         Legitimate read path for the persisted (pseudonymized, reason-
         encrypted) audit table -- decrypts `reason` automatically (this
@@ -1202,7 +1217,7 @@ class FederationBus:
             result.append(entry)
         return result
 
-    def verify_audit_integrity(self) -> Dict:
+    def verify_audit_integrity(self) -> dict:
         """
         Walks the audit hash chain and reports whether it's intact.
         Detects tampering/deletion of past rows (each row's hash commits
@@ -1230,7 +1245,7 @@ class FederationBus:
         return {"intact": True, "rows_checked": len(rows)}
 
     # ---- resilience scoring ---------------------------------------------
-    def current_fars(self) -> Dict:
+    def current_fars(self) -> dict:
         total_agents = self.adversary_model.graph.number_of_nodes() or 1
         max_blast_fraction = self.taint.max_blast_radius_fraction(total_agents)
         result = self.fars_engine.compute(
@@ -1252,13 +1267,13 @@ class FederationBus:
             self.fars_history.pop(0)
         return result
 
-    def recovery_time_stats(self) -> Dict:
+    def recovery_time_stats(self) -> dict:
         """Distinct from the steady-state FARS score: how long, on
         average, does it actually take to go from quarantined to
         reinstated in this run? See fars.RecoveryTimeTracker."""
         return self.recovery_tracker.stats()
 
-    def detection_latency_stats(self) -> Dict:
+    def detection_latency_stats(self) -> dict:
         """Phase 1 item 2 (v7.4): how many messages/how much wall-clock
         time elapsed before an attack was first detected, broken down
         PER DETECTOR FAMILY (behavioural_drift_cusum,
@@ -1266,7 +1281,7 @@ class FederationBus:
         fanout_anomaly) -- see fars.DetectionLatencyTracker."""
         return self.detection_latency_tracker.stats_by_detector()
 
-    def resilience_timing_report(self) -> Dict:
+    def resilience_timing_report(self) -> dict:
         """Combined report pairing detection latency with recovery
         time -- the full resilience timeline in one place: how fast an
         attack was caught (detection_latency, broken down per detector

@@ -86,8 +86,7 @@ import hashlib
 import json
 import os
 import time
-from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from dataclasses import dataclass
 
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
@@ -109,26 +108,26 @@ class MemoryRecord:
     prev_hash: str
     record_hash: str
     tombstone: bool = False        # v7.1: True means this record REVOKES the key
-    tombstone_reason: Optional[str] = None
+    tombstone_reason: str | None = None
     crypto_shredded: bool = False  # v7.7: True means the write was itself an erasure marker
 
 
 class MemoryStore:
     def __init__(self):
-        self._chains: Dict[str, List[MemoryRecord]] = {}          # agent_id -> hash-chained history
-        self._current: Dict[str, Dict[str, MemoryRecord]] = {}    # agent_id -> {key: latest record}
+        self._chains: dict[str, list[MemoryRecord]] = {}          # agent_id -> hash-chained history
+        self._current: dict[str, dict[str, MemoryRecord]] = {}    # agent_id -> {key: latest record}
         # record_hash -> per-record AES-256-GCM key. Deleting an entry
         # here is what "erasure" actually IS -- the ciphertext in the
         # chain becomes permanently unrecoverable the moment its key is
         # gone, with no need to touch the chain itself.
-        self._record_keys: Dict[str, bytes] = {}
+        self._record_keys: dict[str, bytes] = {}
 
     @staticmethod
     def _ciphertext_hash(ciphertext: bytes) -> str:
         return hashlib.sha256(ciphertext).hexdigest()
 
     @staticmethod
-    def _encrypt(value: Dict) -> "tuple[bytes, bytes]":
+    def _encrypt(value: dict) -> "tuple[bytes, bytes]":
         """Returns (nonce || ciphertext, key). A fresh key per record
         is the whole point -- it's what lets one record be shredded
         without affecting any other record's recoverability."""
@@ -139,7 +138,7 @@ class MemoryStore:
         ciphertext = aesgcm.encrypt(nonce, plaintext, None)
         return nonce + ciphertext, key
 
-    def decrypt(self, record: MemoryRecord) -> Optional[Dict]:
+    def decrypt(self, record: MemoryRecord) -> dict | None:
         """Public: decrypts `record` if its per-record key is still
         present. Returns None if the record was crypto-shredded (or is
         a tombstone/erasure marker that was never issued a key) -- the
@@ -157,7 +156,7 @@ class MemoryStore:
         plaintext = aesgcm.decrypt(nonce, ciphertext, None)
         return json.loads(plaintext.decode())
 
-    def write(self, agent_id: str, key: str, value: Dict,
+    def write(self, agent_id: str, key: str, value: dict,
               writer_agent_id: str, writer_did: str) -> MemoryRecord:
         chain = self._chains.setdefault(agent_id, [])
         prev_hash = chain[-1].record_hash if chain else GENESIS_HASH
@@ -176,7 +175,7 @@ class MemoryStore:
 
     def revoke_record(self, agent_id: str, key: str, revoker_agent_id: str,
                        revoker_did: str, reason: str = "revoked",
-                       mode: str = "tombstone") -> Optional[MemoryRecord]:
+                       mode: str = "tombstone") -> MemoryRecord | None:
         """
         v7.1: tombstone-only. v7.9.10: unified into a single, configurable
         entry point per the thesis supervisor's explicit direction ("keep
@@ -232,7 +231,7 @@ class MemoryStore:
         return self._tombstone_record(agent_id, key, revoker_agent_id, revoker_did, reason)
 
     def _tombstone_record(self, agent_id: str, key: str, revoker_agent_id: str,
-                           revoker_did: str, reason: str) -> Optional[MemoryRecord]:
+                           revoker_did: str, reason: str) -> MemoryRecord | None:
         """The original v7.1 tombstone logic, unchanged, moved here so
         revoke_record() above can be a mode dispatcher without duplicating
         it. Implemented as an APPEND (a tombstone record), not an in-place
@@ -263,7 +262,7 @@ class MemoryStore:
         return record
 
     def erase_record_for_subject(self, agent_id: str, key: str, eraser_agent_id: str,
-                                  eraser_did: str, reason: str = "gdpr_article_17") -> Dict:
+                                  eraser_did: str, reason: str = "gdpr_article_17") -> dict:
         """
         v7.7 -- crypto-shredding (GDPR Art. 17 "right to erasure"; see
         module docstring for the full design rationale). Unlike
@@ -315,7 +314,7 @@ class MemoryStore:
         return {"erased": True, "key": key, "records_shredded": len(shredded_hashes),
                 "marker_record_hash": record_hash}
 
-    def get_chain(self, agent_id: str) -> List[MemoryRecord]:
+    def get_chain(self, agent_id: str) -> list[MemoryRecord]:
         """Public accessor for the full history (not just the current
         record) -- used by compliance-review tooling (see
         FederationBus.inspect_memory_history()) that needs to
@@ -323,13 +322,13 @@ class MemoryStore:
         key across its whole write history, not just the latest write."""
         return list(self._chains.get(agent_id, []))
 
-    def read(self, agent_id: str, key: str) -> Optional[MemoryRecord]:
+    def read(self, agent_id: str, key: str) -> MemoryRecord | None:
         record = self._current.get(agent_id, {}).get(key)
         if record is not None and record.tombstone:
             return None
         return record
 
-    def verify_integrity(self, agent_id: str) -> Dict:
+    def verify_integrity(self, agent_id: str) -> dict:
         """
         Recomputes BOTH the ciphertext hash and the chain hash for
         every record belonging to `agent_id` -- and does so WHETHER OR

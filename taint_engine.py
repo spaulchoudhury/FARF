@@ -13,7 +13,7 @@ laptop. Swap `reconstruct_privilege_path` for a Soufflé query later if
 you need full first-order-logic provenance rules.
 """
 from dataclasses import dataclass, field
-from typing import Dict, Set, List
+
 import networkx as nx
 
 from farf_logging import get_logger
@@ -25,13 +25,13 @@ log = get_logger(__name__)
 class TaintLabel:
     origin_org: str
     taint_level: float  # 0 = clean, 1 = fully compromised
-    provenance_chain: List[str] = field(default_factory=list)
+    provenance_chain: list[str] = field(default_factory=list)
 
 
 class TaintPropagationEngine:
     def __init__(self):
         self.flow_graph = nx.DiGraph()          # nodes = agents, edges = messages
-        self.taints: Dict[str, TaintLabel] = {}  # message_id -> TaintLabel
+        self.taints: dict[str, TaintLabel] = {}  # message_id -> TaintLabel
 
         # PENTEST FINDING (fixed, v7.2 -- THREAT_MODEL.md 16):
         # max_blast_radius_fraction() used to recompute fresh from
@@ -99,21 +99,20 @@ class TaintPropagationEngine:
         label = self.taints.get(message_id)
         return label is not None and label.taint_level >= threshold
 
-    def blast_radius(self, origin_agent: str) -> Set[str]:
+    def blast_radius(self, origin_agent: str) -> set[str]:
         """Every agent reachable from a compromised origin -- the
         containment set that must be quarantined/notified."""
         if origin_agent not in self.flow_graph:
             return set()
         return set(nx.descendants(self.flow_graph, origin_agent))
 
-    def reconstruct_privilege_path(self, compromised_agent: str, cutoff: int = 8) -> List[List[str]]:
-        paths = []
+    def reconstruct_privilege_path(self, compromised_agent: str, cutoff: int = 8) -> list[list[str]]:
+        paths: list[list[str]] = []
         for target in self.blast_radius(compromised_agent):
-            for path in nx.all_simple_paths(self.flow_graph, compromised_agent, target, cutoff=cutoff):
-                paths.append(path)
+            paths.extend(nx.all_simple_paths(self.flow_graph, compromised_agent, target, cutoff=cutoff))
         return paths
 
-    def quarantine_edges_from(self, agent_id: str) -> List[tuple]:
+    def quarantine_edges_from(self, agent_id: str) -> list[tuple]:
         """Simulated cross-org taint quarantine: sever outgoing propagation
         paths from a compromised/quarantined agent. Peak-reach evidence
         (see _peak_reach) was already captured at propagate() time, so

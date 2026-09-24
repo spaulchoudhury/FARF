@@ -25,26 +25,26 @@ down for speed.
 """
 import csv
 import os
-import tempfile
 import sys
+import tempfile
 import uuid
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from tests.stats_utils import descriptive_statistics
-from tests.evaluation_metrics_tab78 import (
-    run_adversary_model_trials,
-    run_trust_protocol_trials,
-    run_delegation_integrity_trials,
-    run_policy_enforcement_trials,
-    run_behavioural_drift_detection_trials,
-    run_workflow_completion_trials,
-    run_provenance_identification_trials,
-    run_taint_containment_trials,
-    run_privilege_path_reconstruction_trials,
-)
 from federation_bus import FederationBus
 from main import build_federation
+from tests.evaluation_metrics_tab78 import (
+    run_adversary_model_trials,
+    run_behavioural_drift_detection_trials,
+    run_delegation_integrity_trials,
+    run_policy_enforcement_trials,
+    run_privilege_path_reconstruction_trials,
+    run_provenance_identification_trials,
+    run_taint_containment_trials,
+    run_trust_protocol_trials,
+    run_workflow_completion_trials,
+)
+from tests.stats_utils import descriptive_statistics
 
 N_REPEATS = 20
 

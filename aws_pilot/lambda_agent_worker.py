@@ -83,10 +83,10 @@ def handler(event, context):
     # to handler code) but a reasonable, disclosed proxy -- report it as
     # a heuristic, not a certainty.
     try:
-        with open("/proc/uptime") as f:
+        with open("/proc/uptime", encoding="utf-8") as f:
             uptime_seconds = float(f.read().split()[0])
         likely_cold_start = uptime_seconds < 5.0
-    except Exception:
+    except (OSError, ValueError, IndexError):
         uptime_seconds = None
         likely_cold_start = None
 

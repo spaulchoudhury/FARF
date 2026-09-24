@@ -25,7 +25,6 @@ Two things are tested, both genuinely over the Docker network, not mocked:
 """
 import subprocess
 import sys
-import time
 
 import requests
 
@@ -98,7 +97,7 @@ def part2_genuine_partition():
          "--name", "farf-org-partitioned-test",
          "-e", "FARF_ORG=OrgPartitioned", "-e", "FARF_BUS_URL=http://federation-bus:8000",
          "docker-org-a", "python", "docker/org_client.py"],
-        capture_output=True, text=True, timeout=75,
+        capture_output=True, text=True, timeout=75, check=False,
     )
     print("Container exit code:", result.returncode)
     print("Container stdout (tail):", result.stdout[-500:])

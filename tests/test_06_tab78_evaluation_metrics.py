@@ -13,8 +13,8 @@ Run:  python -m pytest tests/test_06_tab78_evaluation_metrics.py -v -s
 """
 import csv
 import os
-import tempfile
 import sys
+import tempfile
 import uuid
 
 import pytest
@@ -25,14 +25,14 @@ from federation_bus import FederationBus
 from main import build_federation
 from tests.evaluation_metrics_tab78 import (
     run_adversary_model_trials,
-    run_trust_protocol_trials,
+    run_behavioural_drift_detection_trials,
     run_delegation_integrity_trials,
     run_policy_enforcement_trials,
-    run_behavioural_drift_detection_trials,
-    run_workflow_completion_trials,
+    run_privilege_path_reconstruction_trials,
     run_provenance_identification_trials,
     run_taint_containment_trials,
-    run_privilege_path_reconstruction_trials,
+    run_trust_protocol_trials,
+    run_workflow_completion_trials,
 )
 
 

@@ -51,12 +51,10 @@ NOT CLOSED HERE (left honestly open, not faked):
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional, Union
 
+from agents import Agent
 from federation_bus import FederationBus
 from federation_ledger import FederationLedger
-from agents import Agent
-
 
 # --------------------------------------------------------------------------
 # Org-level config
@@ -69,8 +67,8 @@ class OrgConfig:
     # cloud build's deployment tooling (Terraform/Bicep, outside this repo)
     # has one source of truth for "which org runs where," even though this
     # prototype's own crypto path doesn't yet call out to either value.
-    home_cloud: Optional[str] = None          # "aws" | "azure" | "gcp" | None
-    kms_key_ref: Optional[str] = None
+    home_cloud: str | None = None          # "aws" | "azure" | "gcp" | None
+    kms_key_ref: str | None = None
     advisor_base_privilege: float = 0.2       # matches main.py's current hardcode
     executor_base_privilege: float = 0.1      # matches main.py's current hardcode
     stake: float = 1.0                        # -> FederationLedger.set_stake()
@@ -80,12 +78,12 @@ class OrgConfig:
 # Federation-level config
 # --------------------------------------------------------------------------
 
-QuorumSpec = Union[str, float, int]
+QuorumSpec = str | float | int
 
 
 @dataclass
 class FederationConfig:
-    orgs: List[OrgConfig] = field(default_factory=list)
+    orgs: list[OrgConfig] = field(default_factory=list)
 
     # --- fix (1): real field name, real default, actually plumbed through ---
     credential_ttl_seconds: float = 300.0
@@ -116,7 +114,7 @@ class FederationConfig:
         return len(self.orgs)
 
 
-def default_cloud_config(n_orgs: int = 3, home_clouds: Optional[List[str]] = None) -> FederationConfig:
+def default_cloud_config(n_orgs: int = 3, home_clouds: list[str] | None = None) -> FederationConfig:
     """
     Convenience constructor matching today's `main.py build_federation()`
     org-naming convention (OrgA, OrgB, ...) so this is a drop-in replacement,
@@ -192,7 +190,7 @@ def build_federation_from_config(config: FederationConfig):
     quorum_value = resolve_quorum(config.quorum, n)
     bus.ledger.quorum_required = quorum_value
 
-    agents: Dict[str, Dict[str, Agent]] = {}
+    agents: dict[str, dict[str, Agent]] = {}
     for org_cfg in config.orgs:
         org = org_cfg.name
         bus.register_organisation(org)

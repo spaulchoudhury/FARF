@@ -24,13 +24,17 @@ import re
 import sys
 import time
 import traceback
-from federation_bus import FederationBus
+
 from agents import Agent
 from farf_logging import enable_stdout_persistence, get_logger
-from runtime_config import (
-    RuntimeConfigError, load_runtime_config, apply_runtime_config, to_federation_config,
-)
+from federation_bus import FederationBus
 from federation_config import build_federation_from_config
+from runtime_config import (
+    RuntimeConfigError,
+    apply_runtime_config,
+    load_runtime_config,
+    to_federation_config,
+)
 
 
 def build_federation(bus: FederationBus, n_orgs: int = 3):
@@ -325,8 +329,9 @@ if __name__ == "__main__":
         # no error-level log entry, standard SIGINT exit convention.
         print("\n[FARF] interrupted by user (Ctrl-C) -- exiting.", file=sys.stderr)
         sys.exit(130)
-    except Exception as exc:  # noqa: BLE001 -- deliberate top-level catch-all, see docstring above
-        logger.error("Unhandled exception in main(): %s", exc, exc_info=True)
+    except Exception:
+        logger.exception("Unhandled exception in main()")
+        exc = sys.exc_info()[1]
         print(f"\n[FARF] FATAL: {type(exc).__name__}: {exc}", file=sys.stderr)
         if os.environ.get("FARF_DEBUG") == "1":
             traceback.print_exc()

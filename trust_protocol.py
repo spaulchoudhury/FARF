@@ -14,16 +14,19 @@ proposal's design goal. Includes:
     (cheap enough to run on a laptop; swap for a real zk-SNARK library
     later if you need formal ZK guarantees).
 """
-import time
+import base64
+import hashlib
 import json
 import os
-import hashlib
-import base64
 import secrets
+import time
 from dataclasses import dataclass
-from typing import Optional, Dict, Set
-from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey, Ed25519PublicKey
+
 from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric.ed25519 import (
+    Ed25519PrivateKey,
+    Ed25519PublicKey,
+)
 
 from farf_logging import get_logger
 
@@ -53,8 +56,7 @@ def did_to_public_key(did: str) -> Ed25519PublicKey:
     sees the did:key string on the wire, not the in-process object).
     """
     encoded = did.rsplit(":", 1)[-1]
-    if encoded.startswith("z"):
-        encoded = encoded[1:]
+    encoded = encoded.removeprefix("z")
     return Ed25519PublicKey.from_public_bytes(_unb64(encoded))
 
 
@@ -81,11 +83,11 @@ class DIDKeyIdentity:
 class VerifiableCredential:
     issuer_did: str
     subject_did: str
-    claims: Dict
+    claims: dict
     issued_at: float
     ttl_seconds: float
     nonce: str
-    signature: Optional[str] = None
+    signature: str | None = None
 
     def payload_bytes(self) -> bytes:
         payload = {
@@ -101,16 +103,16 @@ class VerifiableCredential:
 
 class FederatedTrustProtocol:
     def __init__(self):
-        self.identities: Dict[str, DIDKeyIdentity] = {}
-        self._nonce_expiry: Dict[str, float] = {}   # nonce -> expiry timestamp (self-pruning, bounded)
-        self._zk_salts: Dict[str, str] = {}          # attestation_id -> salt (server-side only, never returned to caller)
+        self.identities: dict[str, DIDKeyIdentity] = {}
+        self._nonce_expiry: dict[str, float] = {}   # nonce -> expiry timestamp (self-pruning, bounded)
+        self._zk_salts: dict[str, str] = {}          # attestation_id -> salt (server-side only, never returned to caller)
 
         # Zero-Trust per-message signing (Step 3 hardening): each AGENT
         # (not just each org) gets its own Ed25519 keypair, distinct from
         # the org's credential-issuing key, so a message can be verified
         # as having actually come from that specific agent's process --
         # see FederationBus.send()'s require_message_signatures path.
-        self.agent_identities: Dict[str, DIDKeyIdentity] = {}
+        self.agent_identities: dict[str, DIDKeyIdentity] = {}
 
         # PENTEST FINDING (fixed, PT-09 / revocation registry): before
         # this, a leaked or compromised agent credential/key remained
@@ -120,7 +122,7 @@ class FederatedTrustProtocol:
         # override that admission and message verification both consult,
         # independent of whether the credential or signature would
         # otherwise still validate.
-        self.revoked_agents: Set[str] = set()
+        self.revoked_agents: set[str] = set()
 
         # LINDDUN fix (v7.5, Linkability/Identifiability -- THREAT_MODEL.md
         # Section 14/RISK_APPENDIX.md Part A): every agent's did:key was
@@ -140,8 +142,8 @@ class FederatedTrustProtocol:
         # pseudonym's lifetime (between rotations) is not prevented --
         # rotate more often for stronger protection, at the cost of
         # losing continuity in exported audit views across rotations.
-        self.pseudonym_to_agent: Dict[str, str] = {}
-        self.agent_current_pseudonym: Dict[str, str] = {}
+        self.pseudonym_to_agent: dict[str, str] = {}
+        self.agent_current_pseudonym: dict[str, str] = {}
 
     def save_pseudonym_registry(self, path: str):
         """Persists the pseudonym mapping to a file SEPARATE from the
@@ -212,7 +214,7 @@ class FederatedTrustProtocol:
             return self.rotate_pseudonym(agent_id)
         return self.agent_current_pseudonym[agent_id]
 
-    def resolve_pseudonym(self, pseudonym: str) -> Optional[str]:
+    def resolve_pseudonym(self, pseudonym: str) -> str | None:
         """De-anonymization -- bus-operator-only capability (never
         exposed to other agents or external audit consumers), for
         legitimate accountability/investigation needs. The mapping this
@@ -240,7 +242,7 @@ class FederatedTrustProtocol:
     def sign_message(self, agent_id: str, payload_bytes: bytes) -> str:
         return self.agent_identities[agent_id].sign(payload_bytes)
 
-    def issue_credential(self, issuer_org: str, subject_did: str, claims: Dict,
+    def issue_credential(self, issuer_org: str, subject_did: str, claims: dict,
                           ttl_seconds: float = 60.0) -> VerifiableCredential:
         issuer = self.identities[issuer_org]
         vc = VerifiableCredential(
@@ -262,7 +264,7 @@ class FederatedTrustProtocol:
         for n in expired:
             del self._nonce_expiry[n]
 
-    def verify_credential(self, vc: VerifiableCredential, issuer_org: str) -> Dict:
+    def verify_credential(self, vc: VerifiableCredential, issuer_org: str) -> dict:
         self._prune_expired_nonces()
         if vc.nonce in self._nonce_expiry:
             log.warning("credential replay detected", extra={
@@ -295,7 +297,7 @@ class FederatedTrustProtocol:
         return {"valid": True, "reason": "ok"}
 
     # ---- session-scoped ZK-style attestation ---------------------------
-    def issue_zk_attestation(self, org: str, secret_attribute: str) -> Dict:
+    def issue_zk_attestation(self, org: str, secret_attribute: str) -> dict:
         """
         PENTEST FINDING (fixed): the salt used to be returned in the same
         object as the commitment, so anyone who intercepted an
@@ -316,7 +318,7 @@ class FederatedTrustProtocol:
         self._zk_salts[attestation_id] = salt
         return {"org": org, "attestation_id": attestation_id, "commitment": commitment}
 
-    def verify_zk_attestation(self, attestation: Dict, revealed_attribute: str) -> bool:
+    def verify_zk_attestation(self, attestation: dict, revealed_attribute: str) -> bool:
         salt = self._zk_salts.get(attestation.get("attestation_id"))
         if salt is None:
             return False

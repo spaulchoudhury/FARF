@@ -898,48 +898,138 @@ either federated cloud any more than the data plane does.
 cloud-deployed artefact, so this ADR is purely about pipeline placement, not
 a functional change to the lint tool.
 
-**Status confirmed, 26 August 2026:** `.github/workflows/farf_ci.yml`
-already exists and already implements exactly this decision — the
-pre-merge gate (`lint-and-test` job: VAST lint → pytest → Tab 7.8
-metrics harness) is complete and correctly wired; the pre-deploy gate is
-an honestly-documented stub pending the Terraform/Bicep IaC workflow
-this ADR itself says doesn't exist yet. No code change was needed this
-session. Re-ran `tools/farf_security_lint.py` directly against the
-current tree (including this session's ADR-010 edits to
-`orchestration.py`/`federation_bus.py`) as a sanity check: 0 HIGH
-CONFIDENCE findings, exit code 0 — the lint gate would pass on a PR
-containing this session's changes.
+# Proposed ADR-017 / ADR-018 / ADR-019
+
+Status: **Proposed, not yet adopted.** Written after the 26–27 August 2026 AWS↔GCP cross-cloud session (`Multi-CloudTesting_PS_Console_Output.txt`,
+`Docker_GCP_Testing_PS_Console_output.txt`), which produced one confirmed pass (Docker-level partition), one confirmed but partial-scope pass (cross-boundary TOCTOU re-verification, non-adversarial path only), and
+two genuinely inconclusive results (WAN-level partition; PT-08 under concurrent load) plus one broken measurement (WAN latency-under-load).
+These three ADRs exist to turn each inconclusive result into a specific, scoped, re-runnable fix rather than leaving it as an open item restated indefinitely. Each follows the existing ADR-004/006/007/010 numbering and evidence convention: what's being decided, the options actually
+considered, and why.
+
+---
+
+## ADR-017: Redesign the AWS↔GCP partition test to defeat security-group connection tracking
+
+**Context.** `aws_pilot/adr004_partition_client.py` revokes egress on the security group attached to the running Fargate task's ENI, expecting subsequent `/send` calls to fail during the revoke window. Across two trial runs (124 total iterations), zero failures were observed, while the revoke command itself succeeded and the task remained `RUNNING`
+throughout. **The root cause is not fully isolated, and this ADR is deliberately honest about that rather than naming a single confirmed mechanism.** The leading candidate explanation is that AWS security groups are connection-tracking — revoking a rule blocks new connection
+attempts but does not tear down a flow already permitted and tracked.
+This candidate is weaker than it first appears, however: the script calls the bare `requests.post()` function on every iteration rather than holding a `requests.Session()` open across iterations, so each iteration should, in principle, open its own fresh TCP connection rather than reuse
+one held-open flow from before the revoke — which plain connection-tracking of a single already-established flow does not, by itself, fully account for. Two further candidates were not independently ruled out this session: security-group rule-change propagation lag, and the
+revoked rule not covering the task's actual egress path (for example, an intermediate NAT gateway or a second security group in the path). What is established is the observation itself — zero effect across 124 iterations despite a confirmed, successful rule revocation — not a single confirmed causal mechanism. Whichever of A/B/C below is chosen, it should be designed to also directly discriminate between these candidate explanations (e.g. by logging the local ephemeral source port used per iteration, which would show whether "fresh connection per iteration" actually held in practice), not only to produce a pass/fail result.
+
+**Decision needed.** Which mechanism to use to produce a real, observable partition against a *live* connection, not just new connection attempts — and which also resolves which of the candidate explanations above actually applies here.
+
+**Options considered:**
+
+- **Option A — Instrument, then force, new connections per iteration.**
+  First add explicit logging of the local ephemeral source port used per   `/send` call, to directly confirm or refute whether the script is really opening a fresh TCP connection each iteration as its lack of a shared `Session()` suggests it should. If it is, and the revoke still
+  has no effect, that rules  connection-tracking of an existing flow out as the explanation and points at rule propagation lag or the wrong SG being in the actual egress path instead — genuinely new information, not assumed in advance. If port logging shows the client is *not*
+  opening fresh connections for some other reason (e.g. OS-level keep-alive despite no explicit `Session()`), explicitly closing the socket / setting `Connection: close` would then be the correct next step. *Pros*: smallest change, and — unlike treating "force new
+  connections" as a fix on faith — it first tells you whether that is even the right fix for what's actually happening. *Cons*: even once fresh-connection behaviour is confirmed, this option only demonstrates "new connections are blocked," not "an in-flight message exchange is
+  disrupted mid-flight" — a real federated agent workload is more likely to hold a connection open across several messages, so this option answers a real but narrower question than the original intent.
+
+- **Option B — Switch to a Network ACL (NACL) deny rule instead of a security-group revoke.** NACLs are stateless and evaluated per-packet regardless of existing connection state, so a NACL deny rule would affect already-established flows, not just new ones. *Pros*: directly closes the gap Option A leaves open — this is the AWS-native way to
+  simulate a genuine mid-flow partition. *Cons*: NACLs operate at the subnet level, not per-task, so this would need a dedicated partition-test subnet (to avoid partitioning other running tasks sharing the same subnet) — additional one-time infrastructure setup, not just a script change.
+
+- **Option C — Application-level partition simulation:** have the Fargate task's own process pause outbound calls for a defined window (e.g. via an env-var-gated sleep or a local iptables rule inside the container, if the task's IAM/capabilities allow it), rather than relying on the security group at all. *Pros*: fully deterministic timing, no dependency on AWS's connection-tracking internals. *Cons*:
+  this is a *simulated* partition from inside the task's own network namespace, not a real external network-layer partition — weaker evidence than either A or B for the specific claim being tested, and arguably closer in spirit to the in-process simulation this thesis has already disclosed as a boundary (Section 4.6) rather than a genuine
+  advance on it.
+
+**Recommendation (not a decision — the researcher's call, consistent with how ADR-006/012 were handled in `PHASE1_TO_CLOUD_DECISION_BRIEF.md` §4):** Option A's instrumentation step should be done first regardless
+of which of B/C is chosen next, purely as diagnosis — it is cheap, and its result (does the revoke actually block a confirmed-fresh connection, or not) determines whether B is solving the right problem at all. Option B is the only one of the three that would close the gap as originally
+scoped (a genuine mid-flow WAN partition, not just a blocked-new-connection test) *if* Option A's diagnosis confirms connection-tracking was indeed the mechanism; if Option A's port logging instead shows fresh connections were already being opened and still not blocked, the actual
+fix is elsewhere (propagation lag, wrong SG in path) and B alone would not resolve it.
+
+---
+
+## ADR-018: Make the cross-cloud pentest scripts idempotent against persistent deployments
+
+**Context.** `pentest_cloud/pt08_session_hijack_cloud.py` hardcodes a literal nonce (`"captured-nonce-0001"`) for its replay-attack step, an assumption valid for a single ephemeral in-process test run but not for a persistent, stateful Cloud Run deployment that is re-targeted by the
+same script multiple times across a session. In 2 of 3 repeated concurrent-load runs (Section 6.3 of `TEST_PROTOCOL.md`), this produced a false `VULNERABLE` verdict: the script's own "1st use (legitimate)" call was itself flagged `message_replayed` by the bus, correctly, because the nonce had already been consumed by an earlier invocation — the
+replay guard working as designed against a non-idempotent harness, not a message-layer defect. A related but distinct issue was also observed:
+Step A's "legitimate agent sends via the normal signed path" occasionally returned `agent_already_quarantined` from a previous run's side effects, for the same underlying reason (state persisting across script invocations against one long-lived deployment).
+
+**Decision needed.** How to make the cloud pentest suite safe to re-run repeatedly against one persistent deployment without producing false verdicts in either direction.
+
+**Options considered:**
+
+- **Option A — Per-run unique identifiers.** Generate the nonce (and any agent IDs whose quarantine state could carry over) with `uuid4()` or a timestamp suffix at the start of each script invocation, rather than literals. *Pros*: minimal, localised change to each `pentest_cloud/pt*.py`
+  script; preserves the ability to run the same script repeatedly against the same live deployment, which is the realistic reproduction pattern for a cloud pilot. *Cons*: doesn't address a genuinely fresh replay attack scenario differently from a stale-state artifact — both still
+  produce `message_replayed`, so the verdict logic itself also needs a small update (see Option C) to distinguish them, not just the input generation.
+
+- **Option B — Reset-before-run.** Add a setup step (or a dedicated `/pentest/reset` route, pentest-mode-gated like the existing `/pentest/*` routes) that clears an org's registered agents/nonces/ quarantine state before each script runs. *Pros*: closest to a true "fresh in-process run" semantics, matching what the scripts were originally written to assume. *Cons*: adds a new bus-side route that
+  itself needs to be pentest-mode-gated and kept out of any production build, widening the pentest-mode surface area (already a disclosed risk in `RISK_APPENDIX.md`) rather than shrinking it.
+
+- **Option C — Verdict-logic fix independent of A/B.** Have the script itself distinguish "the bus rejected my *first* attempt as a replay" (almost certainly stale state from a prior run — report as INCONCLUSIVE/RETRY, not VULNERABLE) from "the bus accepted my first attempt and then also accepted my replay of the same signature+nonce"
+  (the actual failure condition it's designed to catch) — report VULNERABLE only for the latter. *Pros*: closes the false-positive regardless of which of A/B is also adopted, and is arguably the correct fix on its own merits — the current verdict logic doesn't distinguish these two cases at all. *Cons*: doesn't by itself restore the ability to test a genuinely fresh replay attack if agent-quarantine
+  state has also gone stale (Step A's separate `agent_already_quarantined` symptom) — needs pairing with A or B for full coverage.
+
+**Recommendation:** A and C together are the minimum fix — C prevents the specific false verdict already observed, A prevents recurrence of the same class of bug in any future pentest script targeting a persistent deployment. B is worth doing separately as good pilot-ops hygiene but is not required to close this specific gap.
+
+---
+
+## ADR-019: A dedicated, correctly-instrumented load-under-attack test harness
+
+**Context.** The closest existing approximation of a combined
+"load-under-attack" test — running `gcp_pilot/egress_load_test.py` concurrently with three `pentest_cloud/pt*.py` scripts as PowerShell background jobs — was assembled ad hoc (the pasted appendix originally
+in `TEST_PROTOCOL_updated.md`, now formalised as `TEST_PROTOCOL.md` §6.3) rather than built as a first-class test. It produced genuinely useful security evidence (PT-01/PT-02 held under load) but no usable latency-under-load figure: `gcp_pilot/cloud_run_final_checks.py` PART 2
+reported "No successful requests." **Unlike ADR-017's partition gap, this root cause is confirmed, not just a leading candidate.** PART 2 derives its test identities by reading `/status`'s `registered_orgs` field and guessing `orgs[0]`/`orgs[1]` are `PilotOrgA`/`PilotOrgB` with
+agents named by convention. `docker/bus_service.py`'s `/status` route returns `registered_orgs` as `sorted(bus.trust.identities.keys())` — alphabetically sorted, not in registration order. On a deployment shared across a session with other pilot/pentest scripts (whose org names, e.g.
+`PT01Org...`, `PT08Org<uuid>`, sort interleaved with or ahead of `PilotOrgA`/`PilotOrgB`), `orgs[0:2]` silently picked two orgs that were never admitted under the guessed naming pattern at all — so every `/send` in the timed loop failed for a mundane reason (unrecognised agent), reported only as a bare zero-successes message with no diagnostic
+information pointing at why.
+
+**Decision needed.** Whether to keep composing existing single-purpose scripts ad hoc for this scenario, or build one harness that owns both the load generation and the concurrent security/latency measurement —
+and, either way, whether to fix the identity-selection bug in
+`cloud_run_final_checks.py` directly or route around it entirely.
+
+**Options considered:**
+
+- **Option A — Keep composing existing scripts, fix the identity mismatch only.** Smallest change: add CLI args to both `cloud_run_final_checks.py` and `egress_load_test.py` so the same agent identities can be passed to both  explicitly, and document the correct invocation order in `TEST_PROTOCOL.md` (already partially done in §6.3/§6.4). *Pros*: cheapest, no new code beyond argument-passing;
+  reuses scripts already validated individually. *Cons*: still three or four separately-launched PowerShell jobs coordinated by hand each run, the same fragility (Section 6.3's inconsistent PT-08 verdicts) that produced this ADR series in the first place remains structurally possible for *other* combinations not yet tried.
+
+- **Option B — Build one dedicated script
+  (`gcp_pilot/load_under_attack.py` or similar)** that starts the load generator as a background thread/process, runs the pentest checks and a latency sampler against the *same* pre-registered, known agent identities in the foreground, and reports a single combined result (security verdicts + latency percentiles + error counts) rather than
+  four separate script outputs to be manually cross-referenced. *Pros*: removes the identity-mismatch class of bug structurally, not just for this one instance; produces one canonical, reproducible artefact (matching this thesis's stated evidentiary discipline of citing a
+  single script's output rather than reconstructing a result from several logs); easier to re-run identically for a future third data point (e.g. a third region, or before/after a specific ADR fix).
+  *Cons*: real new code to write and validate before it can be trusted, larger effort than Option A, and — like any new test script — needs its own idempotency review (ADR-018's lesson) before being trusted against a persistent deployment on a second run.
+
+**Recommendation:** Option A first, as a low-cost fix that unblocks re-running §6.3 cleanly in the near term; Option B is the right answer if load-under-attack evidence is going to be cited more than once or twice more in this thesis or extended to more attack/latency combinations, since it removes an entire class of coordination bug rather than patching one instance of it.
+
+---
+
+## Sequencing note
+
+None of ADR-017/018/019 blocks the others — they touch different scripts in different directories (`aws_pilot/`, `pentest_cloud/`, `gcp_pilot/`) and can be implemented in parallel. If sequencing by "which unblocks the most remaining thesis evidence per unit of effort," the order is
+ADR-018 (smallest, unblocks a clean re-run of already mostly-working evidence) → ADR-017 Option A (small, produces the partition thesis's Chapter 5/6 currently lack any positive cross-cloud evidence for) → ADR-019 Option A (unblocks the one currently-broken quantitative figure)
+→ ADR-017 Option B and ADR-019 Option B as the higher-effort, more complete versions if time remains before submission.
+
+## Implementation status (this session)
+
+Two of the three ADR-018/019 Option-A fixes are no longer proposals only — working, syntax-checked replacement scripts were written this session and are provided alongside this document:
+
+- **ADR-018 Option A+C**: `pentest_cloud/pt08_session_hijack_cloud.py`
+  (fixed version) — per-run `uuid4()`-suffixed org/agent/nonce identifiers, plus a verdict-logic change that reports `INCONCLUSIVE` rather than `VULNERABLE` if stale-state symptoms are detected despite the fresh identifiers. **Not yet re-run against a live deployment** —
+  needs a real cross-cloud invocation before its fix can be confirmed, not just trusted because it reads correctly.
+- **ADR-019 Option A**: `gcp_pilot/cloud_run_final_checks.py` (fixed version) — accepts explicit `--from-agent/--from-org/--to-agent/ --to-org`, falls back to the previous guess (now labelled as a guess) otherwise, and adds an explicit pre-loop admission probe so a naming mismatch is reported as a clear setup failure rather than a bare "No successful requests." **Not yet re-run** — same caveat as above.
+
+ADR-017 remains a proposal only, deliberately: unlike the two fixes above, its root cause was not confirmed this session (see the Context section), so no fix has been written yet — the instrumentation step in Option A needs to run first to determine which fix is actually correct.
+
+**Status confirmed, 26 August 2026:** `.github/workflows/farf_ci.yml` already exists and already implements exactly this decision — the pre-merge gate (`lint-and-test` job: VAST lint → pytest → Tab 7.8 metrics harness) is complete and correctly wired; the pre-deploy gate is an honestly-documented stub pending the Terraform/Bicep IaC workflow this ADR itself says doesn't exist yet. No code change was needed this session. Re-ran `tools/farf_security_lint.py` directly against the current tree (including this session's ADR-010 edits to `orchestration.py`/`federation_bus.py`) as a sanity check: 0 HIGH
+CONFIDENCE findings, exit code 0 — the lint gate would pass on a PR containing this session's changes.
 
 **Independently re-confirmed, 26 August 2026 (separate session):**
-re-ran `tools/farf_security_lint.py` directly against this repo copy —
-same result, **0 HIGH CONFIDENCE findings, exit code 0** (5 LOW
-CONFIDENCE heuristic findings on raw `.send()` calls, all in test/pentest
-code, none blocking). The CI workflow's job structure was also checked
-directly: `lint-and-test` (pre-merge) runs lint → tests → Tab 7.8 harness
-as claimed; the pre-deploy job is confirmed still a stub, consistent
-with the note above. **Discrepancy found and since resolved:** this repo
-copy did not originally contain the ADR-010 code
-(`crosses_org_boundary`/`cross_boundary_toctou_reverification`) the note
-above credited to "this session" — it has since been re-applied (see
-ADR-010's own "Re-applied and independently re-verified" note) and the
-lint result above was re-confirmed after that patch landed, so ADR-016's
-0-HIGH-CONFIDENCE result now genuinely reflects a tree that includes
-ADR-010's edits, not one that's missing them.
+re-ran `tools/farf_security_lint.py` directly against this repo copy — same result, **0 HIGH CONFIDENCE findings, exit code 0** (5 LOW CONFIDENCE heuristic findings on raw `.send()` calls, all in test/pentest code, none blocking). The CI workflow's job structure was also checked directly: `lint-and-test` (pre-merge) runs lint → tests → Tab 7.8 harness as claimed; the pre-deploy job is confirmed still a stub, consistent with the note above. **Discrepancy found and since resolved:** this repo copy did not originally contain the ADR-010 code (`crosses_org_boundary`/`cross_boundary_toctou_reverification`) the note
+above credited to "this session" — it has since been re-applied (see ADR-010's own "Re-applied and independently re-verified" note) and the lint result above was re-confirmed after that patch landed, so ADR-016's
+0-HIGH-CONFIDENCE result now genuinely reflects a tree that includes ADR-010's edits, not one that's missing them.
 
 ---
 
 ## Summary: gap → decision → cloud mechanism
 
-*Last reviewed against the shipped code: v7.9.10 (four supervisor-directed
-items closed this session — quorum-default fix + dynamic recompute, FARS
-multi-scenario sensitivity + 200-agent connectivity validation, and the
-per-record revocation `mode` dispatcher — see "Closed in v7.9.10" below;
-earlier syncs after v7.9.2/v7.9.3 had shipped without a matching update
-here — see "Closed in v7.9.2" / "Closed in v7.9.3" / "Closed in v7.9.5" /
-"Closed in v7.9.6" / "Closed in v7.9.7" below). This table is a
-**decision** record — it stays true regardless of implementation status.
-The **Code status** column is what changes as the cloud build progresses;
-see the Internal Audit section immediately below for the evidence behind
+*Last reviewed against the shipped code: v7.9.10 (four supervisor-directed items closed this session — quorum-default fix + dynamic recompute, FARS
+multi-scenario sensitivity + 200-agent connectivity  validation, and the per-record revocation `mode` dispatcher — see "Closed in v7.9.10" below; 
+earlier syncs after v7.9.2/v7.9.3 had shipped without a matching update here — see "Closed in v7.9.2" / "Closed in v7.9.3" / "Closed in v7.9.5" /
+"Closed in v7.9.6" / "Closed in v7.9.7" below). This table is a **decision** record — it stays true regardless of implementation status. The **Code status** column is what changes as the cloud build progresses; see the Internal Audit section immediately below for the evidence behind
 each status and for items this table doesn't cover.*
 
 | Phase 1 / README gap (source) | ADR | Closes via | GCP-equivalent delta? | Code status (v7.9) |

@@ -176,8 +176,8 @@ def _configure_root() -> None:
     if os.environ.get("FARF_LOG_TO_FILE", "1") != "0":
         logs_dir = os.environ.get("FARF_LOG_DIR", LOGS_DIR_DEFAULT)
         log_file = os.environ.get("FARF_LOG_FILE", "farf.log")
-        max_bytes = int(os.environ.get("FARF_LOG_MAX_BYTES", 5_000_000))
-        backup_count = int(os.environ.get("FARF_LOG_BACKUP_COUNT", 5))
+        max_bytes = int(os.environ.get("FARF_LOG_MAX_BYTES", "5000000"))
+        backup_count = int(os.environ.get("FARF_LOG_BACKUP_COUNT", "5"))
         try:
             os.makedirs(logs_dir, exist_ok=True)
             file_handler = logging.handlers.RotatingFileHandler(
@@ -231,7 +231,7 @@ class _StdoutTee:
         return self._original.isatty()
 
 
-def enable_stdout_persistence(session_name: str = None, logs_dir: str = None) -> str:
+def enable_stdout_persistence(session_name: str | None = None, logs_dir: str | None = None) -> str:
     """v7.8: persists a full, verbatim transcript of everything written
     to sys.stdout AND sys.stderr for the remainder of the process, into
     a single timestamped file under logs/ -- see module docstring, item
@@ -253,7 +253,7 @@ def enable_stdout_persistence(session_name: str = None, logs_dir: str = None) ->
     os.makedirs(logs_dir, exist_ok=True)
     session_name = session_name or time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
     path = os.path.join(logs_dir, f"session_{session_name}_stdout.log")
-    log_file = open(path, "a", encoding="utf-8")
+    log_file = open(path, "a", encoding="utf-8")  # noqa: SIM115
     sys.stdout = _StdoutTee(sys.stdout, log_file)
     sys.stderr = _StdoutTee(sys.stderr, log_file)
     return path
@@ -264,7 +264,7 @@ if __name__ == "__main__":
     print(f"--- stdout persistence demo: everything below is ALSO written to {demo_path} ---")
     for fmt in ("text", "json"):
         os.environ["FARF_LOG_FORMAT"] = fmt
-        _CONFIGURED = False  # noqa: allow re-demo of both formats in one run
+        _CONFIGURED = False
         log = get_logger("demo")
         print(f"--- format={fmt} ---", file=sys.stderr)
         log.debug("this is filtered out at default INFO level")

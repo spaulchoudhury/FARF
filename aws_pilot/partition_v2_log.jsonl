@@ -1,0 +1,43 @@
+{"event": "send_attempt", "iteration": 0, "timestamp": "2026-08-28T10:23:26Z", "outcome": "success", "source_port": 4349, "http_status": 500, "latency_ms": 102.1}
+{"event": "send_attempt", "iteration": 1, "timestamp": "2026-08-28T10:23:29Z", "outcome": "success", "source_port": 4972, "http_status": 500, "latency_ms": 112.3}
+{"event": "send_attempt", "iteration": 2, "timestamp": "2026-08-28T10:23:32Z", "outcome": "success", "source_port": 4973, "http_status": 500, "latency_ms": 135.77}
+{"event": "send_attempt", "iteration": 3, "timestamp": "2026-08-28T10:23:35Z", "outcome": "success", "source_port": 4974, "http_status": 500, "latency_ms": 100.46}
+{"event": "send_attempt", "iteration": 4, "timestamp": "2026-08-28T10:23:38Z", "outcome": "success", "source_port": 4975, "http_status": 500, "latency_ms": 95.31}
+{"event": "send_attempt", "iteration": 5, "timestamp": "2026-08-28T10:23:41Z", "outcome": "success", "source_port": 4976, "http_status": 500, "latency_ms": 126.02}
+{"event": "send_attempt", "iteration": 6, "timestamp": "2026-08-28T10:23:45Z", "outcome": "success", "source_port": 4977, "http_status": 500, "latency_ms": 122.46}
+{"event": "send_attempt", "iteration": 7, "timestamp": "2026-08-28T10:23:48Z", "outcome": "success", "source_port": 5565, "http_status": 500, "latency_ms": 89.61}
+{"event": "send_attempt", "iteration": 8, "timestamp": "2026-08-28T10:23:51Z", "outcome": "success", "source_port": 5566, "http_status": 500, "latency_ms": 85.44}
+{"event": "send_attempt", "iteration": 9, "timestamp": "2026-08-28T10:23:54Z", "outcome": "success", "source_port": 5567, "http_status": 500, "latency_ms": 94.43}
+{"event": "REVOKE_NOW_MARKER", "iteration": 10, "timestamp": "2026-08-28T10:23:57Z", "action": "Run 'aws ec2 revoke-security-group-egress ...' in your other terminal RIGHT NOW."}
+{"event": "send_attempt", "iteration": 10, "timestamp": "2026-08-28T10:23:57Z", "outcome": "success", "source_port": 5568, "http_status": 500, "latency_ms": 89.26}
+{"event": "send_attempt", "iteration": 11, "timestamp": "2026-08-28T10:24:00Z", "outcome": "success", "source_port": 5569, "http_status": 500, "latency_ms": 93.88}
+{"event": "send_attempt", "iteration": 12, "timestamp": "2026-08-28T10:24:03Z", "outcome": "success", "source_port": 5570, "http_status": 500, "latency_ms": 94.98}
+{"event": "send_attempt", "iteration": 13, "timestamp": "2026-08-28T10:24:06Z", "outcome": "success", "source_port": 5571, "http_status": 500, "latency_ms": 93.77}
+{"event": "send_attempt", "iteration": 14, "timestamp": "2026-08-28T10:24:09Z", "outcome": "success", "source_port": 5572, "http_status": 500, "latency_ms": 93.37}
+{"event": "send_attempt", "iteration": 15, "timestamp": "2026-08-28T10:24:13Z", "outcome": "success", "source_port": 5573, "http_status": 500, "latency_ms": 90.44}
+{"event": "send_attempt", "iteration": 16, "timestamp": "2026-08-28T10:24:16Z", "outcome": "success", "source_port": 5574, "http_status": 500, "latency_ms": 97.32}
+{"event": "send_attempt", "iteration": 17, "timestamp": "2026-08-28T10:24:19Z", "outcome": "success", "source_port": 5575, "http_status": 500, "latency_ms": 111.96}
+{"event": "send_attempt", "iteration": 18, "timestamp": "2026-08-28T10:24:22Z", "outcome": "success", "source_port": 5576, "http_status": 500, "latency_ms": 101.06}
+{"event": "send_attempt", "iteration": 19, "timestamp": "2026-08-28T10:24:25Z", "outcome": "success", "source_port": 5577, "http_status": 500, "latency_ms": 107.06}
+{"event": "send_attempt", "iteration": 20, "timestamp": "2026-08-28T10:24:28Z", "outcome": "success", "source_port": 5578, "http_status": 500, "latency_ms": 100.3}
+{"event": "send_attempt", "iteration": 21, "timestamp": "2026-08-28T10:24:31Z", "outcome": "success", "source_port": 5580, "http_status": 500, "latency_ms": 109.0}
+{"event": "send_attempt", "iteration": 22, "timestamp": "2026-08-28T10:24:34Z", "outcome": "success", "source_port": 11047, "http_status": 500, "latency_ms": 105.85}
+{"event": "send_attempt", "iteration": 23, "timestamp": "2026-08-28T10:24:38Z", "outcome": "success", "source_port": 11048, "http_status": 500, "latency_ms": 92.54}
+{"event": "send_attempt", "iteration": 24, "timestamp": "2026-08-28T10:24:41Z", "outcome": "success", "source_port": 11049, "http_status": 500, "latency_ms": 129.25}
+{"event": "RESTORE_NOW_MARKER", "iteration": 25, "timestamp": "2026-08-28T10:24:44Z", "action": "Run 'aws ec2 authorize-security-group-egress ...' in your other terminal RIGHT NOW."}
+{"event": "send_attempt", "iteration": 25, "timestamp": "2026-08-28T10:24:44Z", "outcome": "success", "source_port": 11050, "http_status": 500, "latency_ms": 117.07}
+{"event": "send_attempt", "iteration": 26, "timestamp": "2026-08-28T10:24:47Z", "outcome": "success", "source_port": 11052, "http_status": 500, "latency_ms": 82.05}
+{"event": "send_attempt", "iteration": 27, "timestamp": "2026-08-28T10:24:50Z", "outcome": "success", "source_port": 11055, "http_status": 500, "latency_ms": 117.45}
+{"event": "send_attempt", "iteration": 28, "timestamp": "2026-08-28T10:24:53Z", "outcome": "success", "source_port": 11057, "http_status": 500, "latency_ms": 100.37}
+{"event": "send_attempt", "iteration": 29, "timestamp": "2026-08-28T10:24:56Z", "outcome": "success", "source_port": 11060, "http_status": 500, "latency_ms": 95.61}
+{"event": "send_attempt", "iteration": 30, "timestamp": "2026-08-28T10:24:59Z", "outcome": "success", "source_port": 11061, "http_status": 500, "latency_ms": 90.79}
+{"event": "send_attempt", "iteration": 31, "timestamp": "2026-08-28T10:25:03Z", "outcome": "success", "source_port": 11062, "http_status": 500, "latency_ms": 108.01}
+{"event": "send_attempt", "iteration": 32, "timestamp": "2026-08-28T10:25:06Z", "outcome": "success", "source_port": 11063, "http_status": 500, "latency_ms": 100.96}
+{"event": "send_attempt", "iteration": 33, "timestamp": "2026-08-28T10:25:09Z", "outcome": "success", "source_port": 11064, "http_status": 500, "latency_ms": 93.37}
+{"event": "send_attempt", "iteration": 34, "timestamp": "2026-08-28T10:25:12Z", "outcome": "success", "source_port": 11065, "http_status": 500, "latency_ms": 89.83}
+{"event": "send_attempt", "iteration": 35, "timestamp": "2026-08-28T10:25:15Z", "outcome": "success", "source_port": 11066, "http_status": 500, "latency_ms": 142.12}
+{"event": "send_attempt", "iteration": 36, "timestamp": "2026-08-28T10:25:18Z", "outcome": "success", "source_port": 11067, "http_status": 500, "latency_ms": 116.39}
+{"event": "send_attempt", "iteration": 37, "timestamp": "2026-08-28T10:25:21Z", "outcome": "success", "source_port": 11068, "http_status": 500, "latency_ms": 336.3}
+{"event": "send_attempt", "iteration": 38, "timestamp": "2026-08-28T10:25:25Z", "outcome": "success", "source_port": 11069, "http_status": 500, "latency_ms": 102.77}
+{"event": "send_attempt", "iteration": 39, "timestamp": "2026-08-28T10:25:28Z", "outcome": "success", "source_port": 11944, "http_status": 500, "latency_ms": 103.35}
+{"event": "loop_complete", "iterations": 40, "outcomes": {"success": 40, "timeout": 0, "connection_error": 0, "other_error": 0}, "unique_source_ports_used": 40, "note": "unique_source_ports_used should equal iterations (each iteration used a genuinely fresh port) -- if it is lower, connections ARE being reused somewhere below this script's control (OS/library level), which would itself be new, actionable information."}

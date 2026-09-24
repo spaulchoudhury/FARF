@@ -49,7 +49,6 @@ import os
 import time
 import urllib.error
 import urllib.request
-from typing import Dict
 
 from farf_logging import get_logger
 
@@ -90,7 +89,7 @@ INSTRUCTION: {instruction}
 
 def judge_injection(instruction: str, model: str = DEFAULT_MODEL,
                      host: str = OLLAMA_HOST,
-                     timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS) -> Dict:
+                     timeout_seconds: float = DEFAULT_TIMEOUT_SECONDS) -> dict:
     """
     Calls a local Ollama server's /api/generate endpoint, asking `model`
     to judge whether `instruction` is a system-override attempt.
@@ -183,7 +182,7 @@ def judge_injection(instruction: str, model: str = DEFAULT_MODEL,
         }
 
 
-def check_ollama_reachable(host: str = OLLAMA_HOST, timeout_seconds: float = 3.0) -> Dict:
+def check_ollama_reachable(host: str = OLLAMA_HOST, timeout_seconds: float = 3.0) -> dict:
     """Quick standalone connectivity check (GET /api/tags) -- use this to
     verify setup before running anything that depends on judge_injection()
     actually working. Returns {"reachable": bool, "models": [...], "error": str|None}."""

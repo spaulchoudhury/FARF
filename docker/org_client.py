@@ -12,8 +12,9 @@ organisational boundary here means crossing a real Docker network
 socket, not a Python function call within one process.
 """
 import os
-import time
 import sys
+import time
+
 import requests
 
 BUS_URL = os.environ.get("FARF_BUS_URL", "http://federation-bus:8000")

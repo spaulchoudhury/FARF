@@ -42,7 +42,7 @@ from __future__ import annotations
 import logging
 import os
 from dataclasses import dataclass, field
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 try:
     import yaml
@@ -69,7 +69,7 @@ class RuntimeConfigError(Exception):
 # data (not scattered comments) so `summarise()` can print it and so the
 # reasons live in exactly one place instead of drifting from the docs.
 # --------------------------------------------------------------------------
-PARSED_ONLY_REASONS: Dict[str, str] = {
+PARSED_ONLY_REASONS: dict[str, str] = {
     "federation.quorum_threshold":
         "Real quorum resolution (federation_config.resolve_quorum) takes "
         "a count or the string 'pbft_proportional', not a fraction of "
@@ -131,27 +131,27 @@ PARSED_ONLY_REASONS: Dict[str, str] = {
 APPLIED_FIELDS = (
     "federation.orgs",
     "logging.level",
-    "logging.sink (only the 'json_stdout' value; other values fall back "
-    "to the existing local-file sink with a warning, see below)",
+    ("logging.sink (only the 'json_stdout' value; other values fall back "
+    "to the existing local-file sink with a warning, see below)"),
 )
 
 
 @dataclass
 class RuntimeConfig:
     path: str
-    raw: Dict[str, Any]
-    org_names: List[str]
-    quorum_threshold: Optional[float]
-    logging_level: Optional[str]
-    logging_sink: Optional[str]
-    applied: Dict[str, Any] = field(default_factory=dict)
-    parsed_only: Dict[str, Any] = field(default_factory=dict)
-    warnings: List[str] = field(default_factory=list)
+    raw: dict[str, Any]
+    org_names: list[str]
+    quorum_threshold: float | None
+    logging_level: str | None
+    logging_sink: str | None
+    applied: dict[str, Any] = field(default_factory=dict)
+    parsed_only: dict[str, Any] = field(default_factory=dict)
+    warnings: list[str] = field(default_factory=list)
 
     def summarise(self) -> str:
         lines = [f"[FARF] runtime config loaded from {self.path}:"]
         lines.append(f"  APPLIED (took effect this run): {sorted(self.applied.keys())}")
-        lines.append(f"  PARSED_ONLY (stored, not yet wired to any code -- see reason below):")
+        lines.append("  PARSED_ONLY (stored, not yet wired to any code -- see reason below):")
         for k in sorted(self.parsed_only.keys()):
             reason = PARSED_ONLY_REASONS.get(k, "no consumer implemented yet")
             lines.append(f"    - {k} = {self.parsed_only[k]!r} :: {reason}")
@@ -162,7 +162,7 @@ class RuntimeConfig:
         return "\n".join(lines)
 
 
-def _get(d: Dict[str, Any], dotted: str, default=None):
+def _get(d: dict[str, Any], dotted: str, default=None):
     cur: Any = d
     for part in dotted.split("."):
         if not isinstance(cur, dict) or part not in cur:

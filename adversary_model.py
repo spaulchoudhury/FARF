@@ -13,7 +13,7 @@ if/when you want machine-checked proofs, export `to_dict()` and feed
 the delegation relation into a TLA+ spec offline.
 """
 import itertools
-from typing import List, Dict
+
 import networkx as nx
 
 from farf_logging import get_logger
@@ -34,17 +34,17 @@ class FederatedAdversaryModel:
         self.graph.add_edge(source, target, privilege=privilege)
 
     # ---- analysis ------------------------------------------------------
-    def _accumulate_privilege(self, path: List[str]) -> float:
+    def _accumulate_privilege(self, path: list[str]) -> float:
         """Diminishing-returns accumulation so the score stays in [0,1]
         while still rewarding longer high-privilege chains."""
         total = self.graph.nodes[path[0]].get("privilege", 0.1)
-        for u, v in zip(path[:-1], path[1:]):
+        for u, v in itertools.pairwise(path):
             edge_priv = self.graph[u][v].get("privilege", 0.0)
             total = total + edge_priv * (1 - total)
         return total
 
     def simulate_privilege_escalation(self, start: str, threshold: float = 0.8,
-                                       cutoff: int = 6, edge_floor_ratio: float = 0.5) -> List[tuple]:
+                                       cutoff: int = 6, edge_floor_ratio: float = 0.5) -> list[tuple]:
         """Every delegation path from `start` whose accumulated privilege
         crosses `threshold` — i.e. a plausible escalation/confused-deputy
         chain.
@@ -83,7 +83,7 @@ class FederatedAdversaryModel:
                 if accumulated < threshold:
                     continue
                 edge_privs = [self.graph[u][v].get("privilege", 0.0)
-                              for u, v in zip(path[:-1], path[1:])]
+                              for u, v in itertools.pairwise(path)]
                 if edge_privs and min(edge_privs) < edge_floor:
                     continue
                 escalation_paths.append((path, round(accumulated, 3)))
@@ -94,7 +94,7 @@ class FederatedAdversaryModel:
                 "max_accumulated": max(acc for _, acc in escalation_paths)})
         return escalation_paths
 
-    def cross_org_attack_paths(self, cutoff: int = 6) -> List[Dict]:
+    def cross_org_attack_paths(self, cutoff: int = 6) -> list[dict]:
         """Paths that cross >= 2 organisational boundaries -- the core
         federated-attack surface identified in Chapter 2 of the proposal."""
         results = []

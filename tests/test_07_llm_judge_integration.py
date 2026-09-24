@@ -16,12 +16,12 @@ fail-closed contract for everyone who opts into use_llm_judge=True.
 """
 import json
 import urllib.error
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock, patch
 
 import pytest
 
-from llm_judge import judge_injection, check_ollama_reachable
 from agents import detect_prompt_injection
+from llm_judge import check_ollama_reachable, judge_injection
 
 
 def _mock_ollama_response(response_dict):

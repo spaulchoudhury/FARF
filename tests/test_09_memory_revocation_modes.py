@@ -18,9 +18,9 @@ import pytest
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from memory_store import MemoryStore
 from federation_bus import FederationBus
 from main import build_federation
+from memory_store import MemoryStore
 
 
 @pytest.fixture

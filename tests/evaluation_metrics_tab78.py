@@ -21,20 +21,19 @@ that's reported honestly rather than padded with artificial noise.
 """
 import random
 import time
-from typing import Dict, List, Tuple
 
 import numpy as np
 
 from adversary_model import FederatedAdversaryModel
-from trust_protocol import FederatedTrustProtocol
-from orchestration import SecureOrchestrationLayer, ActionEvent, Decision
+from orchestration import ActionEvent, Decision, SecureOrchestrationLayer
 from taint_engine import TaintPropagationEngine
+from trust_protocol import FederatedTrustProtocol
 
 
 # ---------------------------------------------------------------------------
 # Shared confusion-matrix helper
 # ---------------------------------------------------------------------------
-def confusion_metrics(y_true: List[bool], y_pred: List[bool]) -> Dict:
+def confusion_metrics(y_true: list[bool], y_pred: list[bool]) -> dict:
     """Standard precision/recall/F1/ADR from parallel true/predicted label
     lists. ADR (Attack Detection Rate) is reported as an alias of recall
     on the positive ("is an attack") class, matching Tab 7.8's usage --
@@ -60,7 +59,7 @@ def confusion_metrics(y_true: List[bool], y_pred: List[bool]) -> Dict:
 # ---------------------------------------------------------------------------
 # 1. Federated Adversary Model -- ADR, Precision, Recall, F1
 # ---------------------------------------------------------------------------
-def run_adversary_model_trials(n_trials: int = 200, seed: int = 0) -> Dict:
+def run_adversary_model_trials(n_trials: int = 200, seed: int = 0) -> dict:
     """Each trial builds a small random delegation chain (2-4 hops) from a
     fixed start agent to a fixed target agent. Ground truth ("is this an
     escalation attempt") is set by the trial itself -- attack trials draw
@@ -100,7 +99,7 @@ def run_adversary_model_trials(n_trials: int = 200, seed: int = 0) -> Dict:
 # 2. Federated Trust Protocol -- Credential Verification Success Rate,
 #    Delegation Integrity Rate, Trust Establishment Latency
 # ---------------------------------------------------------------------------
-def run_trust_protocol_trials(n_trials: int = 200, seed: int = 0) -> Dict:
+def run_trust_protocol_trials(n_trials: int = 200, seed: int = 0) -> dict:
     """Mixes legitimate credential issuance/verification with spoofed
     (wrong claimed issuer) and replayed (same VC verified twice) cases.
     'Credential Verification Success Rate' is reported as the standard
@@ -165,7 +164,7 @@ def run_trust_protocol_trials(n_trials: int = 200, seed: int = 0) -> Dict:
     }
 
 
-def run_delegation_integrity_trials(bus_factory, n_trials: int = 100, seed: int = 0) -> Dict:
+def run_delegation_integrity_trials(bus_factory, n_trials: int = 100, seed: int = 0) -> dict:
     """Uses a live FederationBus (via bus_factory(), a zero-arg callable
     returning a fresh bus + its 3-org agent set, matching conftest.py's
     fresh_bus fixture) to test delegated memory writes: an authorised
@@ -203,7 +202,7 @@ def run_delegation_integrity_trials(bus_factory, n_trials: int = 100, seed: int 
 # 3. Orchestration -- Policy Enforcement Accuracy, Behavioural Anomaly
 #    Detection Rate, Workflow Completion Rate
 # ---------------------------------------------------------------------------
-def run_policy_enforcement_trials(n_trials: int = 300, seed: int = 0) -> Dict:
+def run_policy_enforcement_trials(n_trials: int = 300, seed: int = 0) -> dict:
     """Generates labelled ActionEvents: malicious ones trip exactly one of
     the registered policy predicates (system-override attempt, privilege
     ceiling breach, TOCTOU resource-hash mismatch); benign ones satisfy
@@ -249,7 +248,7 @@ def run_policy_enforcement_trials(n_trials: int = 300, seed: int = 0) -> Dict:
     return {"policy_enforcement_accuracy": metrics["accuracy"], "confusion": metrics}
 
 
-def run_behavioural_drift_detection_trials(n_trials: int = 100, seed: int = 0) -> Dict:
+def run_behavioural_drift_detection_trials(n_trials: int = 100, seed: int = 0) -> dict:
     """Each trial replays a sequence of 25 taint contributions for one
     synthetic agent through a fresh CUSUM + sliding-window detector pair.
     Attack trials use a slow-drift profile (small but sustained positive
@@ -288,7 +287,7 @@ def run_behavioural_drift_detection_trials(n_trials: int = 100, seed: int = 0) -
     }
 
 
-def run_workflow_completion_trials(bus_factory, n_trials: int = 60, seed: int = 0) -> Dict:
+def run_workflow_completion_trials(bus_factory, n_trials: int = 60, seed: int = 0) -> dict:
     """Each trial runs a fixed 5-step BENIGN workflow (advisor plans,
     executor executes, memory write, memory recall, cross-org handoff)
     through a fresh federation, sometimes with an unrelated concurrent
@@ -342,7 +341,7 @@ def run_workflow_completion_trials(bus_factory, n_trials: int = 60, seed: int = 
 # 4. Taint Propagation Engine -- Provenance Identification Accuracy,
 #    Taint Containment Rate, Privilege Path Reconstruction Accuracy
 # ---------------------------------------------------------------------------
-def run_provenance_identification_trials(n_trials: int = 150, seed: int = 0) -> Dict:
+def run_provenance_identification_trials(n_trials: int = 150, seed: int = 0) -> dict:
     """Originates taint at a randomly chosen org, propagates it through a
     random chain of 2-5 agents, then checks whether the engine's own
     recorded origin_org for that message still matches the planted
@@ -372,7 +371,7 @@ def run_provenance_identification_trials(n_trials: int = 150, seed: int = 0) -> 
 
 
 def run_taint_containment_trials(bus_factory, n_trials: int = 60, seed: int = 0,
-                                  containment_threshold: float = 0.5) -> Dict:
+                                  containment_threshold: float = 0.5) -> dict:
     """Runs a live memory-manipulation-style attack (repeated high-taint
     messages from one compromised agent) through a fresh federation for
     each trial, WITH FARF's orchestration/taint pipeline active. Taint
@@ -401,7 +400,7 @@ def run_taint_containment_trials(bus_factory, n_trials: int = 60, seed: int = 0,
             "containment_threshold": containment_threshold, "n_trials": n_trials}
 
 
-def run_privilege_path_reconstruction_trials(n_trials: int = 150, seed: int = 0) -> Dict:
+def run_privilege_path_reconstruction_trials(n_trials: int = 150, seed: int = 0) -> dict:
     """Plants a KNOWN ground-truth propagation path (a specific ordered
     agent sequence) via explicit propagate() calls, then asks
     reconstruct_privilege_path() to recover paths ending at the

@@ -13,3 +13,19 @@ docker/__pycache__/
 
 # Keep the evaluation report CSVs -- they are cited evidence (Ch4/5/6),
 # not disposable run artefacts, so they are intentionally NOT ignored.
+
+lambda_build/
+*.bak
+*.old.py
+farf_run.bak*.ps1
+validation/data/
+evidence_*/
+precheck_*/
+egress_saved.json
+sg_during_revoke.json
+*.zip
+lambda_build/
+.venv/
+*_OLD.py
+*_BAK.py
+aws_pilot/task-def-partition-v4.json

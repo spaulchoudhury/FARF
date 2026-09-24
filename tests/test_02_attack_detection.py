@@ -18,6 +18,7 @@ i.e. no cross-triggering), and that FARS degrades relative to the
 clean-topology baseline established in test_01.
 """
 import pytest
+
 from orchestration import Decision
 from tests.conftest import baseline_fars_ceiling
 
@@ -113,7 +114,7 @@ def test_e3_trust_token_enforces_boundary_against_spoofed_issuer(fresh_bus):
 
 
 def test_e3_expired_credential_is_rejected(fresh_bus):
-    bus, agents = fresh_bus
+    bus, _agents = fresh_bus
     vc = bus.trust.issue_credential("OrgC", subject_did="did:key:zFAKE",
                                      claims={"role": "advisor"}, ttl_seconds=0.0)
     import time

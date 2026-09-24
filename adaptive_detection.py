@@ -28,7 +28,6 @@ NOT the default in FederationBus precisely because that trade-off needs
 a human decision about where trusted calibration data comes from, not
 because the logic itself is unfinished. See THREAT_MODEL.md 14.
 """
-from typing import Dict, List
 
 from farf_logging import get_logger
 
@@ -42,10 +41,10 @@ class AdaptiveOrgVolumeDetector:
         self.calibration_messages = calibration_messages
         self.cap_multiplier = cap_multiplier
         self.fallback_cap = fallback_cap
-        self._history: Dict[str, List[float]] = {}
-        self._calibration_samples: Dict[str, List[float]] = {}
-        self._calibrated_cap: Dict[str, float] = {}
-        self._frozen: Dict[str, bool] = {}
+        self._history: dict[str, list[float]] = {}
+        self._calibration_samples: dict[str, list[float]] = {}
+        self._calibrated_cap: dict[str, float] = {}
+        self._frozen: dict[str, bool] = {}
 
     def cap_for(self, org: str) -> float:
         return self._calibrated_cap.get(org, self.fallback_cap)

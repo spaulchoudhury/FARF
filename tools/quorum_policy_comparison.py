@@ -155,7 +155,7 @@ def main():
     print("=== Analytical table: legacy static (quorum=2) vs. pbft_dynamic ===")
     print("(deterministic given N and uniform stake=1.0 -- see module docstring for why no")
     print(" repeated-trial statistics are used here)\n")
-    rows = analytical_table()
+    analytical_table()
 
     empirical_cross_check()
 

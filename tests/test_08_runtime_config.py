@@ -15,10 +15,13 @@ import pytest
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-from runtime_config import (
-    RuntimeConfigError, load_runtime_config, apply_runtime_config, to_federation_config,
-)
 from federation_config import build_federation_from_config
+from runtime_config import (
+    RuntimeConfigError,
+    apply_runtime_config,
+    load_runtime_config,
+    to_federation_config,
+)
 
 REAL_CONFIG_YAML = """\
 federation:
@@ -160,7 +163,7 @@ class TestAppliedVsParsedOnlyClassification:
 class TestApplyRuntimeConfig:
     def test_applies_log_level_to_environ(self, real_config_path, monkeypatch):
         monkeypatch.delenv("FARF_LOG_LEVEL", raising=False)
-        cfg = apply_runtime_config(load_runtime_config(real_config_path))
+        apply_runtime_config(load_runtime_config(real_config_path))
         assert os.environ["FARF_LOG_LEVEL"] == "INFO"
 
     def test_does_not_override_an_explicit_operator_env_var(self, real_config_path, monkeypatch):
@@ -197,7 +200,7 @@ class TestToFederationConfigIntegration:
         bus, agents, quorum_value = build_federation_from_config(fed_config)
         try:
             assert set(agents.keys()) == {"org_a", "org_b", "org_c"}
-            for org, roles in agents.items():
+            for roles in agents.values():
                 assert "advisor" in roles and "executor" in roles
             # N=3 -> PBFT unanimity, matching federation_ledger's own
             # documented reasoning -- NOT derived from quorum_threshold

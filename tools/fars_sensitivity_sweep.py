@@ -24,16 +24,17 @@ scenario.
 """
 
 from __future__ import annotations
+
 import copy
 
-SCENARIO = dict(
-    quarantined=1, total_agents=6,
-    structural_containment_score=0.85,
-    tainted_messages=6, total_messages=40,
-    policy_violations=1, total_events=25,
-    avg_connectivity=2.1,
-    previous_ewma=72.0,
-)
+SCENARIO = {
+    "quarantined": 1, "total_agents": 6,
+    "structural_containment_score": 0.85,
+    "tainted_messages": 6, "total_messages": 40,
+    "policy_violations": 1, "total_events": 25,
+    "avg_connectivity": 2.1,
+    "previous_ewma": 72.0,
+}
 
 # --------------------------------------------------------------------------
 # v7.9.10: multi-scenario extension, thesis-supervisor-directed (Decision
@@ -49,49 +50,49 @@ SCENARIO = dict(
 # represents so the range reported below means something.
 # --------------------------------------------------------------------------
 SCENARIOS = {
-    "healthy_no_incident": dict(
+    "healthy_no_incident": {
         # No attack at all -- baseline federation health, all agents
         # active, full connectivity, zero taint/violations. Every FARS
         # component should sit near its ceiling here.
-        quarantined=0, total_agents=6, structural_containment_score=1.0,
-        tainted_messages=0, total_messages=40, policy_violations=0,
-        total_events=25, avg_connectivity=5.0, previous_ewma=95.0,
-    ),
-    "moderate_e1_prompt_injection": dict(
+        "quarantined": 0, "total_agents": 6, "structural_containment_score": 1.0,
+        "tainted_messages": 0, "total_messages": 40, "policy_violations": 0,
+        "total_events": 25, "avg_connectivity": 5.0, "previous_ewma": 95.0,
+    },
+    "moderate_e1_prompt_injection": {
         # Mirrors E1 (Prompt Injection) mid-campaign: no quarantine yet,
         # partial taint, a couple of policy violations, connectivity
         # intact (injection doesn't sever graph edges).
-        quarantined=0, total_agents=6, structural_containment_score=1.0,
-        tainted_messages=4, total_messages=40, policy_violations=2,
-        total_events=25, avg_connectivity=3.4, previous_ewma=85.0,
-    ),
+        "quarantined": 0, "total_agents": 6, "structural_containment_score": 1.0,
+        "tainted_messages": 4, "total_messages": 40, "policy_violations": 2,
+        "total_events": 25, "avg_connectivity": 3.4, "previous_ewma": 85.0,
+    },
     "original_e4_post_quarantine": SCENARIO,  # the original single scenario, unchanged
-    "severe_multi_org_sybil": dict(
+    "severe_multi_org_sybil": {
         # Mirrors a composite/worst-case: 2 of 6 agents' org quarantined
         # (matches pt04-style org-wide Sybil), heavier taint, connectivity
         # degraded by the quarantine itself (fewer live edges).
-        quarantined=2, total_agents=6, structural_containment_score=0.55,
-        tainted_messages=14, total_messages=40, policy_violations=5,
-        total_events=25, avg_connectivity=1.2, previous_ewma=48.0,
-    ),
-    "large_sparse_federation": dict(
+        "quarantined": 2, "total_agents": 6, "structural_containment_score": 0.55,
+        "tainted_messages": 14, "total_messages": 40, "policy_violations": 5,
+        "total_events": 25, "avg_connectivity": 1.2, "previous_ewma": 48.0,
+    },
+    "large_sparse_federation": {
         # A bigger, sparser federation -- tests whether the connectivity
         # normaliser's sensitivity ranking changes shape once avg
         # connectivity is naturally lower just from federation size, not
         # from an attack (matters for the N-scaling question raised
         # alongside the N>20 connectivity-sampling item).
-        quarantined=1, total_agents=24, structural_containment_score=0.9,
-        tainted_messages=8, total_messages=160, policy_violations=3,
-        total_events=100, avg_connectivity=1.6, previous_ewma=78.0,
-    ),
+        "quarantined": 1, "total_agents": 24, "structural_containment_score": 0.9,
+        "tainted_messages": 8, "total_messages": 160, "policy_violations": 3,
+        "total_events": 100, "avg_connectivity": 1.6, "previous_ewma": 78.0,
+    },
 }
 
-SHIPPED = dict(
-    connectivity_divisor=4.0,
-    baseline_operational_cost=0.15,
-    taint_blend_per_message=0.3,   # graph_level weight is (1 - this)
-    ewma_alpha=0.3,
-)
+SHIPPED = {
+    "connectivity_divisor": 4.0,
+    "baseline_operational_cost": 0.15,
+    "taint_blend_per_message": 0.3,   # graph_level weight is (1 - this)
+    "ewma_alpha": 0.3,
+}
 
 WEIGHTS = {"connectivity": 0.25, "trust_health": 0.30, "taint_containment": 0.30, "policy_compliance": 0.15}
 
@@ -141,7 +142,7 @@ def compute_ewma(current_score: float, previous_ewma: float, alpha: float) -> fl
     return alpha * current_score + (1 - alpha) * previous_ewma
 
 
-def sweep(constant_name: str, scenario: dict = None, deltas=(-0.3, -0.15, 0.0, 0.15, 0.3)):
+def sweep(constant_name: str, scenario: dict | None = None, deltas=(-0.3, -0.15, 0.0, 0.15, 0.3)):
     scenario = scenario if scenario is not None else SCENARIO
     baseline_score = compute_fars(scenario, SHIPPED)
     rows = []
@@ -198,7 +199,7 @@ def main():
     print("-" * 66)
     max_shift = {}
     for name in SHIPPED:
-        baseline, rows = sweep(name)
+        _baseline, rows = sweep(name)
         for d, val, score, shift in rows:
             marker = "  <- shipped" if abs(d) < 1e-9 else ""
             print(f"{name:<28}{d:>+7.0%}{val:>10.3f}{score:>10.2f}{shift:>+10.2f}{marker}")

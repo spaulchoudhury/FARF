@@ -34,7 +34,7 @@ import threading
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from flask import Flask, request, jsonify
+from flask import Flask, jsonify, request
 
 from federation_bus import FederationBus
 
@@ -147,6 +147,7 @@ def witness():
 # surface live; every route 404s unless the env var is set.
 # ============================================================================
 import os as _os
+
 _PENTEST_MODE = _os.environ.get("FARF_PENTEST_MODE") == "1"
 
 
@@ -246,4 +247,4 @@ def status():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", "8000")))

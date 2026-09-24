@@ -19,20 +19,25 @@ Run directly for a human-readable report:
 Or as part of the suite:
     pytest tests/test_04_statistical_validation.py -v -s
 """
-import os
-import tempfile
-import csv
-import random
 import argparse
+import csv
+import os
+import random
+import tempfile
+
 import pytest
 
-from orchestration import Decision
 from federation_bus import FederationBus
 from main import build_federation
+from orchestration import Decision
 from tests.stats_utils import (
-    descriptive_statistics, normality_test, paired_significance_test,
-    effect_size_cohens_d, statistical_conclusion, fars_predictive_validity,
+    descriptive_statistics,
+    effect_size_cohens_d,
     fars_discriminative_validity,
+    fars_predictive_validity,
+    normality_test,
+    paired_significance_test,
+    statistical_conclusion,
 )
 
 N_TRIALS = 30

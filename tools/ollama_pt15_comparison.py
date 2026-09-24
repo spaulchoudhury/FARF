@@ -49,12 +49,13 @@ below, deliberately avoiding the training corpus's vocabulary entirely
 so a bag-of-n-grams classifier has nothing to latch onto, but the
 INTENT is still clearly an override attempt to a human reader.
 """
-import sys
 import os
+import sys
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 from agents import detect_prompt_injection
-from llm_judge import check_ollama_reachable, DEFAULT_MODEL
+from llm_judge import DEFAULT_MODEL, check_ollama_reachable
 
 # from the existing pentest suite, for continuity
 FROM_PT15 = {

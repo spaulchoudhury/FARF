@@ -19,14 +19,13 @@ This is the control/negative-case suite: every other test file proves
 FARF *reacts* to attacks; this one proves it does *not* over-react to
 normal collaboration.
 """
-import pytest
 from orchestration import Decision
 from tests.conftest import baseline_fars_ceiling
 
 
 def test_trust_token_issuance_and_verification(fresh_bus):
     """Federation Bus stage: 'Trust Token — VC + DID:key attestation'."""
-    bus, agents = fresh_bus
+    bus, _agents = fresh_bus
     vc = bus.trust.issue_credential(
         "OrgA", subject_did="did:key:zBENIGN-SUBJECT", claims={"role": "advisor"}
     )
