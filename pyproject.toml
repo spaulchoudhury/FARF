@@ -1,7 +1,17 @@
 [tool.ruff]
-extend-exclude = ["lambda_build"]
+line-length = 140
+target-version = "py311"
+extend-exclude = ["lambda_build", "evidence_*", "precheck_*", ".venv"]
+
+[tool.ruff.lint]
+# Correctness + robustness. Cosmetic families (E4, E7, UP other than UP007, I, E501) are deliberately off: they
+# would rewrite ~500 lines of code that the thesis chapters describe, for no behavioural gain.
+#   BLE001/S110/S112  blind or silent exception handling (deliberate catch-alls carry `# noqa: RULE -- reason`)
+#   SIM102/SIM115     nested ifs, unmanaged file handles      PLW1508/PLW1510  env defaults, subprocess check=
+#   UP007/G201/PERF402  typing union, logger.exception, list extend
+select = ["E9", "F", "B006", "B008", "B012", "B015", "B017", "B018", "B023", "B904",
+          "BLE001", "S110", "S112", "SIM102", "SIM115", "PLW1508", "PLW1510", "UP007", "G201", "PERF402"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-python_files = ["test_*.py"]
-addopts = "-q"
+addopts = ["-p no:cacheprovider", "-q"]

@@ -1,0 +1,84 @@
+{
+  "files_sha256": {
+    "harmful": "fc3e4abbcd812022b85150b0e6f81c0bdbdfabb486e5b82ec46f1ba135f3ba08",
+    "benign": "65b4ebd4d8d2e7c9a79db4e11bc642f1800e642be0626ba0a990c763a325957a"
+  },
+  "harmful": {
+    "n": 176,
+    "flag_rate": {
+      "combined": {
+        "k": 144,
+        "rate": 0.8182,
+        "wilson95": [
+          0.7546,
+          0.8682
+        ]
+      },
+      "heuristic": {
+        "k": 0,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.0214
+        ]
+      },
+      "classifier": {
+        "k": 144,
+        "rate": 0.8182,
+        "wilson95": [
+          0.7546,
+          0.8682
+        ]
+      }
+    },
+    "per_category_combined": {
+      "Copyright": "24/24",
+      "Cybercrime": "16/20",
+      "Disinformation": "11/20",
+      "Drugs": "15/20",
+      "Fraud": "21/24",
+      "Harassment": "22/24",
+      "Hate": "14/20",
+      "Sexual": "21/24"
+    }
+  },
+  "benign": {
+    "n": 176,
+    "flag_rate": {
+      "combined": {
+        "k": 120,
+        "rate": 0.6818,
+        "wilson95": [
+          0.6097,
+          0.7461
+        ]
+      },
+      "heuristic": {
+        "k": 0,
+        "rate": 0.0,
+        "wilson95": [
+          0.0,
+          0.0214
+        ]
+      },
+      "classifier": {
+        "k": 120,
+        "rate": 0.6818,
+        "wilson95": [
+          0.6097,
+          0.7461
+        ]
+      }
+    },
+    "per_category_combined": {
+      "Copyright": "16/24",
+      "Cybercrime": "16/20",
+      "Disinformation": "7/20",
+      "Drugs": "14/20",
+      "Fraud": "13/24",
+      "Harassment": "23/24",
+      "Hate": "13/20",
+      "Sexual": "18/24"
+    }
+  }
+}

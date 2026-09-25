@@ -478,7 +478,14 @@ if ($Step -eq 'lambda-adr011') {
   $r2 = Get-Content $out2 -Raw
   Write-Host "--- invoke 2 (expected warm) ---"; Write-Host $r2
   Check "invoke 2 succeeded and returned timings_ms" ($r2 -match "timings_ms")
-  Check "invoke 1 shows a cold start, invoke 2 does not" (($r1 -match '"likely_cold_start":\s*true') -and ($r2 -match '"likely_cold_start":\s*false')) "(if this fails, both may have hit an already-warm container -- wait 10+ min and re-run -Step lambda-adr011 for a clean cold sample)"
+  $j1 = ($r1 | ConvertFrom-Json).body | ConvertFrom-Json
+  $j2 = ($r2 | ConvertFrom-Json).body | ConvertFrom-Json
+
+  Check "invoke 1 shows a cold start, invoke 2 does not" (
+    ($j1.likely_cold_start -eq $true) -and
+    ($j2.likely_cold_start -eq $false)) "(if this fails, both may have hit an already-warm container -- wait 10+ min and re-run -Step lambda-adr011 for a clean cold sample)"
+  
+  #Check "invoke 1 shows a cold start, invoke 2 does not" (($r1 -match '"likely_cold_start":\s*true') -and ($r2 -match '"likely_cold_start":\s*false')) "(if this fails, both may have hit an already-warm container -- wait 10+ min and re-run -Step lambda-adr011 for a clean cold sample)"
 
   Write-Host "Keep out1.json/out2.json (saved under evidence) -- this closes ADR-011's missing cold-start figure."
   Finish

@@ -286,12 +286,13 @@ class SecureOrchestrationLayer:
                     self._log(event, rule.action, rule.name)
                     return rule.action
             except Exception:  # noqa: BLE001 -- rule predicates are deliberately best-effort evaluators
-                log.warning("rule predicate failed during evaluation", extra={
+                log.warning("rule_predicate_error", extra={
                     "event": "rule_predicate_failed",
                     "agent_id": event.agent_id,
                     "org": event.org,
                     "action_type": event.action_type,
-                })
+                    "rule": rule.name,
+                }, exc_info=True)
                 continue
 
         if self.cusum.update(event.agent_id, event.taint_score):

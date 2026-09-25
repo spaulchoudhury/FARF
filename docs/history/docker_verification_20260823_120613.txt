@@ -1,0 +1,41 @@
+
+=== GET /health ===
+
+{
+    "quorum_mode":  "pbft_dynamic",
+    "status":  "ok"
+}
+
+=== GET /status ===
+
+{
+    "quarantined_agents":  [
+
+                           ],
+    "quorum_required":  3.0,
+    "registered_orgs":  [
+                            "OrgA",
+                            "OrgB",
+                            "OrgC"
+                        ],
+    "tainted_messages":  0,
+    "total_messages":  2
+}
+
+=== GET /fars ===
+
+{
+    "FARS":  76.25,
+    "FARS_ewma":  76.53,
+    "components":  {
+                       "connectivity":  0.05,
+                       "policy_compliance":  1.0,
+                       "taint_containment":  1.0,
+                       "trust_health":  1.0
+                   }
+}
+
+=== Container list (docker compose ps) ===
+
+NAME                  IMAGE                   COMMAND                  SERVICE          CREATED         STATUS                   PORTS
+farf-federation-bus   docker-federation-bus   "python docker/bus_sGǪ"   federation-bus   5 minutes ago   Up 5 minutes (healthy)   0.0.0.0:8000->8000/tcp, [::]:8000->8000/tcp

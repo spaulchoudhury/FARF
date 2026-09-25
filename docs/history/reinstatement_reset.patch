@@ -1,0 +1,17 @@
+--- /tmp/z/farf/farf_prototype_v7_9_7/federation_bus.py	2026-08-26 16:54:15.000000000 +0000
++++ /tmp/patchtest/federation_bus.py	2026-09-21 20:45:10.751816432 +0000
+@@ -598,6 +598,14 @@
+             if data.get("org") == org:
+                 self.orchestration.reinstate(node, capability=self.orchestration._reinstate_capability)
+                 self.recovery_tracker.mark_recovered(node, now)
++        # Clear the detector state that CAUSED the quarantine. Without this, the org-level volume window
++        # (and the fan-out window) still hold the tripped sums, so the first message after re-admission
++        # re-quarantines the organisation and the reinstatement is not durable. Agent-level detectors are
++        # already reset inside orchestration.reinstate().
++        self.org_volume_detector.reset(org)
++        for node, data in self.adversary_model.graph.nodes(data=True):
++            if data.get("org") == org:
++                self.fanout_detector.reset(node)
+         self.federation_wide_quarantined.discard(org)
+         self.recovery_tracker.mark_recovered(org, now)
+ 

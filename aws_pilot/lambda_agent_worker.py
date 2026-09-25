@@ -31,6 +31,12 @@ import time
 
 import requests
 
+# Module scope runs exactly once per execution environment, during Lambda's Init phase. That makes it the reliable
+# place to detect a cold start from inside the handler: the FIRST invocation an environment serves is the cold one.
+# (The earlier /proc/uptime < 5 s proxy never fired: /proc/uptime is the sandbox's uptime, not the function's.)
+_INIT_MONOTONIC = time.monotonic()
+_first_invocation = True
+
 BUS_URL = os.environ.get("FARF_BUS_URL", "")
 ORG = os.environ.get("FARF_ORG", "PilotOrgB-Lambda")
 PEER_ORG = os.environ.get("FARF_PEER_ORG", "PilotOrgA")
@@ -44,6 +50,11 @@ def handler(event, context):
     deploy or a scale-to-zero gap) is distinguishable from steady-state
     per-call latency in the returned JSON.
     """
+    global _first_invocation
+    first_in_environment = _first_invocation
+    _first_invocation = False            # flip before any network call, so a failing call cannot leave it True
+    seconds_since_init = time.monotonic() - _INIT_MONOTONIC
+
     if not BUS_URL:
         return {"statusCode": 500, "body": json.dumps({"error": "FARF_BUS_URL not set"})}
 
@@ -76,19 +87,15 @@ def handler(event, context):
 
     timings["total_wall_clock_ms"] = (time.time() - t_start) * 1000
 
-    # Lambda's own /proc/uptime-based cold-start heuristic: if this
-    # container's uptime is close to the total execution time so far,
-    # this is very likely a cold start (fresh execution environment).
-    # Not authoritative (Lambda doesn't expose a direct cold-start flag
-    # to handler code) but a reasonable, disclosed proxy -- report it as
-    # a heuristic, not a certainty.
+    # container_uptime_seconds is the sandbox's /proc/uptime. It is informational only and is NOT a cold-start signal.
+    # likely_cold_start is True when this is the first invocation served by this execution environment.
+    # Note: total_wall_clock_ms above starts when the handler starts, so it EXCLUDES Lambda's Init phase. The cost of a
+    # cold start is the "Init Duration" field of the CloudWatch REPORT line (present only on cold starts).
     try:
-        with open("/proc/uptime", encoding="utf-8") as f:
+        with open("/proc/uptime") as f:
             uptime_seconds = float(f.read().split()[0])
-        likely_cold_start = uptime_seconds < 5.0
-    except (OSError, ValueError, IndexError):
+    except (OSError, ValueError, IndexError):  # no /proc/uptime (non-Linux) or unparsable content
         uptime_seconds = None
-        likely_cold_start = None
 
     return {
         "statusCode": 200,
@@ -99,6 +106,8 @@ def handler(event, context):
             "admit_result": admit_result,
             "send_result": send_result,
             "container_uptime_seconds": uptime_seconds,
-            "likely_cold_start": likely_cold_start,
+            "first_invocation_in_environment": first_in_environment,
+            "seconds_since_init": round(seconds_since_init, 3),
+            "likely_cold_start": first_in_environment,
         }),
     }

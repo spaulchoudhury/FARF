@@ -1,31 +1,99 @@
-# Generated at runtime -- not part of the reviewable artefact
+# ---------------------------------------------------------------------------
+# FARF .gitignore  (rewritten 24 Sep 2026)
+# Principle: commit source, tests, docs, config and small cited results.
+# Never commit: runtime output, cloud evidence, build products, secrets, private data.
+# ---------------------------------------------------------------------------
+
+# Python / tooling
 __pycache__/
+docker/__pycache__/
 *.pyc
 .pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+build/
+dist/
+*.egg-info/
+
+# Runtime state (SQLite audit DBs, per-DB key material, logs)
 *.db
 *.db.key
 *.db.pseudonyms.json
 :memory:.key
 :memory:.pseudonyms.json
-logs/*.log
+logs/*
+!logs/.gitkeep
+
+# Secrets and local environment
 .env
-docker/__pycache__/
+*.pem
+*.key
+*.credentials.json
 
-# Keep the evaluation report CSVs -- they are cited evidence (Ch4/5/6),
-# not disposable run artefacts, so they are intentionally NOT ignored.
-
-lambda_build/
-*.bak
-*.old.py
-farf_run.bak*.ps1
-validation/data/
+# Cloud evidence and pre-flight inventories. These hold AWS account ids, access-key ids, source IPs and
+# e-mail addresses. Archive them privately (see evidence/README.md); commit only the SHA-256 manifest.
 evidence_*/
+evidence_*.zip
 precheck_*/
+precheck_*.zip
 egress_saved.json
 sg_during_revoke.json
-*.zip
+partition_*log*.jsonl
+*_Console_Output*.txt
+
+# Lambda build products (rebuild with the steps in REPRODUCE.md)
 lambda_build/
-.venv/
+lambda_function.zip
+lambda-out-*.json
+
+# Editor / one-off backups of scripts
+*.bak
+*.bak.py
+*.bak[0-9]
+*.bak[0-9].*
+*.old
+*.old.*
+*_bak
+*_bak[0-9]*
+*_bak.*
+*_bak[0-9]*.*
+.dockerignore_old
+farf_run.bak*.ps1
+farf_run.old.ps1
+farf_run_bak*.ps1
+*.py.bak
+
+# Third-party benchmark data: licence "other" (AgentHarm) and anti-contamination canary strings.
+# Fetch at run time, never commit.
+validation/data/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Private working notes: draft thesis prose, marker feedback, superseded runbooks. Not reproducibility material,
+# and verbatim thesis text in a public repo can trip the similarity check.
+THESIS_TEXT_UPDATES.md
+AUDIT_AND_NEXT_STEPS.md
+MARKER_FEEDBACK_RESPONSE.md
+PRE_TEARDOWN_RUNBOOK_v2.md
+
+# Superseded script variants (kept on disk; the runner farf_run.ps1 calls only the canonical ones).
+# Canonical: aws_pilot/adr004_partition_client_v5.py, aws_pilot/adr010_boundary_probe_v2.py,
+#            aws_pilot/task-def-partition-v5.json, gcp_pilot/cloud_run_final_checks_FIXED.py,
+#            pentest_cloud/pt08_session_hijack_cloud.py and ..._FIXED_v3.py
+aws_pilot/adr004_partition_client_v[234].py
+aws_pilot/analyze_partition_log.old*
+aws_pilot/task-def-partition-v4.json
+gcp_pilot/*.BAK.py
+gcp_pilot/*.OLD.py
+pentest_cloud/*.BAK.py
+pentest_cloud/pt08_session_hijack_cloud_FIXED.py
+*.BAK
+*.OLD
+*.old.py
+*.zip
 *_OLD.py
 *_BAK.py
-aws_pilot/task-def-partition-v4.json
+
