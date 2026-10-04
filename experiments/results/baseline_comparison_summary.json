@@ -1,0 +1,89 @@
+{
+  "e4_delivered_fraction": {
+    "metric": "delivered_fraction",
+    "farf_mean": 0.27305555555555555,
+    "farf_ci95": [
+      0.17226399897370492,
+      0.3738471121374062
+    ],
+    "dart_mean": 1.0,
+    "dart_ci95": [
+      1.0,
+      1.0
+    ],
+    "significance": {
+      "test": "wilcoxon_signed_rank",
+      "statistic": 0.0,
+      "p_value": 2.768991779285452e-10,
+      "significant": true
+    }
+  },
+  "e4_blast_fraction": {
+    "metric": "blast_fraction",
+    "farf_mean": 0.2,
+    "farf_ci95": [
+      0.09579703633961065,
+      0.30420296366038935
+    ],
+    "dart_mean": 1.0,
+    "dart_ci95": [
+      1.0,
+      1.0
+    ],
+    "significance": {
+      "test": "wilcoxon_signed_rank",
+      "statistic": 0.0,
+      "p_value": 4.262191597843629e-12,
+      "significant": true
+    }
+  },
+  "sybil_delivered_fraction": {
+    "metric": "delivered_fraction",
+    "farf_mean": 0.3016666666666667,
+    "farf_ci95": [
+      0.29146269001634345,
+      0.31187064331698994
+    ],
+    "dart_mean": 1.0,
+    "dart_ci95": [
+      1.0,
+      1.0
+    ],
+    "significance": {
+      "test": "wilcoxon_signed_rank",
+      "statistic": 0.0,
+      "p_value": 1.1706949819202088e-11,
+      "significant": true
+    }
+  },
+  "fanout_delivered_fraction": {
+    "metric": "delivered_fraction",
+    "farf_mean": 0.15000000000000002,
+    "farf_ci95": [
+      0.15000000000000002,
+      0.15000000000000002
+    ],
+    "dart_mean": 1.0,
+    "dart_ci95": [
+      1.0,
+      1.0
+    ],
+    "significance": {
+      "test": "degenerate (no variance)",
+      "p_value": null,
+      "significant": false
+    }
+  },
+  "recovery_farf_quarantine_rate": 1.0,
+  "recovery_dart_quarantine_rate": 0.0,
+  "recovery_farf_messages_to_quarantine": {
+    "n": 60,
+    "mean": 7.0,
+    "sd": 0.0,
+    "ci_95": [
+      7.0,
+      7.0
+    ]
+  },
+  "recovery_dart_messages_to_quarantine": null
+}

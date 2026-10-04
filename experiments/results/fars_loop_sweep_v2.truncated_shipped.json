@@ -1,0 +1,3246 @@
+{
+  "chain": {},
+  "e4_plain": {
+    "30.0": {
+      "off": {
+        "blast_fraction": [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "predictive_validity": {
+          "pearson_r": 0.28740195847008143,
+          "p_value": 0.298963383090568,
+          "mae": 14.76911111111111,
+          "rmse": 27.261334537046064
+        },
+        "discriminative_validity": {
+          "auc": 0.7307692307692308,
+          "reason": null
+        },
+        "contained_rate": 0.8666666666666667
+      },
+      "global": {
+        "blast_fraction": [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "predictive_validity": {
+          "pearson_r": 0.11322989079780785,
+          "p_value": 0.6878393812094752,
+          "mae": 12.005333333333335,
+          "rmse": 21.07350687123175
+        },
+        "discriminative_validity": {
+          "auc": 0.6428571428571429,
+          "reason": null
+        },
+        "contained_rate": 0.9333333333333333
+      },
+      "scoped-naive": {
+        "blast_fraction": [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "predictive_validity": {
+          "pearson_r": 0.28740195847008143,
+          "p_value": 0.298963383090568,
+          "mae": 14.76911111111111,
+          "rmse": 27.261334537046064
+        },
+        "discriminative_validity": {
+          "auc": 0.7307692307692308,
+          "reason": null
+        },
+        "contained_rate": 0.8666666666666667
+      },
+      "scoped-cold": {
+        "blast_fraction": [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "predictive_validity": {
+          "pearson_r": 0.28740195847008143,
+          "p_value": 0.298963383090568,
+          "mae": 14.76911111111111,
+          "rmse": 27.261334537046064
+        },
+        "discriminative_validity": {
+          "auc": 0.7307692307692308,
+          "reason": null
+        },
+        "contained_rate": 0.8666666666666667
+      },
+      "scoped-hop-cap": {
+        "blast_fraction": [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "predictive_validity": {
+          "pearson_r": 0.28740195847008143,
+          "p_value": 0.298963383090568,
+          "mae": 14.76911111111111,
+          "rmse": 27.261334537046064
+        },
+        "discriminative_validity": {
+          "auc": 0.7307692307692308,
+          "reason": null
+        },
+        "contained_rate": 0.8666666666666667
+      }
+    }
+  },
+  "slow_distributed": {
+    "30.0": {
+      "off": [
+        {
+          "seed": 0,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": null,
+          "n_orgs_touched_by_scope": 0,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 1,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": null,
+          "n_orgs_touched_by_scope": 0,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 2,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": null,
+          "n_orgs_touched_by_scope": 0,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 3,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": null,
+          "n_orgs_touched_by_scope": 0,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 4,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": null,
+          "n_orgs_touched_by_scope": 0,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 5,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": null,
+          "n_orgs_touched_by_scope": 0,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 6,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": null,
+          "n_orgs_touched_by_scope": 0,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 7,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": null,
+          "n_orgs_touched_by_scope": 0,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 8,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": null,
+          "n_orgs_touched_by_scope": 0,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 9,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": null,
+          "n_orgs_touched_by_scope": 0,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 10,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": null,
+          "n_orgs_touched_by_scope": 0,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 11,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": null,
+          "n_orgs_touched_by_scope": 0,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 12,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": null,
+          "n_orgs_touched_by_scope": 0,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 13,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": null,
+          "n_orgs_touched_by_scope": 0,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 14,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": null,
+          "n_orgs_touched_by_scope": 0,
+          "true_bystander_collateral_fraction": 0.0
+        }
+      ],
+      "global": [
+        {
+          "seed": 0,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 2,
+          "true_bystander_collateral_fraction": 1.0
+        },
+        {
+          "seed": 1,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 2,
+          "true_bystander_collateral_fraction": 1.0
+        },
+        {
+          "seed": 2,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 2,
+          "true_bystander_collateral_fraction": 1.0
+        },
+        {
+          "seed": 3,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 2,
+          "true_bystander_collateral_fraction": 1.0
+        },
+        {
+          "seed": 4,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 2,
+          "true_bystander_collateral_fraction": 1.0
+        },
+        {
+          "seed": 5,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 2,
+          "true_bystander_collateral_fraction": 1.0
+        },
+        {
+          "seed": 6,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 2,
+          "true_bystander_collateral_fraction": 1.0
+        },
+        {
+          "seed": 7,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 2,
+          "true_bystander_collateral_fraction": 1.0
+        },
+        {
+          "seed": 8,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 2,
+          "true_bystander_collateral_fraction": 1.0
+        },
+        {
+          "seed": 9,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 2,
+          "true_bystander_collateral_fraction": 1.0
+        },
+        {
+          "seed": 10,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 2,
+          "true_bystander_collateral_fraction": 1.0
+        },
+        {
+          "seed": 11,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 2,
+          "true_bystander_collateral_fraction": 1.0
+        },
+        {
+          "seed": 12,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 2,
+          "true_bystander_collateral_fraction": 1.0
+        },
+        {
+          "seed": 13,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 2,
+          "true_bystander_collateral_fraction": 1.0
+        },
+        {
+          "seed": 14,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": false,
+              "messages": 40,
+              "hop_at_trigger": null
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 2,
+          "true_bystander_collateral_fraction": 1.0
+        }
+      ],
+      "scoped-naive": [
+        {
+          "seed": 0,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 1,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 2,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 3,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 4,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 5,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 6,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 7,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 8,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 9,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 10,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 11,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 12,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 13,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 14,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        }
+      ],
+      "scoped-cold": [
+        {
+          "seed": 0,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 1,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 2,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 3,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 4,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 5,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 6,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 7,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 8,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 9,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 10,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 11,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 12,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 13,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 14,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        }
+      ],
+      "scoped-hop-cap": [
+        {
+          "seed": 0,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 1,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 2,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 3,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 4,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 5,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 6,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 7,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 8,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 9,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 10,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 11,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 12,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 13,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        },
+        {
+          "seed": 14,
+          "n_orgs": 15,
+          "puppets": [
+            "OrgA",
+            "OrgF",
+            "OrgK"
+          ],
+          "bystanders": [
+            "OrgC",
+            "OrgD",
+            "OrgH",
+            "OrgI",
+            "OrgM",
+            "OrgN",
+            "OrgO"
+          ],
+          "events": [
+            {
+              "puppet": "OrgA",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgF",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            },
+            {
+              "puppet": "OrgK",
+              "self_quarantined": true,
+              "messages": 1,
+              "hop_at_trigger": 0
+            }
+          ],
+          "max_incident_hop": 1,
+          "n_orgs_touched_by_scope": 8,
+          "true_bystander_collateral_fraction": 0.0
+        }
+      ]
+    }
+  }
+}

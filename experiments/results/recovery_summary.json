@@ -1,0 +1,77 @@
+[
+  {
+    "policy": "identity",
+    "persona": "persistent_hostile",
+    "n": 80,
+    "reinstated_rate": 1.0,
+    "requarantined_rate": 1.0,
+    "mean_post_delivered": 6.0,
+    "mttr_mean_s": 5.0,
+    "mttr_ci95": [
+      5.0,
+      5.0
+    ]
+  },
+  {
+    "policy": "identity",
+    "persona": "dormant_attacker",
+    "n": 80,
+    "reinstated_rate": 1.0,
+    "requarantined_rate": 1.0,
+    "mean_post_delivered": 6.0,
+    "mttr_mean_s": 5.0,
+    "mttr_ci95": [
+      5.0,
+      5.0
+    ]
+  },
+  {
+    "policy": "identity",
+    "persona": "benign_false_positive",
+    "n": 80,
+    "reinstated_rate": 1.0,
+    "requarantined_rate": 0.0,
+    "mean_post_delivered": 40.0,
+    "mttr_mean_s": 5.0,
+    "mttr_ci95": [
+      5.0,
+      5.0
+    ]
+  },
+  {
+    "policy": "behaviour_gated",
+    "persona": "persistent_hostile",
+    "n": 80,
+    "reinstated_rate": 0.0,
+    "requarantined_rate": 0.0,
+    "mean_post_delivered": 0.0,
+    "mttr_mean_s": null,
+    "mttr_ci95": null
+  },
+  {
+    "policy": "behaviour_gated",
+    "persona": "dormant_attacker",
+    "n": 80,
+    "reinstated_rate": 1.0,
+    "requarantined_rate": 1.0,
+    "mean_post_delivered": 3.0,
+    "mttr_mean_s": 79.3125,
+    "mttr_ci95": [
+      76.3408002558668,
+      82.2841997441332
+    ]
+  },
+  {
+    "policy": "behaviour_gated",
+    "persona": "benign_false_positive",
+    "n": 80,
+    "reinstated_rate": 1.0,
+    "requarantined_rate": 0.0,
+    "mean_post_delivered": 40.0,
+    "mttr_mean_s": 30.0,
+    "mttr_ci95": [
+      30.0,
+      30.0
+    ]
+  }
+]

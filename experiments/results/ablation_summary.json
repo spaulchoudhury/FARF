@@ -1,0 +1,248 @@
+{
+  "n_per_arm": 150,
+  "e4_summary": [
+    {
+      "arm": "full",
+      "metric": "delivered_fraction",
+      "n": 150,
+      "mean": 0.23366666666666666,
+      "sd": 0.3547508079196046,
+      "ci_95_lo": 0.17643088739383417,
+      "ci_95_hi": 0.29090244593949915
+    },
+    {
+      "arm": "-taint_to_orchestration",
+      "metric": "delivered_fraction",
+      "n": 150,
+      "mean": 0.23366666666666666,
+      "sd": 0.3547508079196046,
+      "ci_95_lo": 0.17643088739383417,
+      "ci_95_hi": 0.29090244593949915,
+      "vs_baseline": "full",
+      "test": "none (identical samples)",
+      "p_value": 1.0
+    },
+    {
+      "arm": "-quarantine_to_edge_severing",
+      "metric": "delivered_fraction",
+      "n": 150,
+      "mean": 0.23366666666666666,
+      "sd": 0.3547508079196046,
+      "ci_95_lo": 0.17643088739383417,
+      "ci_95_hi": 0.29090244593949915,
+      "vs_baseline": "full",
+      "test": "none (identical samples)",
+      "p_value": 1.0
+    },
+    {
+      "arm": "-org_detector",
+      "metric": "delivered_fraction",
+      "n": 150,
+      "mean": 0.4007777777777778,
+      "sd": 0.3913748337618463,
+      "ci_95_lo": 0.3376330488636971,
+      "ci_95_hi": 0.46392250669185847,
+      "vs_baseline": "full",
+      "test": "wilcoxon_signed_rank",
+      "p_value": 1.3282491330065688e-13
+    },
+    {
+      "arm": "-fanout_detector",
+      "metric": "delivered_fraction",
+      "n": 150,
+      "mean": 0.23366666666666666,
+      "sd": 0.3547508079196046,
+      "ci_95_lo": 0.17643088739383417,
+      "ci_95_hi": 0.29090244593949915,
+      "vs_baseline": "full",
+      "test": "none (identical samples)",
+      "p_value": 1.0
+    },
+    {
+      "arm": "reinstatement=self_attest",
+      "metric": "delivered_fraction",
+      "n": 150,
+      "mean": 0.23366666666666666,
+      "sd": 0.3547508079196046,
+      "ci_95_lo": 0.17643088739383417,
+      "ci_95_hi": 0.29090244593949915,
+      "vs_baseline": "full",
+      "test": "none (identical samples)",
+      "p_value": 1.0
+    },
+    {
+      "arm": "reinstatement=none",
+      "metric": "delivered_fraction",
+      "n": 150,
+      "mean": 0.23366666666666666,
+      "sd": 0.3547508079196046,
+      "ci_95_lo": 0.17643088739383417,
+      "ci_95_hi": 0.29090244593949915,
+      "vs_baseline": "full",
+      "test": "none (identical samples)",
+      "p_value": 1.0
+    },
+    {
+      "arm": "full",
+      "metric": "blast_fraction",
+      "n": 150,
+      "mean": 0.13333333333333333,
+      "sd": 0.3410734469243656,
+      "ci_95_lo": 0.07830427043008203,
+      "ci_95_hi": 0.18836239623658463
+    },
+    {
+      "arm": "-taint_to_orchestration",
+      "metric": "blast_fraction",
+      "n": 150,
+      "mean": 0.13333333333333333,
+      "sd": 0.3410734469243656,
+      "ci_95_lo": 0.07830427043008203,
+      "ci_95_hi": 0.18836239623658463,
+      "vs_baseline": "full",
+      "test": "none (identical samples)",
+      "p_value": 1.0
+    },
+    {
+      "arm": "-quarantine_to_edge_severing",
+      "metric": "blast_fraction",
+      "n": 150,
+      "mean": 0.30666666666666664,
+      "sd": 0.4626545331046018,
+      "ci_95_lo": 0.23202161401226512,
+      "ci_95_hi": 0.38131171932106817,
+      "vs_baseline": "full",
+      "test": "wilcoxon_signed_rank",
+      "p_value": 3.414173577297533e-07
+    },
+    {
+      "arm": "-org_detector",
+      "metric": "blast_fraction",
+      "n": 150,
+      "mean": 0.22,
+      "sd": 0.41563406724226665,
+      "ci_95_lo": 0.15294126694042876,
+      "ci_95_hi": 0.28705873305957125,
+      "vs_baseline": "full",
+      "test": "wilcoxon_signed_rank",
+      "p_value": 0.0003114909767673833
+    },
+    {
+      "arm": "-fanout_detector",
+      "metric": "blast_fraction",
+      "n": 150,
+      "mean": 0.13333333333333333,
+      "sd": 0.3410734469243656,
+      "ci_95_lo": 0.07830427043008203,
+      "ci_95_hi": 0.18836239623658463,
+      "vs_baseline": "full",
+      "test": "none (identical samples)",
+      "p_value": 1.0
+    },
+    {
+      "arm": "reinstatement=self_attest",
+      "metric": "blast_fraction",
+      "n": 150,
+      "mean": 0.13333333333333333,
+      "sd": 0.3410734469243656,
+      "ci_95_lo": 0.07830427043008203,
+      "ci_95_hi": 0.18836239623658463,
+      "vs_baseline": "full",
+      "test": "none (identical samples)",
+      "p_value": 1.0
+    },
+    {
+      "arm": "reinstatement=none",
+      "metric": "blast_fraction",
+      "n": 150,
+      "mean": 0.13333333333333333,
+      "sd": 0.3410734469243656,
+      "ci_95_lo": 0.07830427043008203,
+      "ci_95_hi": 0.18836239623658463,
+      "vs_baseline": "full",
+      "test": "none (identical samples)",
+      "p_value": 1.0
+    }
+  ],
+  "sybil_summary": [
+    {
+      "arm": "full",
+      "metric": "delivered_fraction",
+      "n": 150,
+      "mean": 0.3024444444444444,
+      "sd": 0.038637624414329594,
+      "ci_95_lo": 0.29621061919800173,
+      "ci_95_hi": 0.3086782696908871
+    },
+    {
+      "arm": "-org_detector",
+      "metric": "delivered_fraction",
+      "n": 150,
+      "mean": 1.0,
+      "sd": 0.0,
+      "ci_95_lo": 1.0,
+      "ci_95_hi": 1.0,
+      "vs_baseline": "full",
+      "test": "wilcoxon_signed_rank",
+      "p_value": 9.71849430746055e-27
+    }
+  ],
+  "fanout_summary": [
+    {
+      "arm": "full",
+      "metric": "delivered_fraction",
+      "n": 150,
+      "mean": 0.15,
+      "sd": 0.0,
+      "ci_95_lo": 0.15,
+      "ci_95_hi": 0.15
+    },
+    {
+      "arm": "-fanout_detector",
+      "metric": "delivered_fraction",
+      "n": 150,
+      "mean": 1.0,
+      "sd": 0.0,
+      "ci_95_lo": 1.0,
+      "ci_95_hi": 1.0,
+      "vs_baseline": "full",
+      "test": "degenerate (no variance)",
+      "p_value": null
+    }
+  ],
+  "campaign_w2_delivered_summary": [
+    {
+      "arm": "full",
+      "metric": "w2_delivered",
+      "n": 150,
+      "mean": 22.473333333333333,
+      "sd": 18.597357345163687,
+      "ci_95_lo": 19.472820814960137,
+      "ci_95_hi": 25.47384585170653
+    },
+    {
+      "arm": "-taint_to_orchestration",
+      "metric": "w2_delivered",
+      "n": 150,
+      "mean": 60.0,
+      "sd": 0.0,
+      "ci_95_lo": 60.0,
+      "ci_95_hi": 60.0,
+      "vs_baseline": "full",
+      "test": "wilcoxon_signed_rank",
+      "p_value": 1.104867119930529e-21
+    }
+  ],
+  "campaign_w2_detect_rate": [
+    {
+      "arm": "full",
+      "w2_detected_rate": 0.8066666666666666,
+      "n": 150
+    },
+    {
+      "arm": "-taint_to_orchestration",
+      "w2_detected_rate": 0.0,
+      "n": 150
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "loop_off": {
+    "n": 40,
+    "blast_fraction_desc": {
+      "n": 40,
+      "mean": 0.175,
+      "sd": 0.38480764425479264,
+      "ci_95": [
+        0.05193254488705126,
+        0.29806745511294874
+      ]
+    },
+    "predictive_validity": {
+      "pearson_r": 0.40824213467713544,
+      "p_value": 0.008919756887616873,
+      "mae": 17.37525,
+      "rmse": 31.001178288538938
+    },
+    "discriminative_validity": {
+      "auc": 0.8225108225108224,
+      "reason": null
+    },
+    "contained_rate": 0.825
+  },
+  "loop_on": {
+    "n": 40,
+    "blast_fraction_desc": {
+      "n": 40,
+      "mean": 0.15,
+      "sd": 0.36162028533978946,
+      "ci_95": [
+        0.03434822203137153,
+        0.2656517779686285
+      ]
+    },
+    "predictive_validity": {
+      "pearson_r": 0.3212694279394875,
+      "p_value": 0.043238968260602896,
+      "mae": 16.133166666666668,
+      "rmse": 29.063192280882628
+    },
+    "discriminative_validity": {
+      "auc": 0.7892156862745097,
+      "reason": null
+    },
+    "contained_rate": 0.85
+  },
+  "paired_blast_fraction_on_vs_off": {
+    "test": "wilcoxon_signed_rank",
+    "statistic": 0.0,
+    "p_value": 0.31731050786291415,
+    "significant": false,
+    "cohens_d": -0.15811388300841897
+  }
+}
