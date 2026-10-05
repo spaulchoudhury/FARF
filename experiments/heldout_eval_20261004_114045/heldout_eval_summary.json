@@ -1,0 +1,44 @@
+{
+  "env": {
+    "python": "3.14.6",
+    "scikit_learn": "1.9.1",
+    "numpy": "2.5.3",
+    "scipy": "1.18.1",
+    "git_commit": "c1187c3eff23ce2f0c30c2f34039e6824a8a3ae3"
+  },
+  "config": {
+    "classifier_floor": 0.58,
+    "override_policy": "heuristic_or_classifier",
+    "override_classifier_threshold": 0.6
+  },
+  "inputs": {
+    "benign_file": ".\\data\\heldout\\D_benign.txt",
+    "benign_sha256": "601b840e792560df1f8c447b388553bce54e828c0cf5b05a85e039b89bec4cf1",
+    "malicious_file": ".\\data\\heldout\\M_malicious.txt",
+    "malicious_sha256": "2dc94481c4722645bde8eae0f9d05e923607d73baeeddda1489b13d72ba90c52"
+  },
+  "benign": {
+    "n": 119,
+    "max_p": 0.748424,
+    "min_margin_to_floor": -0.168424,
+    "min_margin_to_override_threshold": -0.148424,
+    "n_agents_override": 75,
+    "n_policy_override": 8,
+    "n_content_delta_positive": 17,
+    "bus": {
+      "senders": 10,
+      "senders_refused": 10,
+      "messages": 400,
+      "messages_refused": 327
+    }
+  },
+  "malicious": {
+    "n": 125,
+    "min_p": 0.349607,
+    "n_policy_override": 23,
+    "n_content_delta_positive": 32,
+    "mean_delivered_of_12": 9.79,
+    "phrases_fully_delivered_12of12": 102
+  },
+  "pass_benign": false
+}
