@@ -1,5 +1,5 @@
 """
-docker/bus_service.py
+docker/bus_service.py  (v7.9.11 profile-aware revision)
 ======================
 HTTP shim around the existing, unmodified `FederationBus` (federation_bus.py),
 so the federation's single auditable mediator (Section 4.6 of the thesis)
@@ -34,7 +34,7 @@ import threading
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from flask import Flask, jsonify, request
+from flask import Flask, request, jsonify
 
 from federation_bus import FederationBus
 
@@ -42,14 +42,119 @@ app = Flask(__name__)
 _lock = threading.Lock()
 
 DB_PATH = os.environ.get("FARF_AUDIT_DB", "/data/farf_audit.db")
+if "FARF_AUDIT_DB" not in os.environ and not os.path.isdir(os.path.dirname(DB_PATH)):
+    # Local (e.g. Windows) run without FARF_AUDIT_DB: fall back to the temp dir instead of crashing.
+    import tempfile
+    DB_PATH = os.path.join(tempfile.gettempdir(), "farf_audit_local.db")
 QUORUM_MODE = os.environ.get("FARF_QUORUM_MODE", "pbft_dynamic")
+CREDENTIAL_TTL_S = float(os.environ.get("FARF_CREDENTIAL_TTL_S", "300"))   # agent credential lifetime; default unchanged
 
-bus = FederationBus(db_path=DB_PATH, require_message_signatures=True, quorum_mode=QUORUM_MODE)
+# ---------------------------------------------------------------------------------------------
+# v7.9.11 profile selection (ALL opt-in). With none of the FARF_* variables below set, the
+# FederationBus is constructed with exactly the arguments v7.9.10 used, i.e. the identical code
+# path. Invalid values abort startup (fail closed) instead of silently falling back to defaults.
+#   FARF_TAINT_SOURCE        declared | content | max               (default: declared)
+#   FARF_REINSTATE_MODE      identity | behaviour_gated             (default: identity)
+#   FARF_COOLING_OFF_S / FARF_PROBATION_MSGS / FARF_PROBATION_SENS / FARF_STRIKE_BACKOFF
+#   FARF_FARS_FEEDBACK       1 to enable the FARS->control loop     (default: off)
+#   FARF_FB_SCOPE            scoped | global                         (default: scoped)
+#   FARF_FB_REQUIRE_COLD     1 | 0                                   (default: 1)
+#   FARF_FB_HOP_CAP          integer or empty                        (default: none)
+#   FARF_FB_BETA / FARF_FB_MAXMULT / FARF_FB_RECOVERY_GAIN / FARF_FB_DECAY_S
+#   FARF_ABLATE              comma list: taint_to_orchestration,quarantine_to_edge_severing,
+#                            org_detector,fanout_detector,reinstatement=none|self_attest
+# ---------------------------------------------------------------------------------------------
+def _env_float(name, default):
+    v = os.environ.get(name, "").strip()
+    return float(v) if v else default
+
+
+def _env_int(name, default):
+    v = os.environ.get(name, "").strip()
+    return int(v) if v else default
+
+
+def _build_v7911_kwargs():
+    from closed_loop import CompositionFlags, FarsFeedback, ReinstatementPolicy
+    kw, active = {}, {}
+    ts = os.environ.get("FARF_TAINT_SOURCE", "").strip()
+    if ts:
+        kw["taint_source"] = ts
+        active["taint_source"] = ts
+    mode = os.environ.get("FARF_REINSTATE_MODE", "").strip()
+    if mode:
+        pk = {"mode": mode}
+        if os.environ.get("FARF_COOLING_OFF_S"):
+            pk["cooling_off_s"] = _env_float("FARF_COOLING_OFF_S", 30.0)
+        if os.environ.get("FARF_PROBATION_MSGS"):
+            pk["probation_messages"] = _env_int("FARF_PROBATION_MSGS", 10)
+        if os.environ.get("FARF_PROBATION_SENS"):
+            pk["probation_sensitivity"] = _env_float("FARF_PROBATION_SENS", 2.0)
+        if os.environ.get("FARF_STRIKE_BACKOFF"):
+            pk["strike_backoff"] = _env_float("FARF_STRIKE_BACKOFF", 2.0)
+        kw["reinstatement_policy"] = ReinstatementPolicy(**pk)
+        active["reinstatement_policy"] = pk
+    if os.environ.get("FARF_FARS_FEEDBACK", "").strip() == "1":
+        fk = {"enabled": True, "scope": os.environ.get("FARF_FB_SCOPE", "scoped").strip() or "scoped",
+              "require_cold": os.environ.get("FARF_FB_REQUIRE_COLD", "1").strip() != "0"}
+        if os.environ.get("FARF_FB_HOP_CAP", "").strip():
+            fk["hop_cap"] = _env_int("FARF_FB_HOP_CAP", 1)
+        for env, key in (("FARF_FB_BETA", "beta"), ("FARF_FB_MAXMULT", "max_multiplier"),
+                         ("FARF_FB_RECOVERY_GAIN", "recovery_gain"), ("FARF_FB_DECAY_S", "decay_s")):
+            if os.environ.get(env, "").strip():
+                fk[key] = _env_float(env, 0.0)
+        kw["fars_feedback"] = FarsFeedback(**fk)
+        active["fars_feedback"] = fk
+    ablate = [a.strip() for a in os.environ.get("FARF_ABLATE", "").split(",") if a.strip()]
+    if ablate:
+        ck = {}
+        for a in ablate:
+            if a.startswith("reinstatement="):
+                ck["reinstatement"] = a.split("=", 1)[1]
+            else:
+                ck[a] = False
+        kw["composition"] = CompositionFlags(**ck)
+        active["composition"] = ck
+    return kw, active
+
+
+_V7911_KWARGS, V7911_ACTIVE = _build_v7911_kwargs()
+bus = FederationBus(db_path=DB_PATH, require_message_signatures=True, quorum_mode=QUORUM_MODE, **_V7911_KWARGS)
 
 
 @app.route("/health", methods=["GET"])
 def health():
-    return jsonify({"status": "ok", "quorum_mode": QUORUM_MODE}), 200
+    return jsonify({"status": "ok", "quorum_mode": QUORUM_MODE,
+                    "v7911_profile": "default(v7.9.10-path)" if not V7911_ACTIVE else "custom"}), 200
+
+
+@app.route("/config", methods=["GET"])
+def config():
+    """v7.9.11: which opt-in features this revision was started with (evidence for every cloud run)."""
+    import platform
+    import content_taint as _ct
+    libs = {"python": platform.python_version()}
+    for _name in ("sklearn", "numpy", "scipy"):
+        try:
+            libs["scikit_learn" if _name == "sklearn" else _name] = __import__(_name).__version__
+        except Exception:  # noqa: BLE001 - a missing library must not break /config
+            libs["scikit_learn" if _name == "sklearn" else _name] = None
+    return jsonify({"quorum_mode": QUORUM_MODE, "v7911_active": V7911_ACTIVE,
+                    "taint_source": bus.taint_source, "reinstatement_mode": bus.reinstatement_policy.mode,
+                    "fars_feedback_enabled": bus.fars_feedback.enabled, "credential_ttl_s": CREDENTIAL_TTL_S,
+                    "composition": bus.composition.describe(),
+                    "classifier_floor": _ct.CLASSIFIER_FLOOR, "classifier_weight": _ct.CLASSIFIER_WEIGHT,
+                    "override_policy": _ct.OVERRIDE_POLICY, "override_classifier_threshold": _ct.OVERRIDE_CLASSIFIER_THRESHOLD,
+                    **libs}), 200
+
+
+@app.route("/closed_loop_status", methods=["GET"])
+def closed_loop_status():
+    """v7.9.11: health EWMA, probation, strikes and the last 50 closed-loop events."""
+    with _lock:
+        result = bus.closed_loop_status()
+        result["incident_hops"] = bus.incident_hop_snapshot()
+    return jsonify(result), 200
 
 
 @app.route("/register_org", methods=["POST"])
@@ -70,7 +175,7 @@ def admit_agent():
         bus.register_agent(agent_id, org, base_privilege=base_privilege)
         vc = bus.trust.issue_credential(
             org, subject_did=f"did:key:agent:{agent_id}",
-            claims={"role": role}, ttl_seconds=300.0,
+            claims={"role": role}, ttl_seconds=CREDENTIAL_TTL_S,
         )
         result = bus.admit_agent(agent_id, org, vc)
     return jsonify(result), (200 if result.get("valid") else 403)
@@ -147,7 +252,6 @@ def witness():
 # surface live; every route 404s unless the env var is set.
 # ============================================================================
 import os as _os
-
 _PENTEST_MODE = _os.environ.get("FARF_PENTEST_MODE") == "1"
 
 
@@ -230,6 +334,18 @@ def pentest_sign_only():
 def fars():
     with _lock:
         result = bus.current_fars()
+    return jsonify(result), 200
+
+
+@app.route("/resilience_timing", methods=["GET"])
+def resilience_timing():
+    """Detection-latency and recovery-time instrumentation (fars.DetectionLatencyTracker,
+    fars.RecoveryTimeTracker) has existed on the bus since v7 and is updated correctly on every
+    quarantine/reinstatement event (federation_bus.py mark_quarantined/mark_recovered), but was never
+    exposed over HTTP: no pilot script has been able to report a Mean-Time-To-Recovery figure. Added to
+    close that gap without changing bus behaviour."""
+    with _lock:
+        result = bus.resilience_timing_report()
     return jsonify(result), 200
 
 
