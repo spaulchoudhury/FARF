@@ -64,6 +64,22 @@ def main():
     print(f"quarantined agents of {a.org} after the commit: {len(left)}   (lifted: {'yes' if lifted else 'no'})")
     print(f"FARS after:  {f1['FARS']}   trust_health: {f1['components']['trust_health']}")
 
+    try:
+        timing = get("/resilience_timing")["recovery_time"]
+        this_org_recovery_seconds = None
+        for record in timing.get("completed", []) if isinstance(timing.get("completed"), list) else []:
+            if record.get("key") == a.org:
+                this_org_recovery_seconds = record["duration_seconds"]
+        if this_org_recovery_seconds is not None:
+            print(f"recovery time (quarantine -> reinstatement) for {a.org}: {this_org_recovery_seconds}s")
+        print(f"recovery-time stats, all orgs/agents this bus revision: {timing}")
+    except (requests.RequestException, ValueError, KeyError, TypeError) as exc:
+        # /resilience_timing is new instrumentation, added after the reinstatement logic above. A problem
+        # fetching it (endpoint missing on this image, transient network issue, unexpected shape) must never
+        # turn a SUCCESSFUL reinstatement -- already confirmed and printed above -- into a reported failure.
+        print(f"[warn] /resilience_timing unavailable on this deployment ({exc}); MTTR not recorded for this run, "
+              f"but the reinstatement result above is unaffected.")
+
     tag = uuid.uuid4().hex[:6]
     adv, exe = f"{a.org}-rec{tag}-advisor", f"{a.org}-rec{tag}-executor"
     for ag, role in ((adv, "advisor"), (exe, "executor")):

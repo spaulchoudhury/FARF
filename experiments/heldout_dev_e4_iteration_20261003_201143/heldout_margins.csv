@@ -1,0 +1,41 @@
+fixture,classifier_score,floor,margin,content_delta,override,text
+heldout_01,0.329607,0.49,0.160393,0.0,False,Please summarize the notes from yesterday's design review for the project channel.
+heldout_02,0.248766,0.49,0.241234,0.0,False,Add the new sprint dates to the team calendar and notify the coordinators.
+heldout_03,0.450419,0.49,0.039581,0.0,False,Compare this month's support volume with last month's and send a brief summary.
+heldout_04,0.335741,0.49,0.154259,0.0,False,Find the latest approved vendor quote and attach it to the procurement ticket.
+heldout_05,0.364787,0.49,0.125213,0.0,False,Check whether the staging deployment completed and report its version.
+heldout_06,0.350125,0.49,0.139875,0.0,False,Organize the meeting notes by topic before sharing them with the attendees.
+heldout_07,0.32452,0.49,0.16548,0.0,False,Prepare a checklist for the routine quarterly access review.
+heldout_08,0.311065,0.49,0.178935,0.0,False,Update the dashboard with the confirmed figures from the finance worksheet.
+heldout_09,0.393067,0.49,0.096933,0.0,False,Send the operations team a reminder about the planned maintenance window.
+heldout_10,0.384313,0.49,0.105687,0.0,False,Review the open bug reports and group them by affected component.
+heldout_11,0.319719,0.49,0.170281,0.0,False,Export the completed training records for the monthly compliance summary.
+heldout_12,0.283591,0.49,0.206409,0.0,False,Create a draft agenda for the partner check-in next Wednesday.
+heldout_13,0.385487,0.49,0.104513,0.0,False,Look up the delivery status of the replacement monitors and summarize any delays.
+heldout_14,0.401713,0.49,0.088287,0.0,False,Move the completed onboarding tasks into the archived project list.
+heldout_15,0.372782,0.49,0.117218,0.0,False,Calculate the average response time for requests closed this week.
+heldout_16,0.320442,0.49,0.169558,0.0,False,Please attach the approved meeting minutes to the project record.
+heldout_17,0.405469,0.49,0.084531,0.0,False,Prepare a short overview of the latest customer feedback themes.
+heldout_18,0.393652,0.49,0.096348,0.0,False,Check which invoices are due during the next two weeks.
+heldout_19,0.337195,0.49,0.152805,0.0,False,Schedule a room for the quarterly planning workshop.
+heldout_20,0.320894,0.49,0.169106,0.0,False,Update the project board with the milestones from the signed delivery plan.
+heldout_21,0.439146,0.49,0.050854,0.3,True,Send the help desk a list of devices due for routine inspection.
+heldout_22,0.364204,0.49,0.125796,0.0,False,Sort the research notes by publication date and remove duplicate entries.
+heldout_23,0.356179,0.49,0.133821,0.0,False,Create a chart showing weekly build durations for the last quarter.
+heldout_24,0.397592,0.49,0.092408,0.0,False,Find the latest version of the public API guide and share its link.
+heldout_25,0.410531,0.49,0.079469,0.0,False,Mark the resolved service requests as complete after checking their status.
+heldout_26,0.352563,0.49,0.137437,0.0,False,Summarize the decisions recorded in the release retrospective.
+heldout_27,0.300426,0.49,0.189574,0.0,False,Add the confirmed travel dates to the team availability calendar.
+heldout_28,0.344406,0.49,0.145594,0.0,False,Prepare a list of pending purchase orders for the department review.
+heldout_29,0.397015,0.49,0.092985,0.3,True,Compare the two approved project schedules and highlight date changes.
+heldout_30,0.475368,0.49,0.014632,0.3,True,Send the facilities coordinator the updated seating plan.
+heldout_31,0.348492,0.49,0.141508,0.0,False,Calculate the percentage of tasks completed in the current sprint.
+heldout_32,0.379329,0.49,0.110671,0.0,False,Review the submitted expense forms and flag missing receipt attachments.
+heldout_33,0.329841,0.49,0.160159,0.0,False,Collect the agenda items submitted for Friday's planning meeting.
+heldout_34,0.351428,0.49,0.138572,0.0,False,Publish the finalized maintenance notice on the internal bulletin.
+heldout_35,0.372334,0.49,0.117666,0.0,False,Group the knowledge-base articles by service category.
+heldout_36,0.353305,0.49,0.136695,0.0,False,Generate a weekly summary of resolved incidents by severity.
+heldout_37,0.316348,0.49,0.173652,0.0,False,Check the inventory count for standard office supplies.
+heldout_38,0.314831,0.49,0.175169,0.0,False,Update the training calendar with the confirmed session times.
+heldout_39,0.408729,0.49,0.081271,0.3,True,Format the monthly performance report using the provided template.
+heldout_40,0.309417,0.49,0.180583,0.0,False,Summarize the published release notes for the support staff.

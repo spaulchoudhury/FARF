@@ -28,6 +28,8 @@ from cryptography.exceptions import InvalidSignature
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 from adaptive_detection import AdaptiveOrgVolumeDetector
+from closed_loop import CompositionFlags, FarsFeedback, ReinstatementPolicy
+from content_taint import analyse_payload
 from adversary_model import FederatedAdversaryModel
 from farf_logging import get_logger
 from fars import DetectionLatencyTracker, FARSEngine, RecoveryTimeTracker
@@ -70,7 +72,11 @@ class FederationBus:
 
     def __init__(self, db_path: str = "farf_audit.db", require_message_signatures: bool = True,
                  message_nonce_ttl_seconds: float = 300.0, adaptive_org_volume: bool = False,
-                 quorum_mode: str = "static", quorum_recompute_strategy: str = "immediate"):
+                 quorum_mode: str = "static", quorum_recompute_strategy: str = "immediate",
+                 composition: CompositionFlags | None = None,
+                 fars_feedback: FarsFeedback | None = None,
+                 reinstatement_policy: ReinstatementPolicy | None = None,
+                 taint_source: str = "declared", clock=None):
         """
         `quorum_mode` (v7.9.10 -- closes "dynamic PBFT quorum adoption",
         confirmed absent in `PHASE1_TO_CLOUD_DECISION_BRIEF.md` \u00a72
@@ -101,6 +107,17 @@ class FederationBus:
             caller who selects it gets an immediate, unambiguous signal
             rather than an untested behaviour silently standing in for
             "immediate."
+
+        v7.9.11 (all opt-in; the defaults reproduce v7.9.10 exactly -- see closed_loop.py):
+          - `composition`: CompositionFlags ablation switches (default: full FARF).
+          - `fars_feedback`: FarsFeedback -- closes the FARS loop (detector sensitivity and
+            reinstatement stringency scale with smoothed federation health).
+          - `reinstatement_policy`: ReinstatementPolicy -- 'behaviour_gated' adds a cooling-off
+            that restarts while the quarantined party keeps transmitting, plus a monitored
+            probation window with escalating back-off (default 'identity' == v7.9.10).
+          - `taint_source`: 'declared' (default, v7.9.10: caller-supplied taint_delta), 'content'
+            (bus derives magnitude from message content, ignoring the caller's claim) or 'max'.
+          - `clock`: injectable time source for the new cooling-off logic (tests/experiments).
         """
         if quorum_mode not in self.VALID_QUORUM_MODES:
             raise ValueError(f"quorum_mode must be one of {self.VALID_QUORUM_MODES}, got {quorum_mode!r}")
@@ -133,6 +150,28 @@ class FederationBus:
         self._fars_history_cap = 500
         self.recovery_tracker = RecoveryTimeTracker()
         self.detection_latency_tracker = DetectionLatencyTracker()
+
+        # ---- v7.9.11 closed-loop / ablation / behaviour-gated recovery state (opt-in) ----
+        if taint_source not in ("declared", "content", "max"):
+            raise ValueError(f"taint_source must be declared|content|max, got {taint_source!r}")
+        self.composition = composition or CompositionFlags()
+        self.fars_feedback = fars_feedback or FarsFeedback()
+        self.reinstatement_policy = reinstatement_policy or ReinstatementPolicy()
+        self.taint_source = taint_source
+        self._clock = clock or time.time
+        self._health_ewma: float | None = None       # smoothed FARS / clean-ceiling, in [0, 1]
+        self._viol_seen = 0                          # incremental policy-violation counter
+        self._viol_count = 0
+        self.health_history: list[dict] = []
+        self._q_since: dict[str, float] = {}         # 'org:X' / 'agent:Y' -> quarantine start
+        self._q_last_attempt: dict[str, float] = {}  # last transmit attempt while quarantined
+        self._incident_scope: dict[str, float] = {}   # org -> last time it was (re-)implicated
+        self._incident_hop: dict[str, int] = {}        # org -> hop distance from its nearest active root
+        self._probation: dict[str, dict] = {}
+        self._strikes: dict[str, int] = {}
+        self.closed_loop_events: list[dict] = []
+        if self.fars_feedback.enabled:
+            self.fars_engine.cache_connectivity = True   # same value, computed once per topology
 
         # PENTEST FINDING (fixed, v7.1 / latent async TOCTOU): every
         # check-then-act sequence in this class (nonce check -> insert,
@@ -493,12 +532,22 @@ class FederationBus:
         propose_federation_reinstatement() + witness_federation_reinstatement()
         instead, which requires independent quorum.
         """
-        if org in self.federation_wide_quarantined:
+        if self.composition.reinstatement == "none":
+            return {"valid": False, "reason": "reinstatement_disabled"}
+        if org in self.federation_wide_quarantined and self.composition.reinstatement != "self_attest":
             return {"valid": False, "reason": "requires_federation_quorum",
                      "hint": "use propose_federation_reinstatement() + witness_federation_reinstatement()"}
+        if self.reinstatement_policy.gated and org not in self.federation_wide_quarantined:
+            ok, quiet, req = self._cooling_off_status(f"agent:{agent_id}")
+            if not ok:
+                return {"valid": False, "reason": "cooling_off_active",
+                        "quiet_for_s": round(quiet, 3), "required_s": round(req, 3)}
         result = self.verify_trust_boundary(vc, org, requesting_agent=agent_id)
         if result["valid"]:
+            if org in self.federation_wide_quarantined:   # only reachable under the 'self_attest' ablation
+                self._restore_org(org)
             self.orchestration.reinstate(agent_id, capability=self.orchestration._reinstate_capability)
+            self._start_probation(f"agent:{agent_id}")
             self.recovery_tracker.mark_recovered(agent_id, time.time())
             if agent_id not in self.trust.agent_identities:
                 self.trust.register_agent_identity(agent_id)
@@ -590,6 +639,17 @@ class FederationBus:
             return {"accepted": False, "reason": "invalid_witness_signature"}
         self._message_nonce_expiry[nonce] = time.time() + self.message_nonce_ttl_seconds
 
+        if self.composition.reinstatement == "none":
+            return {"accepted": False, "reason": "reinstatement_disabled"}
+        accused = self.ledger.proposals.get(proposal_id, {}).get("org")
+        if self.reinstatement_policy.gated and accused is not None:
+            ok, quiet, req = self._cooling_off_status(f"org:{accused}")
+            if not ok:
+                self.closed_loop_events.append({"event": "witness_refused_cooling_off", "org": accused,
+                                                "quiet_for_s": round(quiet, 3), "required_s": round(req, 3)})
+                return {"accepted": False, "reason": "cooling_off_active",
+                        "quiet_for_s": round(quiet, 3), "required_s": round(req, 3)}
+
         result = self.ledger.witness(proposal_id, witnessing_org, weight=self.ledger.stake_of(witnessing_org))
         if result.get("committed"):
             org = self.ledger.proposals[proposal_id]["org"]
@@ -612,6 +672,205 @@ class FederationBus:
                 self.fanout_detector.reset(node)
         self.federation_wide_quarantined.discard(org)
         self.recovery_tracker.mark_recovered(org, now)
+        # v7.9.11: monitored probation (behaviour-gated policy only)
+        self._start_probation(f"org:{org}")
+        for node, data in self.adversary_model.graph.nodes(data=True):
+            if data.get("org") == org:
+                self._q_since.pop(f"agent:{node}", None)
+                self._q_last_attempt.pop(f"agent:{node}", None)
+
+    # ---- v7.9.11: closed-loop control ------------------------------------------------------------
+    def _sensitivity(self, agent_id: str, org: str) -> float:
+        """Detector-sensitivity multiplier m >= 1 for this sender: FARS-derived (federation health)
+        times probation. m scales the value fed to every magnitude detector and shrinks the fan-out
+        cap by 1/m -- i.e. m-times more sensitive. Exactly 1.0 with both features off."""
+        m = 1.0
+        fb = self.fars_feedback
+        if fb.enabled and self._health_ewma is not None:
+            applies = (fb.scope == "global") or self._org_in_incident_scope(org)
+            if applies:
+                m *= min(fb.max_multiplier, 1.0 + fb.beta * (1.0 - self._health_ewma))
+        if self.reinstatement_policy.gated and (
+                f"org:{org}" in self._probation or f"agent:{agent_id}" in self._probation):
+            m *= self.reinstatement_policy.probation_sensitivity
+        return m
+
+    def _update_health(self):
+        """Recompute FARS from incremental counters and fold health = FARS / clean-ceiling into an EWMA.
+        The ceiling is the FARS of an incident-free federation on the same topology (only the
+        connectivity term differs), so a sparse-but-healthy federation is not read as degraded."""
+        fb = self.fars_feedback
+        if not fb.enabled:
+            return
+        log_ = self.orchestration.audit_log
+        for e in log_[self._viol_seen:]:
+            if e["decision"] != "allow":
+                self._viol_count += 1
+        self._viol_seen = len(log_)
+        total_agents = self.adversary_model.graph.number_of_nodes() or 1
+        res = self.fars_engine.compute(
+            graph=self.adversary_model.graph,
+            quarantined_agents=len(self.orchestration.quarantined_agents), total_agents=total_agents,
+            tainted_messages=self.tainted_messages, total_messages=self.total_messages or 1,
+            policy_violations=self._viol_count, total_events=len(log_) or 1,
+            max_blast_radius_fraction=self.taint.max_blast_radius_fraction(total_agents))
+        w = self.fars_engine.weights
+        ceiling = 100.0 * (w["connectivity"] * res["components"]["connectivity"] + (1.0 - w["connectivity"]))
+        health = min(1.0, res["FARS"] / ceiling) if ceiling > 0 else 1.0
+        self._health_ewma = health if self._health_ewma is None else \
+            fb.ewma_alpha * health + (1.0 - fb.ewma_alpha) * self._health_ewma
+        self.health_history.append({"t": self._clock(), "health": round(health, 4),
+                                    "health_ewma": round(self._health_ewma, 4), "FARS": res["FARS"]})
+        if len(self.health_history) > 5000:
+            self.health_history.pop(0)
+
+    def _org_neighbours(self, org: str) -> set[str]:
+        """Orgs one delegation-edge away from `org` in the federation's static collaboration
+        topology (adversary_model.graph). main.py's build_federation seeds this as a chain of
+        cross-org delegations plus each org's internal advisor->executor edge, so this reflects
+        the federation's own declared structure, not live traffic -- an attacker cannot manufacture
+        a false neighbour relationship simply by sending more messages."""
+        g = self.adversary_model.graph
+        neighbours = set()
+        for node, data in g.nodes(data=True):
+            if data.get("org") != org:
+                continue
+            for other in list(g.successors(node)) + list(g.predecessors(node)):
+                other_org = g.nodes[other].get("org")
+                if other_org and other_org != org:
+                    neighbours.add(other_org)
+        return neighbours
+
+    def _mark_incident_scope(self, org: str, cold: bool = True):
+        """Record `org` and its topology neighbours as currently 'plausibly connected to an
+        incident' (TS ruling, Option B; v2 adds hop-cap, see FarsFeedback docstring).
+
+        `cold` (v7.9.11 fix -- found while testing the sweep, not anticipated in the original
+        design): True only if `org` was caught at BASELINE sensitivity (sens<=1.0), i.e. this is a
+        genuine, independently-triggered incident. When fars_feedback.require_cold is True (the
+        default), a `cold=False` call (an org caught only because it was ALREADY in someone else's
+        scope) does NOT re-mark or extend scope. Without this guard ('scoped-naive',
+        require_cold=False), scope propagates transitively through any connected topology on every
+        subsequent collateral catch -- confirmed empirically on the chain topology main.py builds:
+        org C gets pulled into org B's scope, then C's own (collateral) quarantine re-marks D, D's
+        re-marks E, and the boost walks hop-by-hop until the entire federation is elevated,
+        reproducing global-mode's exact failure under a different name.
+
+        Hop tracking ('scoped-hop-cap', hop_cap=N): each org's hop is the distance from its nearest
+        ACTIVE root incident. A org with no currently-active hop entry that triggers a cold
+        detection is treated as a fresh root (hop 0) -- e.g. its previous involvement, if any, has
+        already decayed. Propagation to neighbours is skipped once org_hop >= hop_cap, bounding the
+        affected radius to hop_cap regardless of how many genuinely-cold detections chain together
+        in sequence (the 'slow-distributed adversary' case)."""
+        fb = self.fars_feedback
+        if fb.require_cold and not cold:
+            return
+        now = self._clock()
+        org_hop = self._incident_hop.get(org, 0) if self._org_in_incident_scope(org) else 0
+        self._incident_scope[org] = now
+        self._incident_hop[org] = org_hop
+        if fb.hop_cap is not None and org_hop >= fb.hop_cap:
+            return
+        for neighbour in self._org_neighbours(org):
+            self._incident_scope[neighbour] = now
+            self._incident_hop[neighbour] = org_hop + 1
+
+    def _org_in_incident_scope(self, org: str) -> bool:
+        ts = self._incident_scope.get(org)
+        if ts is None:
+            return False
+        decay_s = self.fars_feedback.decay_s
+        if decay_s is None:
+            decay_s = self.reinstatement_policy.cooling_off_s   # TS instruction 4: shared timescale
+        return (self._clock() - ts) < decay_s
+
+    def closed_loop_status(self) -> dict:
+        return {"health_ewma": None if self._health_ewma is None else round(self._health_ewma, 4),
+                "fars_feedback": self.fars_feedback.enabled,
+                "reinstatement_mode": self.reinstatement_policy.mode,
+                "probation": {k: dict(v) for k, v in self._probation.items()},
+                "strikes": dict(self._strikes), "events": list(self.closed_loop_events[-50:])}
+
+    def incident_hop_snapshot(self) -> dict:
+        """Public accessor for scope-lineage instrumentation (v7.9.11 5-arm sweep): the current
+        {org: hop-distance-from-nearest-active-root} map, so tests can directly measure how far an
+        incident's elevated sensitivity actually reached, rather than only inferring it from
+        collateral-quarantine counts."""
+        return dict(self._incident_hop)
+
+    def _note_quarantine(self, key: str):
+        self._q_since.setdefault(key, self._clock())
+
+    def _note_attempt_while_quarantined(self, agent_id: str, org: str):
+        now = self._clock()
+        if org in self.federation_wide_quarantined:
+            self._q_last_attempt[f"org:{org}"] = now
+        if agent_id in self.orchestration.quarantined_agents:
+            self._q_last_attempt[f"agent:{agent_id}"] = now
+
+    def _quiet_required_s(self, key: str) -> float:
+        pol, fb = self.reinstatement_policy, self.fars_feedback
+        req = pol.cooling_off_s * (pol.strike_backoff ** self._strikes.get(key, 0))
+        if fb.enabled and self._health_ewma is not None:       # FARS -> recovery stringency
+            req *= 1.0 + fb.recovery_gain * (1.0 - self._health_ewma)
+        return req
+
+    def _cooling_off_status(self, key: str):
+        """(eligible, quiet_seconds, required_seconds). Quiet time is measured from the later of
+        the quarantine start and the last transmit attempt made while quarantined."""
+        since = self._q_since.get(key)
+        if since is None:
+            return True, 0.0, 0.0
+        quiet = self._clock() - max(since, self._q_last_attempt.get(key, since))
+        req = self._quiet_required_s(key)
+        return quiet >= req, quiet, req
+
+    def _start_probation(self, key: str):
+        self._q_since.pop(key, None)
+        self._q_last_attempt.pop(key, None)
+        if not self.reinstatement_policy.gated:
+            return
+        n = self.reinstatement_policy.probation_messages
+        self._probation[key] = {"remaining": n, "of": n, "started": self._clock()}
+        self._reset_detectors(key)
+        self.closed_loop_events.append({"event": "probation_started", "key": key, "messages": n,
+                                        "strikes": self._strikes.get(key, 0)})
+
+    def _reset_detectors(self, key: str):
+        kind, _, ident = key.partition(":")
+        agents = [ident] if kind == "agent" else [
+            n for n, d in self.adversary_model.graph.nodes(data=True) if d.get("org") == ident]
+        if kind == "org":
+            self.org_volume_detector.reset(ident)
+        for a in agents:
+            self.fanout_detector.reset(a)
+            if hasattr(self.orchestration, "cusum"):
+                self.orchestration.cusum.reset(a)
+                self.orchestration.volume_detector.reset(a)
+
+    def _probation_tick(self, agent_id: str, org: str, decision):
+        """Monitored clean window: N CONSECUTIVE clean messages restore full trust; a policy BLOCK
+        restarts the window; a detector QUARANTINE is a relapse (strike -> longer next cooling-off)."""
+        if not self.reinstatement_policy.gated or not self._probation:
+            return
+        for key in (f"org:{org}", f"agent:{agent_id}"):
+            p = self._probation.get(key)
+            if p is None:
+                continue
+            if decision == Decision.QUARANTINE:
+                self._strikes[key] = self._strikes.get(key, 0) + 1
+                del self._probation[key]
+                self.closed_loop_events.append({"event": "probation_relapse", "key": key,
+                                                "strikes": self._strikes[key]})
+            elif decision == Decision.BLOCK:
+                p["remaining"] = p["of"]
+            else:
+                p["remaining"] -= 1
+                if p["remaining"] <= 0:
+                    del self._probation[key]
+                    self._strikes[key] = 0
+                    self._reset_detectors(key)   # drop history accumulated at raised sensitivity
+                    self.closed_loop_events.append({"event": "probation_completed", "key": key})
 
     # ---- runtime message routing ---------------------------------------
     @staticmethod
@@ -638,6 +897,7 @@ class FederationBus:
         for n in expired:
             del self._message_nonce_expiry[n]
 
+    @_locked
     def sign_and_send(self, from_agent: str, from_org: str, to_agent: str, to_org: str,
                        action_type: str, payload: dict, taint_delta: float = 0.0) -> dict:
         """Convenience wrapper: signs the message with from_agent's own
@@ -666,9 +926,18 @@ class FederationBus:
         return {"message_id": None, "decision": Decision.BLOCK.value,
                 "taint_level": 0.0, "reason": reason}
 
+    @_locked  # v7.9.11 fix: send() was documented as serialized (see the class docstring / db comment
+              # at line ~276) but was never actually @_locked in v7.9.10 -- confirmed by running
+              # pentest/pt14_concurrent_replay_race.py, which showed no crash only because SQLite's own
+              # connection-level locking happened to hide the race. No existing test caught this.
     def send(self, from_agent: str, from_org: str, to_agent: str, to_org: str,
               action_type: str, payload: dict, taint_delta: float = 0.0,
               signature: str | None = None, nonce: str | None = None) -> dict:
+        # v7.9.11: a quarantined party that keeps transmitting restarts its own cooling-off
+        # (behaviour-gated reinstatement only; no effect in the default 'identity' mode).
+        if self.reinstatement_policy.gated:
+            self._note_attempt_while_quarantined(from_agent, from_org)
+
         # 0. Identity admission gate -- fail CLOSED, before the message
         #    touches the taint graph or the orchestration layer at all.
         if not self._is_admitted(from_agent, from_org):
@@ -697,9 +966,23 @@ class FederationBus:
         message_id = str(uuid.uuid4())
         self.total_messages += 1
 
+        # v7.9.11: taint MAGNITUDE. 'declared' (default) trusts the caller exactly as v7.9.10.
+        # 'content'/'max' derive it here, bus-side, from the message text (content_taint.py).
+        effective_delta = taint_delta
+        if self.taint_source != "declared":
+            analysis = analyse_payload(payload)
+            content_delta = analysis["delta"]
+            effective_delta = content_delta if self.taint_source == "content" \
+                else max(taint_delta, content_delta)
+            if analysis["override"] and not payload.get("attempts_system_override", False):
+                # the sender's own detector said 'clean'; the bus's evidence disagrees. Raise, never lower.
+                payload = {**payload, "attempts_system_override": True}
+        # v7.9.11: detector sensitivity multiplier (1.0 unless FARS feedback / probation is active)
+        sens = self._sensitivity(from_agent, from_org)
+
         # 1. Provenance-aware taint propagation (BEFORE the policy check,
         #    so the orchestration layer can react to accumulated taint)
-        self.taint.propagate(message_id, from_agent, to_agent, to_org, taint_delta)
+        self.taint.propagate(message_id, from_agent, to_agent, to_org, effective_delta)
         taint_level = self.taint.taints[message_id].taint_level
         if self.taint.is_tainted(message_id):
             self.tainted_messages += 1
@@ -710,8 +993,9 @@ class FederationBus:
         # boundary (ADR-001/ADR-004). Observational only; does not change
         # send()'s own control flow, only what evaluate() logs.
         crosses_org_boundary = (from_org != to_org)
+        taint_for_orchestration = taint_level * sens if self.composition.taint_to_orchestration else 0.0
         event = ActionEvent(agent_id=from_agent, org=from_org, action_type=action_type,
-                             payload=payload, taint_score=taint_level,
+                             payload=payload, taint_score=taint_for_orchestration,
                              crosses_org_boundary=crosses_org_boundary)
 
         # Phase 1 item 2 (v7.4): mark every message BEFORE evaluating it,
@@ -740,8 +1024,9 @@ class FederationBus:
         #     "no governance" comparator orchestration layer (see
         #     tests/test_04_*) is a true apples-to-apples baseline.
         if decision == Decision.ALLOW and getattr(self.orchestration, "governance_enabled", True) and \
-                self.org_volume_detector.update(from_org, taint_delta):
-            self._quarantine_org(from_org)
+                self.composition.org_detector and \
+                self.org_volume_detector.update(from_org, effective_delta * sens):
+            self._quarantine_org(from_org, _sens_at_detection=sens)
             decision = Decision.QUARANTINE
             self.orchestration._log(event, decision, "org_wide_behavioural_drift")
             self.recovery_tracker.mark_quarantined(from_org, time.time())
@@ -754,7 +1039,8 @@ class FederationBus:
         #     rapidly contacts many distinct targets. Same "only if
         #     still ALLOW" gating as 2b, for the same reason.
         if decision == Decision.ALLOW and getattr(self.orchestration, "governance_enabled", True) and \
-                self.fanout_detector.update(from_agent, to_agent):
+                self.composition.fanout_detector and \
+                self.fanout_detector.update(from_agent, to_agent, cap_scale=1.0 / sens):
             self.orchestration.quarantined_agents.add(from_agent)
             decision = Decision.QUARANTINE
             self.orchestration._log(event, decision, "fanout_anomaly")
@@ -763,8 +1049,12 @@ class FederationBus:
 
         # 3. Containment: sever outgoing taint edges from quarantined agents
         if decision == Decision.QUARANTINE:
-            self.taint.quarantine_edges_from(from_agent)
+            if self.composition.quarantine_to_edge_severing:
+                self.taint.quarantine_edges_from(from_agent)
             self.recovery_tracker.mark_quarantined(from_agent, time.time())
+            self._note_quarantine(f"agent:{from_agent}")
+            if self.fars_feedback.enabled:
+                self._mark_incident_scope(from_org, cold=(sens <= 1.0 + 1e-9))
 
         # 4. Persist to the audit trail (forensic repository, hash-chained)
         reason = self.orchestration.audit_log[-1]["reason"] if self.orchestration.audit_log else ""
@@ -782,8 +1072,17 @@ class FederationBus:
             "from_org": from_org, "to_agent": to_agent, "to_org": to_org,
             "action_type": action_type, "taint_level": round(taint_level, 3), "reason": reason})
 
-        return {"message_id": message_id, "decision": decision.value,
-                "taint_level": round(taint_level, 3), "reason": reason}
+        # v7.9.11: close the loop -- probation bookkeeping, then refresh the FARS-derived health
+        self._probation_tick(from_agent, from_org, decision)
+        self._update_health()
+
+        out = {"message_id": message_id, "decision": decision.value,
+               "taint_level": round(taint_level, 3), "reason": reason}
+        if self.taint_source != "declared":
+            out["taint_delta_effective"] = round(effective_delta, 4)
+        if self.fars_feedback.enabled or self.reinstatement_policy.gated:
+            out["sensitivity"] = round(sens, 3)
+        return out
 
     # ---- memory / context integrity (v6, ASI06 fix) ----------------------
     @staticmethod
@@ -1045,7 +1344,7 @@ class FederationBus:
             })
         return history
 
-    def _quarantine_org(self, org: str):
+    def _quarantine_org(self, org: str, _sens_at_detection: float = 1.0):
         """Contain every currently-known agent belonging to `org` in one
         step -- the response to a detected org-wide (Sybil) attack."""
         quarantined_agents = []
@@ -1056,6 +1355,9 @@ class FederationBus:
                 self.admitted_sessions.pop(node, None)
                 quarantined_agents.append(node)
         self.federation_wide_quarantined.add(org)
+        self._note_quarantine(f"org:{org}")
+        if self.fars_feedback.enabled:
+            self._mark_incident_scope(org, cold=(_sens_at_detection <= 1.0 + 1e-9))
         log.error("organisation quarantined", extra={
             "event": "org_quarantine", "org": org, "agents_quarantined": quarantined_agents})
 

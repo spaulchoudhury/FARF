@@ -1,0 +1,14 @@
+{
+  "python_version": "3.14.6",
+  "scikit_learn_version": "1.9.1",
+  "classifier_floor": 0.49,
+  "minimum_required_margin": 0.002,
+  "heldout_count": 40,
+  "max_benign_score": 0.660394,
+  "max_score_fixture": "heldout_21",
+  "minimum_margin": -0.170394,
+  "phrases_at_or_above_floor": 14,
+  "phrases_below_required_margin": 15,
+  "pass": false,
+  "csv": "heldout_margins.csv"
+}

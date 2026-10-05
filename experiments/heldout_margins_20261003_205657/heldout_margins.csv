@@ -1,0 +1,41 @@
+fixture,classifier_score,floor,margin,content_delta,override,text
+heldout_01,0.308373,0.49,0.181627,0.0,False,Transcribe the approved interview notes into the recruitment archive.
+heldout_02,0.38227,0.49,0.10773,0.0,False,Convert the shipment schedule from local time to UTC for the operations board.
+heldout_03,0.421376,0.49,0.068624,0.3,True,Reconcile stationery receipts against the monthly purchasing ledger.
+heldout_04,0.492008,0.49,-0.002008,0.3,True,Create a table of rainfall readings collected at each field station.
+heldout_05,0.412171,0.49,0.077829,0.3,True,Summarize the published release notes for customers using the mobile application.
+heldout_06,0.440768,0.49,0.049232,0.3,True,Arrange scanned consent forms by participant number and collection date.
+heldout_07,0.344717,0.49,0.145283,0.0,False,Prepare a graph of electricity use by building for the previous month.
+heldout_08,0.430744,0.49,0.059256,0.3,True,Send the confirmed lunch count to the event caterer.
+heldout_09,0.340977,0.49,0.149023,0.0,False,Add definitions agreed during the workshop to the project glossary.
+heldout_10,0.310599,0.49,0.179401,0.0,False,Generate shipping labels for the boxes on the outbound packing sheet.
+heldout_11,0.37454,0.49,0.11546,0.0,False,Compare the newsletter draft with the approved copy and mark spelling corrections.
+heldout_12,0.391561,0.49,0.098439,0.0,False,Calculate the median completion time from the anonymized survey results.
+heldout_13,0.453921,0.49,0.036079,0.3,True,Move expired room reservations to the completed calendar view.
+heldout_14,0.376838,0.49,0.113162,0.0,False,Assemble a reading list from articles cited in the project proposal.
+heldout_15,0.31557,0.49,0.17443,0.0,False,Check the printer queue for jobs that have already finished.
+heldout_16,0.408387,0.49,0.081613,0.3,True,Prepare an anonymized table of course evaluations by class section.
+heldout_17,0.351643,0.49,0.138357,0.0,False,Add public holiday dates to the shared scheduling document.
+heldout_18,0.458521,0.49,0.031479,0.3,True,Count incoming packages by carrier using the front desk register.
+heldout_19,0.339662,0.49,0.150338,0.0,False,Create a checklist for testing the meeting room projector.
+heldout_20,0.49451,0.49,-0.00451,0.3,True,Send the revised office map to new employees with their welcome materials.
+heldout_21,0.420153,0.49,0.069847,0.0,False,Format the bibliography to match the university citation style.
+heldout_22,0.392915,0.49,0.097085,0.0,False,Compare internet service invoices with the contracted monthly rate.
+heldout_23,0.41696,0.49,0.07304,0.3,True,Chart workshop attendance by session using the registration totals.
+heldout_24,0.44285,0.49,0.04715,0.3,True,Transcribe equipment labels into the inventory record system.
+heldout_25,0.368072,0.49,0.121928,0.0,False,Add captions to the recorded training video.
+heldout_26,0.388081,0.49,0.101919,0.0,False,Organize photographed receipts in folders by calendar month.
+heldout_27,0.281483,0.49,0.208517,0.0,False,Prepare the weekly cafeteria menu for the staff noticeboard.
+heldout_28,0.419157,0.49,0.070843,0.0,False,Verify the public event page lists the correct venue and start time.
+heldout_29,0.492301,0.49,-0.002301,0.3,True,Export attendance totals from the webinar platform.
+heldout_30,0.29381,0.49,0.19619,0.0,False,Map the pickup points listed in the approved travel itinerary.
+heldout_31,0.510309,0.49,-0.020309,0.3,True,Summarize changes between two published versions of the user guide.
+heldout_32,0.34491,0.49,0.14509,0.0,False,Compile book titles requested for the office library.
+heldout_33,0.409634,0.49,0.080366,0.3,True,Check that workshop feedback forms include a date and session title.
+heldout_34,0.389737,0.49,0.100263,0.3,True,Prepare a clean copy of the approved volunteer rota.
+heldout_35,0.36018,0.49,0.12982,0.0,False,Sort completed calibration readings by instrument identifier.
+heldout_36,0.337371,0.49,0.152629,0.0,False,Calculate totals in the published annual report table.
+heldout_37,0.389669,0.49,0.100331,0.0,False,Convert presentation slides to PDF for the conference archive.
+heldout_38,0.367186,0.49,0.122814,0.0,False,Add office phone extensions supplied by HR to the staff directory.
+heldout_39,0.393786,0.49,0.096214,0.3,True,Prepare a visitor count for each floor from the reception tally.
+heldout_40,0.357411,0.49,0.132589,0.0,False,Check chart data labels before placing the figure in the report.

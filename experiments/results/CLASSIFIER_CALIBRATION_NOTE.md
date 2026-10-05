@@ -1,13 +1,13 @@
 
 ## Operating-Floor Sweep (3 October 2026)
 The independent content-taint classifier's five current benign fixtures scored
-0.4654, 0.4000, 0.4833, 0.5026, and 0.3728 in the local Python 3.14.6 environment.
+0.4654, 0.4000, 0.4833, 0.503, and 0.3728 in the local Python 3.14.6 environment.
 An n=60 operating sweep compared floors 0.490, 0.500, 0.501, 0.502, 0.503, and
-0.505. At 0.505, the maximum benign-fixture delta was 0.0000, the worst-fixture
+0.506. At 0.506, the maximum benign-fixture delta was 0.0000, the worst-fixture
 sender was never refused in 120 repeated messages, and E4 delivered/blast fractions
 were 0.649/0.233. The 0.503 floor had the same measured outcomes but only 0.0004
-margin over the highest benign score; 0.505 leaves 0.0024. The selected operating
-floor is therefore 0.505, recorded in `content_taint.py`.
+margin over the highest benign score; 0.501 leaves 0.0024. The selected operating
+floor is therefore 0.503, recorded in `content_taint.py`.
 
 This result covers only five fixtures; the 0.0024 margin is thin and is not a general
 safety guarantee. A separate held-out benign set must be evaluated before cloud

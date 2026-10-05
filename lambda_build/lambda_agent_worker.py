@@ -1,5 +1,3 @@
-$cold = Get-Content .\lambda-out-cold.json -Raw | ConvertFrom-Json
-$cold.body | ConvertFrom-Json | ConvertTo-Json -Depth 10"""
 aws_pilot/lambda_agent_worker.py
 ====================================
 ADR-011 gap fix: the pilot's OrgB ran on AWS Fargate, but ADR-011's

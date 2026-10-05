@@ -130,12 +130,13 @@ class FanOutAnomalyDetector:
         self.cap = cap
         self._recent_targets: dict[str, list[str]] = {}
 
-    def update(self, key: str, target: str) -> bool:
+    def update(self, key: str, target: str, cap_scale: float = 1.0) -> bool:
+        # cap_scale < 1 tightens the cap (v7.9.11 closed-loop sensitivity); 1.0 == v7.9.10 exactly
         hist = self._recent_targets.setdefault(key, [])
         hist.append(target)
         if len(hist) > self.window:
             hist.pop(0)
-        return len(set(hist)) > self.cap
+        return len(set(hist)) > self.cap * cap_scale
 
     def reset(self, key: str):
         self._recent_targets[key] = []
