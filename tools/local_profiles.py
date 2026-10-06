@@ -2,9 +2,10 @@
 Python replacement for the extra localbus profiles (no PowerShell quoting involved).
     python tools/local_profiles.py --profile full3 [--cooling-off 20] [--out <dir>]
 Profiles (bus env -> scenarios):
-  full      gated reinstatement + scoped-cold FARS loop                       -> gated, loop, adaptive
+  full      gated reinstatement + scoped-cold FARS loop                       -> gated, loop, personas, collusion, adaptive
   full3     full + taint_source=content (the three-way configuration)         -> gated, loop, content, adaptive
-  personas  behaviour_gated                                                    -> personas (dormant, benign_fp)
+  personas  behaviour_gated                                                    -> personas (dormant, benign_fp), collusion
+  collusion-identity  identity mode (the v7.9.10 path)                         -> collusion (documents the weakness)
   scale     taint_source=content                                               -> benign-scale (30 senders x 40 msgs)
   hopcap    scoped loop with hop_cap=1                                         -> loop
 Content-related environment you set in your PowerShell session (FARF_OVERRIDE_POLICY, FARF_OVERRIDE_CLASSIFIER_THRESHOLD, FARF_CLASSIFIER_FLOOR)
@@ -21,9 +22,10 @@ LOOP = {"FARF_FARS_FEEDBACK": "1", "FARF_FB_BETA": "20", "FARF_FB_MAXMULT": "3",
 def profiles(cool):
     gated = {"FARF_REINSTATE_MODE": "behaviour_gated", "FARF_COOLING_OFF_S": str(cool), "FARF_PROBATION_MSGS": "5"}
     return {
-        "full": (8301, {**gated, **LOOP}, ["gated", "loop", "adaptive"]),
+        "full": (8301, {**gated, **LOOP}, ["gated", "loop", "personas", "collusion", "adaptive"]),
         "full3": (8302, {**gated, **LOOP, "FARF_TAINT_SOURCE": "content"}, ["gated", "loop", "content", "adaptive"]),
-        "personas": (8303, dict(gated), ["personas"]),
+        "personas": (8303, dict(gated), ["personas", "collusion"]),
+        "collusion-identity": (8306, {}, ["collusion"]),
         "scale": (8304, {"FARF_TAINT_SOURCE": "content"}, ["scale"]),
         "hopcap": (8305, {**LOOP, "FARF_FB_HOP_CAP": "1"}, ["loop"]),
     }
@@ -37,6 +39,7 @@ def scenario_cmd(name, url, cool, texts):
         "adaptive": [py, os.path.join(PC, "v11_adaptive_attacker_cloud.py"), "--url", url, "--n", "200"],
         "content": [py, os.path.join(PC, "v11_content_taint_cloud.py"), "--url", url],
         "personas": [py, os.path.join(PC, "v11_personas_cloud.py"), "--url", url, "--cooling-off", str(cool), "--persona", "both"],
+        "collusion": [py, os.path.join(PC, "v11_collusion_cloud.py"), "--url", url, "--cooling-off", str(cool), "--witnesses", "4"],
         "scale": [py, os.path.join(PC, "v11_content_benign_scale.py"), "--url", url] + (["--texts", texts] if texts else []),
     }[name]
 
@@ -48,6 +51,11 @@ def main() -> int:
     ap.add_argument("--texts", help="benign phrase file for the scale profile (e.g. data/heldout/D_benign.txt)")
     ap.add_argument("--out", help="directory for per-scenario logs")
     a = ap.parse_args()
+    # the scenario scripts run with cwd=pentest_cloud, so every path they receive must be absolute
+    a.texts = os.path.abspath(a.texts) if a.texts else None
+    if a.texts and not os.path.isfile(a.texts):
+        print(f"[FAIL] --texts file not found: {a.texts}")
+        return 2
     cool = int(a.cooling_off) if a.cooling_off == int(a.cooling_off) else a.cooling_off
     port, env_extra, scenarios = profiles(cool)[a.profile]
     env = dict(os.environ, PYTHONUTF8="1", FARF_PENTEST_MODE="1", PORT=str(port), **env_extra,

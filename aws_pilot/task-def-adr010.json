@@ -6,11 +6,11 @@
                                 ],
     "cpu":  "256",
     "memory":  "512",
-    "executionRoleArn":  "arn:aws:iam::$AWS_ACCOUNT_ID:role/farfPilotTaskExecutionRole",
+    "executionRoleArn":  "arn:aws:iam::<AWS_ACCOUNT_ID>:role/farfPilotTaskExecutionRole",
     "containerDefinitions":  [
                                  {
                                      "name":  "adr010-probe",
-                                     "image":  "$AWS_ACCOUNT_ID.dkr.ecr.ap-south-1.amazonaws.com/<farf-prototype>-org-b:v2-adr010",
+                                     "image":  "<AWS_ACCOUNT_ID>.dkr.ecr.ap-south-1.amazonaws.com/<farf-prototype>-org-b:v2-adr010",
                                      "command":  [
                                                      "python",
                                                      "aws_pilot/adr010_boundary_probe.py"

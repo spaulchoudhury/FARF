@@ -3,6 +3,9 @@
 # (and pushed to ECR / Artifact Registry) unless listed here.
 # NOTE: a pattern WITHOUT "**/" only matches at the top level of the folder.
 .venv/
+.venv*
+evidence_*
+experiments/results_rerun_*
 .git/
 **/__pycache__
 **/*.pyc

@@ -97,3 +97,13 @@ pentest_cloud/pt08_session_hijack_cloud_FIXED.py
 *_OLD.py
 *_BAK.py
 
+.venv311/
+
+# generated evidence (kept in the evidence zips)
+experiments/results_rerun_*/
+experiments/floor_sweep_*/
+experiments/content_taint_*_2026*/
+experiments/profiles_*/
+evidence_cloud_*.txt
+evidence_precloud_*.txt
+*.before_patch_*

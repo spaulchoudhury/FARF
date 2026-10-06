@@ -4,10 +4,10 @@
   "requiresCompatibilities": ["FARGATE"],
   "cpu": "256",
   "memory": "512",
-  "executionRoleArn": "arn:aws:iam::$AWS_ACCOUNT_ID:role/farfPilotTaskExecutionRole",
+  "executionRoleArn": "arn:aws:iam::<AWS_ACCOUNT_ID>:role/farfPilotTaskExecutionRole",
   "containerDefinitions": [{
     "name": "org-b",
-    "image": "$AWS_ACCOUNT_ID.dkr.ecr.ap-south-1.amazonaws.com/<farf-prototype>-org-b:v1",
+    "image": "<AWS_ACCOUNT_ID>.dkr.ecr.ap-south-1.amazonaws.com/<farf-prototype>-org-b:v1",
     "environment": [
       {"name": "FARF_BUS_URL", "value": "https://<farf-prototype>-bus-<GCP_PROJECT_NUMBER>.asia-south1.run.app"},
       {"name": "FARF_ORG", "value": "PilotOrgB"},

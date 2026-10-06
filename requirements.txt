@@ -19,7 +19,7 @@ PyYAML>=6.0
 # but the classifier signal -- the actual fix -- is silently disabled
 # without it, so treat this as a hard dependency for anything claiming
 # the v7.7 detection posture.
-scikit-learn>=1.3
+scikit-learn==1.9.1
 numpy>=1.26
 
 # testing / statistical validation (tests/ directory only)
