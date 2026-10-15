@@ -1,0 +1,20 @@
+{
+  "D benign, honest sender": {
+    "n": 119,
+    "detector_flags": 75,
+    "refused_by_bus": 75,
+    "refused_pct": 63.0
+  },
+  "M malicious, honest sender": {
+    "n": 125,
+    "detector_flags": 74,
+    "refused_by_bus": 74,
+    "refused_pct": 59.2
+  },
+  "M malicious, lying sender": {
+    "n": 125,
+    "detector_flags": 74,
+    "refused_by_bus": 0,
+    "refused_pct": 0.0
+  }
+}

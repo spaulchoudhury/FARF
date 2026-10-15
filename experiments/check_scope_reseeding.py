@@ -14,9 +14,9 @@ from main import build_federation
 logging.disable(logging.CRITICAL)
 
 
-def scenario(retry_after_decay, require_cold=True, hop_cap=None):
+def scenario(retry_after_decay, guard=False):
     clk = FakeClock()
-    fb = FarsFeedback(enabled=True, scope="scoped", require_cold=require_cold, hop_cap=hop_cap, beta=20.0, max_multiplier=3.0)
+    fb = FarsFeedback(enabled=True, scope="scoped", require_cold=True, beta=20.0, max_multiplier=3.0, reseed_guard=guard)
     bus = make_bus(fars_feedback=fb, clock=clk)
     try:
         ag = build_federation(bus, n_orgs=5)
@@ -47,14 +47,9 @@ def scenario(retry_after_decay, require_cold=True, hop_cap=None):
         close_bus(bus)
 
 
-ARMS = (("", dict(require_cold=True, hop_cap=None)),                    # the original check: scoped-cold (output format unchanged)
-        ("[scoped-hop-cap] ", dict(require_cold=True, hop_cap=1)),      # does a hop cap stop the re-seeded scope?
-        ("[scoped-naive] ", dict(require_cold=False, hop_cap=None)))    # reference: no cold gate at all
-
-
 if __name__ == "__main__":
-    for prefix, kw in ARMS:
+    for guard, gl in ((False, "no guard (v7.9.11 default)"), (True, "reseed_guard=True")):
         for label, retry in (("A) retries within decay_s", False), ("B) retries after decay_s ", True)):
-            s3, hops = scenario(retry, **kw)
-            print(f"{prefix}{label}: O3 max sensitivity={s3:.3f}  incident hops={dict(sorted(hops.items()))}  "
+            s3, hops = scenario(retry, guard)
+            print(f"[{gl}] {label}: O3 max sensitivity={s3:.3f}  incident hops={dict(sorted(hops.items()))}  "
                   f"-> {'O3 BOOSTED (scope re-seeded from O2)' if s3 > 1.0 else 'O3 untouched'}")

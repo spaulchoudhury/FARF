@@ -108,6 +108,13 @@ class FarsFeedback:
     decay_s: float | None = None
     require_cold: bool = True
     hop_cap: int | None = None
+    # v7.9.11 rev6 (G9/L15): opt-in incident-root re-seed guard. An org that was quarantined as COLLATERAL
+    # of another org's incident (hop >= 1 inside an active scope) is remembered for `reseed_memory_s`
+    # (default 6 x the scope decay). If it is quarantined again after that scope has decayed, it does NOT
+    # become a fresh root and does not extend a new scope: its retry is read as a continuation of the
+    # original incident. Default False keeps every earlier result reproducible.
+    reseed_guard: bool = False
+    reseed_memory_s: float | None = None
 
     def __post_init__(self):
         if self.scope not in ("global", "scoped"):

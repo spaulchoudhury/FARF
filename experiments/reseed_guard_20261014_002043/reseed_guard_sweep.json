@@ -1,0 +1,318 @@
+{
+  "5_1.5": {
+    "off": {
+      "campaign_collateral": {
+        "mean": 0.0,
+        "ci_95": [
+          0.0,
+          0.0
+        ],
+        "sig_vs_off": {
+          "test": "degenerate (no variance)",
+          "p_value": null,
+          "significant": false
+        }
+      },
+      "griefing_distant_collateral": {
+        "mean": 0.0,
+        "ci_95": [
+          0.0,
+          0.0
+        ],
+        "sig_vs_off": {
+          "test": "degenerate (no variance)",
+          "p_value": null,
+          "significant": false
+        }
+      },
+      "e4_bystander_collateral": {
+        "mean": 0.0,
+        "ci_95": [
+          0.0,
+          0.0
+        ],
+        "sig_vs_off": {
+          "test": "degenerate (no variance)",
+          "p_value": null,
+          "significant": false
+        }
+      },
+      "w2_delivered": {
+        "mean": 10.3,
+        "ci_95": [
+          9.152598341716232,
+          11.44740165828377
+        ],
+        "sig_vs_off": {
+          "test": "none (identical samples)",
+          "statistic": 0.0,
+          "p_value": 1.0,
+          "significant": false
+        }
+      },
+      "max_incident_hop": 0
+    },
+    "scoped-cold": {
+      "campaign_collateral": {
+        "mean": 0.0,
+        "ci_95": [
+          0.0,
+          0.0
+        ],
+        "sig_vs_off": {
+          "test": "degenerate (no variance)",
+          "p_value": null,
+          "significant": false
+        }
+      },
+      "griefing_distant_collateral": {
+        "mean": 0.0,
+        "ci_95": [
+          0.0,
+          0.0
+        ],
+        "sig_vs_off": {
+          "test": "degenerate (no variance)",
+          "p_value": null,
+          "significant": false
+        }
+      },
+      "e4_bystander_collateral": {
+        "mean": 0.0,
+        "ci_95": [
+          0.0,
+          0.0
+        ],
+        "sig_vs_off": {
+          "test": "degenerate (no variance)",
+          "p_value": null,
+          "significant": false
+        }
+      },
+      "w2_delivered": {
+        "mean": 6.65,
+        "ci_95": [
+          5.856987927820205,
+          7.443012072179796
+        ],
+        "sig_vs_off": {
+          "test": "paired_t_test",
+          "statistic": -18.65319224036502,
+          "p_value": 1.1265808994833785e-13,
+          "significant": true
+        }
+      },
+      "max_incident_hop": 1
+    },
+    "scoped-cold+guard": {
+      "campaign_collateral": {
+        "mean": 0.0,
+        "ci_95": [
+          0.0,
+          0.0
+        ],
+        "sig_vs_off": {
+          "test": "degenerate (no variance)",
+          "p_value": null,
+          "significant": false
+        }
+      },
+      "griefing_distant_collateral": {
+        "mean": 0.0,
+        "ci_95": [
+          0.0,
+          0.0
+        ],
+        "sig_vs_off": {
+          "test": "degenerate (no variance)",
+          "p_value": null,
+          "significant": false
+        }
+      },
+      "e4_bystander_collateral": {
+        "mean": 0.0,
+        "ci_95": [
+          0.0,
+          0.0
+        ],
+        "sig_vs_off": {
+          "test": "degenerate (no variance)",
+          "p_value": null,
+          "significant": false
+        }
+      },
+      "w2_delivered": {
+        "mean": 6.65,
+        "ci_95": [
+          5.856987927820205,
+          7.443012072179796
+        ],
+        "sig_vs_off": {
+          "test": "paired_t_test",
+          "statistic": -18.65319224036502,
+          "p_value": 1.1265808994833785e-13,
+          "significant": true
+        }
+      },
+      "max_incident_hop": 1
+    }
+  },
+  "12_1.5": {
+    "off": {
+      "campaign_collateral": {
+        "mean": 0.0,
+        "ci_95": [
+          0.0,
+          0.0
+        ],
+        "sig_vs_off": {
+          "test": "degenerate (no variance)",
+          "p_value": null,
+          "significant": false
+        }
+      },
+      "griefing_distant_collateral": {
+        "mean": 0.0,
+        "ci_95": [
+          0.0,
+          0.0
+        ],
+        "sig_vs_off": {
+          "test": "degenerate (no variance)",
+          "p_value": null,
+          "significant": false
+        }
+      },
+      "e4_bystander_collateral": {
+        "mean": 0.0,
+        "ci_95": [
+          0.0,
+          0.0
+        ],
+        "sig_vs_off": {
+          "test": "degenerate (no variance)",
+          "p_value": null,
+          "significant": false
+        }
+      },
+      "w2_delivered": {
+        "mean": 8.65,
+        "ci_95": [
+          7.76103195337553,
+          9.538968046624472
+        ],
+        "sig_vs_off": {
+          "test": "none (identical samples)",
+          "statistic": 0.0,
+          "p_value": 1.0,
+          "significant": false
+        }
+      },
+      "max_incident_hop": 0
+    },
+    "scoped-cold": {
+      "campaign_collateral": {
+        "mean": 0.0,
+        "ci_95": [
+          0.0,
+          0.0
+        ],
+        "sig_vs_off": {
+          "test": "degenerate (no variance)",
+          "p_value": null,
+          "significant": false
+        }
+      },
+      "griefing_distant_collateral": {
+        "mean": 0.0,
+        "ci_95": [
+          0.0,
+          0.0
+        ],
+        "sig_vs_off": {
+          "test": "degenerate (no variance)",
+          "p_value": null,
+          "significant": false
+        }
+      },
+      "e4_bystander_collateral": {
+        "mean": 0.0,
+        "ci_95": [
+          0.0,
+          0.0
+        ],
+        "sig_vs_off": {
+          "test": "degenerate (no variance)",
+          "p_value": null,
+          "significant": false
+        }
+      },
+      "w2_delivered": {
+        "mean": 5.15,
+        "ci_95": [
+          4.663269754334254,
+          5.636730245665746
+        ],
+        "sig_vs_off": {
+          "test": "wilcoxon_signed_rank",
+          "statistic": 0.0,
+          "p_value": 7.413270711012498e-05,
+          "significant": true
+        }
+      },
+      "max_incident_hop": 1
+    },
+    "scoped-cold+guard": {
+      "campaign_collateral": {
+        "mean": 0.0,
+        "ci_95": [
+          0.0,
+          0.0
+        ],
+        "sig_vs_off": {
+          "test": "degenerate (no variance)",
+          "p_value": null,
+          "significant": false
+        }
+      },
+      "griefing_distant_collateral": {
+        "mean": 0.0,
+        "ci_95": [
+          0.0,
+          0.0
+        ],
+        "sig_vs_off": {
+          "test": "degenerate (no variance)",
+          "p_value": null,
+          "significant": false
+        }
+      },
+      "e4_bystander_collateral": {
+        "mean": 0.0,
+        "ci_95": [
+          0.0,
+          0.0
+        ],
+        "sig_vs_off": {
+          "test": "degenerate (no variance)",
+          "p_value": null,
+          "significant": false
+        }
+      },
+      "w2_delivered": {
+        "mean": 5.15,
+        "ci_95": [
+          4.663269754334254,
+          5.636730245665746
+        ],
+        "sig_vs_off": {
+          "test": "wilcoxon_signed_rank",
+          "statistic": 0.0,
+          "p_value": 7.413270711012498e-05,
+          "significant": true
+        }
+      },
+      "max_incident_hop": 1
+    }
+  }
+}

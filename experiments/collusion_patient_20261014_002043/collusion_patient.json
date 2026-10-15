@@ -1,0 +1,283 @@
+{
+  "liveness": [
+    {
+      "n_orgs": 4,
+      "k_withhold": 0,
+      "quorum": 3.0,
+      "voters": 4,
+      "reinstated": true,
+      "mttr_s": 30.0
+    },
+    {
+      "n_orgs": 4,
+      "k_withhold": 1,
+      "quorum": 3.0,
+      "voters": 3,
+      "reinstated": true,
+      "mttr_s": 30.0
+    },
+    {
+      "n_orgs": 4,
+      "k_withhold": 2,
+      "quorum": 3.0,
+      "voters": 2,
+      "reinstated": false,
+      "mttr_s": NaN
+    },
+    {
+      "n_orgs": 4,
+      "k_withhold": 3,
+      "quorum": 3.0,
+      "voters": 1,
+      "reinstated": false,
+      "mttr_s": NaN
+    },
+    {
+      "n_orgs": 7,
+      "k_withhold": 0,
+      "quorum": 5.0,
+      "voters": 7,
+      "reinstated": true,
+      "mttr_s": 30.0
+    },
+    {
+      "n_orgs": 7,
+      "k_withhold": 1,
+      "quorum": 5.0,
+      "voters": 6,
+      "reinstated": true,
+      "mttr_s": 30.0
+    },
+    {
+      "n_orgs": 7,
+      "k_withhold": 2,
+      "quorum": 5.0,
+      "voters": 5,
+      "reinstated": true,
+      "mttr_s": 30.0
+    },
+    {
+      "n_orgs": 7,
+      "k_withhold": 3,
+      "quorum": 5.0,
+      "voters": 4,
+      "reinstated": false,
+      "mttr_s": NaN
+    },
+    {
+      "n_orgs": 7,
+      "k_withhold": 4,
+      "quorum": 5.0,
+      "voters": 3,
+      "reinstated": false,
+      "mttr_s": NaN
+    },
+    {
+      "n_orgs": 10,
+      "k_withhold": 0,
+      "quorum": 7.0,
+      "voters": 10,
+      "reinstated": true,
+      "mttr_s": 30.0
+    },
+    {
+      "n_orgs": 10,
+      "k_withhold": 1,
+      "quorum": 7.0,
+      "voters": 9,
+      "reinstated": true,
+      "mttr_s": 30.0
+    },
+    {
+      "n_orgs": 10,
+      "k_withhold": 2,
+      "quorum": 7.0,
+      "voters": 8,
+      "reinstated": true,
+      "mttr_s": 30.0
+    },
+    {
+      "n_orgs": 10,
+      "k_withhold": 3,
+      "quorum": 7.0,
+      "voters": 7,
+      "reinstated": true,
+      "mttr_s": 30.0
+    },
+    {
+      "n_orgs": 10,
+      "k_withhold": 4,
+      "quorum": 7.0,
+      "voters": 6,
+      "reinstated": false,
+      "mttr_s": NaN
+    },
+    {
+      "n_orgs": 10,
+      "k_withhold": 5,
+      "quorum": 7.0,
+      "voters": 5,
+      "reinstated": false,
+      "mttr_s": NaN
+    },
+    {
+      "n_orgs": 13,
+      "k_withhold": 0,
+      "quorum": 9.0,
+      "voters": 13,
+      "reinstated": true,
+      "mttr_s": 30.0
+    },
+    {
+      "n_orgs": 13,
+      "k_withhold": 1,
+      "quorum": 9.0,
+      "voters": 12,
+      "reinstated": true,
+      "mttr_s": 30.0
+    },
+    {
+      "n_orgs": 13,
+      "k_withhold": 2,
+      "quorum": 9.0,
+      "voters": 11,
+      "reinstated": true,
+      "mttr_s": 30.0
+    },
+    {
+      "n_orgs": 13,
+      "k_withhold": 3,
+      "quorum": 9.0,
+      "voters": 10,
+      "reinstated": true,
+      "mttr_s": 30.0
+    },
+    {
+      "n_orgs": 13,
+      "k_withhold": 4,
+      "quorum": 9.0,
+      "voters": 9,
+      "reinstated": true,
+      "mttr_s": 30.0
+    },
+    {
+      "n_orgs": 13,
+      "k_withhold": 5,
+      "quorum": 9.0,
+      "voters": 8,
+      "reinstated": false,
+      "mttr_s": NaN
+    },
+    {
+      "n_orgs": 13,
+      "k_withhold": 6,
+      "quorum": 9.0,
+      "voters": 7,
+      "reinstated": false,
+      "mttr_s": NaN
+    }
+  ],
+  "safety": [
+    {
+      "n_orgs": 7,
+      "colluders": 4,
+      "quorum": 5.0,
+      "reinstated": false,
+      "vote_refusals": 0,
+      "policy": "identity",
+      "c_label": "q-1"
+    },
+    {
+      "n_orgs": 7,
+      "colluders": 4,
+      "quorum": 5.0,
+      "reinstated": false,
+      "vote_refusals": 160,
+      "policy": "behaviour_gated",
+      "c_label": "q-1"
+    },
+    {
+      "n_orgs": 7,
+      "colluders": 5,
+      "quorum": 5.0,
+      "reinstated": true,
+      "vote_refusals": 0,
+      "policy": "identity",
+      "c_label": "q"
+    },
+    {
+      "n_orgs": 7,
+      "colluders": 5,
+      "quorum": 5.0,
+      "reinstated": false,
+      "vote_refusals": 200,
+      "policy": "behaviour_gated",
+      "c_label": "q"
+    },
+    {
+      "n_orgs": 10,
+      "colluders": 6,
+      "quorum": 7.0,
+      "reinstated": false,
+      "vote_refusals": 0,
+      "policy": "identity",
+      "c_label": "q-1"
+    },
+    {
+      "n_orgs": 10,
+      "colluders": 6,
+      "quorum": 7.0,
+      "reinstated": false,
+      "vote_refusals": 240,
+      "policy": "behaviour_gated",
+      "c_label": "q-1"
+    },
+    {
+      "n_orgs": 10,
+      "colluders": 7,
+      "quorum": 7.0,
+      "reinstated": true,
+      "vote_refusals": 0,
+      "policy": "identity",
+      "c_label": "q"
+    },
+    {
+      "n_orgs": 10,
+      "colluders": 7,
+      "quorum": 7.0,
+      "reinstated": false,
+      "vote_refusals": 280,
+      "policy": "behaviour_gated",
+      "c_label": "q"
+    }
+  ],
+  "patient": [
+    {
+      "policy": "identity",
+      "attacker": "immediate",
+      "horizon_s": 1200,
+      "hostile_delivered": 721,
+      "reinstatements": 120,
+      "delivered_per_100s": 60.08,
+      "relapses": 119
+    },
+    {
+      "policy": "behaviour_gated",
+      "attacker": "immediate",
+      "horizon_s": 1200,
+      "hostile_delivered": 21,
+      "reinstatements": 5,
+      "delivered_per_100s": 1.75,
+      "relapses": 5
+    },
+    {
+      "policy": "behaviour_gated",
+      "attacker": "patient",
+      "horizon_s": 1200,
+      "hostile_delivered": 145,
+      "reinstatements": 24,
+      "delivered_per_100s": 12.08,
+      "relapses": 23
+    }
+  ]
+}

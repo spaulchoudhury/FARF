@@ -28,6 +28,7 @@ def profiles(cool):
         "collusion-identity": (8306, {}, ["collusion"]),
         "scale": (8304, {"FARF_TAINT_SOURCE": "content"}, ["scale"]),
         "hopcap": (8305, {**LOOP, "FARF_FB_HOP_CAP": "1"}, ["loop"]),
+        "reseedguard": (8307, {**LOOP, "FARF_FB_RESEED_GUARD": "1"}, ["loop"]),
     }
 
 

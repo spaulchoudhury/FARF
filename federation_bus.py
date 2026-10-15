@@ -167,6 +167,7 @@ class FederationBus:
         self._q_last_attempt: dict[str, float] = {}  # last transmit attempt while quarantined
         self._incident_scope: dict[str, float] = {}   # org -> last time it was (re-)implicated
         self._incident_hop: dict[str, int] = {}        # org -> hop distance from its nearest active root
+        self._collateral_marks: dict[str, float] = {}  # org -> last time it was quarantined as collateral (reseed_guard)
         self._probation: dict[str, dict] = {}
         self._strikes: dict[str, int] = {}
         self.closed_loop_events: list[dict] = []
@@ -763,6 +764,20 @@ class FederationBus:
         affected radius to hop_cap regardless of how many genuinely-cold detections chain together
         in sequence (the 'slow-distributed adversary' case)."""
         fb = self.fars_feedback
+        if fb.reseed_guard:
+            # incident-root re-seed guard (opt-in; see FarsFeedback.reseed_guard)
+            now_g = self._clock()
+            in_scope = self._org_in_incident_scope(org)
+            if in_scope and self._incident_hop.get(org, 0) >= 1:
+                self._collateral_marks[org] = now_g       # quarantined as collateral of another org's incident
+            elif not in_scope:
+                mark = self._collateral_marks.get(org)
+                decay = fb.decay_s if fb.decay_s is not None else self.reinstatement_policy.cooling_off_s
+                memory = fb.reseed_memory_s if fb.reseed_memory_s is not None else 6.0 * decay
+                if mark is not None and (now_g - mark) < memory:
+                    self.closed_loop_events.append({"event": "reseed_suppressed", "org": org,
+                                                    "since_collateral_s": round(now_g - mark, 3)})
+                    return
         if fb.require_cold and not cold:
             return
         now = self._clock()
