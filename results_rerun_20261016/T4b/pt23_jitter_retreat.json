@@ -1,0 +1,35 @@
+{
+  "0.1": {
+    "delta": 0.0070875,
+    "share_of_nominal_bound": 0.81,
+    "targets": 5,
+    "p_quarantined": 0.0,
+    "wilson95": [
+      0.0,
+      0.11351709139047801
+    ],
+    "delivered_fraction": 1.0
+  },
+  "0.2": {
+    "delta": 0.0063,
+    "share_of_nominal_bound": 0.7200000000000001,
+    "targets": 4,
+    "p_quarantined": 0.0,
+    "wilson95": [
+      0.0,
+      0.11351709139047801
+    ],
+    "delivered_fraction": 1.0
+  },
+  "0.4": {
+    "delta": 0.004725,
+    "share_of_nominal_bound": 0.54,
+    "targets": 3,
+    "p_quarantined": 0.0,
+    "wilson95": [
+      0.0,
+      0.11351709139047801
+    ],
+    "delivered_fraction": 1.0
+  }
+}
