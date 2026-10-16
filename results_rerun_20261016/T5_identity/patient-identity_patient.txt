@@ -1,0 +1,13 @@
+=== v7.9.11 minority + patient attacker (real clock) on http://127.0.0.1:8311   mode=identity   cooling_off=20.0s   horizon=120s ===
+
+[Part M] minority witnesses (quorum - 1) vote after the attacker has been quiet long enough
+  [PASS] attacker organisation quarantined  
+  registered orgs=5 quorum=3; quiet for 3s, then quorum-1 = 2 witnesses vote
+  [PASS] below-quorum minority does not reinstate the organisation  committed=False reply=None
+
+[Part P] immediate attacker, identity bus, horizon 120s
+  delivered=87 reinstatements=28 relapses=28
+SUMMARY mode=identity attacker=immediate delivered=87 reinstatements=28 horizon_s=120
+  [PASS] identity: the attacker is reinstated at least once while hostile (documented weakness)  reinstatements=28
+
+RESULT patient scenario (identity): PASS

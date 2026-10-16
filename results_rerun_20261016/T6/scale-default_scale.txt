@@ -1,0 +1,5 @@
+=== v7.9.11 benign-scale scenario on http://127.0.0.1:8309   taint_source=declared  override_policy=agents  floor=0.49  30 senders x 40 msgs, 119 distinct texts ===
+  senders refused 0/30   messages refused 0/1200
+  [PASS] no benign message refused  refused=0
+
+RESULT benign-scale scenario: PASS

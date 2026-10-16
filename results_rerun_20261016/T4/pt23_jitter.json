@@ -1,0 +1,178 @@
+{
+  "0.0_published": {
+    "jitter": 0.0,
+    "sender": "published",
+    "p_quarantined": 0.0,
+    "wilson95": [
+      0.0,
+      0.11351709139047801
+    ],
+    "delivered_fraction": 1.0,
+    "median_stop_msg": null
+  },
+  "0.0_hugging": {
+    "jitter": 0.0,
+    "sender": "hugging",
+    "p_quarantined": 0.0,
+    "wilson95": [
+      0.0,
+      0.11351709139047801
+    ],
+    "delivered_fraction": 1.0,
+    "median_stop_msg": null
+  },
+  "0.0_benign_0.003": {
+    "jitter": 0.0,
+    "sender": "benign_0.003",
+    "p_quarantined": 0.0,
+    "wilson95": [
+      0.0,
+      0.11351709139047801
+    ],
+    "delivered_fraction": 1.0,
+    "median_stop_msg": null
+  },
+  "0.0_benign_0.006": {
+    "jitter": 0.0,
+    "sender": "benign_0.006",
+    "p_quarantined": 0.0,
+    "wilson95": [
+      0.0,
+      0.11351709139047801
+    ],
+    "delivered_fraction": 1.0,
+    "median_stop_msg": null
+  },
+  "0.1_published": {
+    "jitter": 0.1,
+    "sender": "published",
+    "p_quarantined": 0.0,
+    "wilson95": [
+      0.0,
+      0.11351709139047801
+    ],
+    "delivered_fraction": 1.0,
+    "median_stop_msg": null
+  },
+  "0.1_hugging": {
+    "jitter": 0.1,
+    "sender": "hugging",
+    "p_quarantined": 0.6333333333333333,
+    "wilson95": [
+      0.4551324643360493,
+      0.7812629779598231
+    ],
+    "delivered_fraction": 0.37754166666666666,
+    "median_stop_msg": 5
+  },
+  "0.1_benign_0.003": {
+    "jitter": 0.1,
+    "sender": "benign_0.003",
+    "p_quarantined": 0.0,
+    "wilson95": [
+      0.0,
+      0.11351709139047801
+    ],
+    "delivered_fraction": 1.0,
+    "median_stop_msg": null
+  },
+  "0.1_benign_0.006": {
+    "jitter": 0.1,
+    "sender": "benign_0.006",
+    "p_quarantined": 0.0,
+    "wilson95": [
+      0.0,
+      0.11351709139047801
+    ],
+    "delivered_fraction": 1.0,
+    "median_stop_msg": null
+  },
+  "0.2_published": {
+    "jitter": 0.2,
+    "sender": "published",
+    "p_quarantined": 0.06666666666666667,
+    "wilson95": [
+      0.01847663532769335,
+      0.2132381772107209
+    ],
+    "delivered_fraction": 0.9336666666666666,
+    "median_stop_msg": 4
+  },
+  "0.2_hugging": {
+    "jitter": 0.2,
+    "sender": "hugging",
+    "p_quarantined": 0.5666666666666667,
+    "wilson95": [
+      0.39197009545408734,
+      0.7262276256938489
+    ],
+    "delivered_fraction": 0.441875,
+    "median_stop_msg": 5
+  },
+  "0.2_benign_0.003": {
+    "jitter": 0.2,
+    "sender": "benign_0.003",
+    "p_quarantined": 0.06666666666666667,
+    "wilson95": [
+      0.01847663532769335,
+      0.2132381772107209
+    ],
+    "delivered_fraction": 0.9336666666666666,
+    "median_stop_msg": 4
+  },
+  "0.2_benign_0.006": {
+    "jitter": 0.2,
+    "sender": "benign_0.006",
+    "p_quarantined": 0.06666666666666667,
+    "wilson95": [
+      0.01847663532769335,
+      0.2132381772107209
+    ],
+    "delivered_fraction": 0.9336666666666666,
+    "median_stop_msg": 4
+  },
+  "0.4_published": {
+    "jitter": 0.4,
+    "sender": "published",
+    "p_quarantined": 0.23333333333333334,
+    "wilson95": [
+      0.11792239210501229,
+      0.40928672330324267
+    ],
+    "delivered_fraction": 0.7691666666666667,
+    "median_stop_msg": 4
+  },
+  "0.4_hugging": {
+    "jitter": 0.4,
+    "sender": "hugging",
+    "p_quarantined": 0.5333333333333333,
+    "wilson95": [
+      0.36142013281525043,
+      0.6976787277587176
+    ],
+    "delivered_fraction": 0.47829166666666667,
+    "median_stop_msg": 5
+  },
+  "0.4_benign_0.003": {
+    "jitter": 0.4,
+    "sender": "benign_0.003",
+    "p_quarantined": 0.2,
+    "wilson95": [
+      0.09504978102401236,
+      0.37306047381027446
+    ],
+    "delivered_fraction": 0.8009583333333333,
+    "median_stop_msg": 4
+  },
+  "0.4_benign_0.006": {
+    "jitter": 0.4,
+    "sender": "benign_0.006",
+    "p_quarantined": 0.23333333333333334,
+    "wilson95": [
+      0.11792239210501229,
+      0.40928672330324267
+    ],
+    "delivered_fraction": 0.7691666666666667,
+    "median_stop_msg": 4
+  }
+}

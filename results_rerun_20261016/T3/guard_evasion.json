@@ -1,0 +1,508 @@
+{
+  "gap1_probes0": {
+    "off": {
+      "w2_delivered": {
+        "mean": 10.9,
+        "ci_95": [
+          9.223516544581855,
+          12.576483455418145
+        ],
+        "sig_vs_off": {
+          "test": "none (identical samples)",
+          "statistic": 0.0,
+          "p_value": 1.0,
+          "significant": false
+        }
+      },
+      "collateral_at_setup": 0.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    },
+    "scoped-cold": {
+      "w2_delivered": {
+        "mean": 11.5,
+        "ci_95": [
+          9.64962119196711,
+          13.35037880803289
+        ],
+        "sig_vs_off": {
+          "test": "paired_t_test",
+          "statistic": 5.338539126015656,
+          "p_value": 3.753449024191947e-05,
+          "significant": true
+        }
+      },
+      "collateral_at_setup": 1.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    },
+    "scoped-cold+guard": {
+      "w2_delivered": {
+        "mean": 11.5,
+        "ci_95": [
+          9.64962119196711,
+          13.35037880803289
+        ],
+        "sig_vs_off": {
+          "test": "paired_t_test",
+          "statistic": 5.338539126015656,
+          "p_value": 3.753449024191947e-05,
+          "significant": true
+        }
+      },
+      "collateral_at_setup": 1.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    }
+  },
+  "gap1_probes4": {
+    "off": {
+      "w2_delivered": {
+        "mean": 6.2,
+        "ci_95": [
+          5.174631809465677,
+          7.225368190534323
+        ],
+        "sig_vs_off": {
+          "test": "none (identical samples)",
+          "statistic": 0.0,
+          "p_value": 1.0,
+          "significant": false
+        }
+      },
+      "collateral_at_setup": 0.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    },
+    "scoped-cold": {
+      "w2_delivered": {
+        "mean": 2.0,
+        "ci_95": [
+          2.0,
+          2.0
+        ],
+        "sig_vs_off": {
+          "test": "wilcoxon_signed_rank",
+          "statistic": 0.0,
+          "p_value": 8.487016270161307e-05,
+          "significant": true
+        }
+      },
+      "collateral_at_setup": 1.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    },
+    "scoped-cold+guard": {
+      "w2_delivered": {
+        "mean": 11.5,
+        "ci_95": [
+          9.64962119196711,
+          13.35037880803289
+        ],
+        "sig_vs_off": {
+          "test": "paired_t_test",
+          "statistic": 13.100035590634258,
+          "p_value": 5.8095803449429204e-11,
+          "significant": true
+        }
+      },
+      "collateral_at_setup": 1.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    }
+  },
+  "gap3_probes0": {
+    "off": {
+      "w2_delivered": {
+        "mean": 10.9,
+        "ci_95": [
+          9.223516544581855,
+          12.576483455418145
+        ],
+        "sig_vs_off": {
+          "test": "none (identical samples)",
+          "statistic": 0.0,
+          "p_value": 1.0,
+          "significant": false
+        }
+      },
+      "collateral_at_setup": 0.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    },
+    "scoped-cold": {
+      "w2_delivered": {
+        "mean": 11.5,
+        "ci_95": [
+          9.64962119196711,
+          13.35037880803289
+        ],
+        "sig_vs_off": {
+          "test": "paired_t_test",
+          "statistic": 5.338539126015656,
+          "p_value": 3.753449024191947e-05,
+          "significant": true
+        }
+      },
+      "collateral_at_setup": 1.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    },
+    "scoped-cold+guard": {
+      "w2_delivered": {
+        "mean": 11.5,
+        "ci_95": [
+          9.64962119196711,
+          13.35037880803289
+        ],
+        "sig_vs_off": {
+          "test": "paired_t_test",
+          "statistic": 5.338539126015656,
+          "p_value": 3.753449024191947e-05,
+          "significant": true
+        }
+      },
+      "collateral_at_setup": 1.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    }
+  },
+  "gap3_probes4": {
+    "off": {
+      "w2_delivered": {
+        "mean": 6.2,
+        "ci_95": [
+          5.174631809465677,
+          7.225368190534323
+        ],
+        "sig_vs_off": {
+          "test": "none (identical samples)",
+          "statistic": 0.0,
+          "p_value": 1.0,
+          "significant": false
+        }
+      },
+      "collateral_at_setup": 0.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    },
+    "scoped-cold": {
+      "w2_delivered": {
+        "mean": 2.0,
+        "ci_95": [
+          2.0,
+          2.0
+        ],
+        "sig_vs_off": {
+          "test": "wilcoxon_signed_rank",
+          "statistic": 0.0,
+          "p_value": 8.487016270161307e-05,
+          "significant": true
+        }
+      },
+      "collateral_at_setup": 1.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    },
+    "scoped-cold+guard": {
+      "w2_delivered": {
+        "mean": 11.5,
+        "ci_95": [
+          9.64962119196711,
+          13.35037880803289
+        ],
+        "sig_vs_off": {
+          "test": "paired_t_test",
+          "statistic": 13.100035590634258,
+          "p_value": 5.8095803449429204e-11,
+          "significant": true
+        }
+      },
+      "collateral_at_setup": 1.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    }
+  },
+  "gap5_probes0": {
+    "off": {
+      "w2_delivered": {
+        "mean": 10.9,
+        "ci_95": [
+          9.223516544581855,
+          12.576483455418145
+        ],
+        "sig_vs_off": {
+          "test": "none (identical samples)",
+          "statistic": 0.0,
+          "p_value": 1.0,
+          "significant": false
+        }
+      },
+      "collateral_at_setup": 0.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    },
+    "scoped-cold": {
+      "w2_delivered": {
+        "mean": 11.5,
+        "ci_95": [
+          9.64962119196711,
+          13.35037880803289
+        ],
+        "sig_vs_off": {
+          "test": "paired_t_test",
+          "statistic": 5.338539126015656,
+          "p_value": 3.753449024191947e-05,
+          "significant": true
+        }
+      },
+      "collateral_at_setup": 1.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    },
+    "scoped-cold+guard": {
+      "w2_delivered": {
+        "mean": 11.5,
+        "ci_95": [
+          9.64962119196711,
+          13.35037880803289
+        ],
+        "sig_vs_off": {
+          "test": "paired_t_test",
+          "statistic": 5.338539126015656,
+          "p_value": 3.753449024191947e-05,
+          "significant": true
+        }
+      },
+      "collateral_at_setup": 1.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    }
+  },
+  "gap5_probes4": {
+    "off": {
+      "w2_delivered": {
+        "mean": 6.2,
+        "ci_95": [
+          5.174631809465677,
+          7.225368190534323
+        ],
+        "sig_vs_off": {
+          "test": "none (identical samples)",
+          "statistic": 0.0,
+          "p_value": 1.0,
+          "significant": false
+        }
+      },
+      "collateral_at_setup": 0.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    },
+    "scoped-cold": {
+      "w2_delivered": {
+        "mean": 2.0,
+        "ci_95": [
+          2.0,
+          2.0
+        ],
+        "sig_vs_off": {
+          "test": "wilcoxon_signed_rank",
+          "statistic": 0.0,
+          "p_value": 8.487016270161307e-05,
+          "significant": true
+        }
+      },
+      "collateral_at_setup": 1.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    },
+    "scoped-cold+guard": {
+      "w2_delivered": {
+        "mean": 11.5,
+        "ci_95": [
+          9.64962119196711,
+          13.35037880803289
+        ],
+        "sig_vs_off": {
+          "test": "paired_t_test",
+          "statistic": 13.100035590634258,
+          "p_value": 5.8095803449429204e-11,
+          "significant": true
+        }
+      },
+      "collateral_at_setup": 1.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    }
+  },
+  "gap7_probes0": {
+    "off": {
+      "w2_delivered": {
+        "mean": 10.9,
+        "ci_95": [
+          9.223516544581855,
+          12.576483455418145
+        ],
+        "sig_vs_off": {
+          "test": "none (identical samples)",
+          "statistic": 0.0,
+          "p_value": 1.0,
+          "significant": false
+        }
+      },
+      "collateral_at_setup": 0.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    },
+    "scoped-cold": {
+      "w2_delivered": {
+        "mean": 11.5,
+        "ci_95": [
+          9.64962119196711,
+          13.35037880803289
+        ],
+        "sig_vs_off": {
+          "test": "paired_t_test",
+          "statistic": 5.338539126015656,
+          "p_value": 3.753449024191947e-05,
+          "significant": true
+        }
+      },
+      "collateral_at_setup": 1.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    },
+    "scoped-cold+guard": {
+      "w2_delivered": {
+        "mean": 11.5,
+        "ci_95": [
+          9.64962119196711,
+          13.35037880803289
+        ],
+        "sig_vs_off": {
+          "test": "paired_t_test",
+          "statistic": 5.338539126015656,
+          "p_value": 3.753449024191947e-05,
+          "significant": true
+        }
+      },
+      "collateral_at_setup": 1.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    }
+  },
+  "gap7_probes4": {
+    "off": {
+      "w2_delivered": {
+        "mean": 6.2,
+        "ci_95": [
+          5.174631809465677,
+          7.225368190534323
+        ],
+        "sig_vs_off": {
+          "test": "none (identical samples)",
+          "statistic": 0.0,
+          "p_value": 1.0,
+          "significant": false
+        }
+      },
+      "collateral_at_setup": 0.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    },
+    "scoped-cold": {
+      "w2_delivered": {
+        "mean": 2.0,
+        "ci_95": [
+          2.0,
+          2.0
+        ],
+        "sig_vs_off": {
+          "test": "wilcoxon_signed_rank",
+          "statistic": 0.0,
+          "p_value": 8.487016270161307e-05,
+          "significant": true
+        }
+      },
+      "collateral_at_setup": 1.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    },
+    "scoped-cold+guard": {
+      "w2_delivered": {
+        "mean": 2.0,
+        "ci_95": [
+          2.0,
+          2.0
+        ],
+        "sig_vs_off": {
+          "test": "wilcoxon_signed_rank",
+          "statistic": 0.0,
+          "p_value": 8.487016270161307e-05,
+          "significant": true
+        }
+      },
+      "collateral_at_setup": 1.0,
+      "attacker_requarantined": 1.0,
+      "orgD_quarantined": 0.0,
+      "orgE_quarantined": 0.0
+    }
+  },
+  "_verdict": {
+    "gap1_probes0": {
+      "guard_minus_scoped_cold": 0.0,
+      "inside_guard_memory": true
+    },
+    "gap1_probes4": {
+      "guard_minus_scoped_cold": 9.5,
+      "inside_guard_memory": true
+    },
+    "gap3_probes0": {
+      "guard_minus_scoped_cold": 0.0,
+      "inside_guard_memory": true
+    },
+    "gap3_probes4": {
+      "guard_minus_scoped_cold": 9.5,
+      "inside_guard_memory": true
+    },
+    "gap5_probes0": {
+      "guard_minus_scoped_cold": 0.0,
+      "inside_guard_memory": true
+    },
+    "gap5_probes4": {
+      "guard_minus_scoped_cold": 9.5,
+      "inside_guard_memory": true
+    },
+    "gap7_probes0": {
+      "guard_minus_scoped_cold": 0.0,
+      "inside_guard_memory": false
+    },
+    "gap7_probes4": {
+      "guard_minus_scoped_cold": 0.0,
+      "inside_guard_memory": false
+    }
+  }
+}

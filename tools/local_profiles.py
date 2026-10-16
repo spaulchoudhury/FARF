@@ -8,6 +8,9 @@ Profiles (bus env -> scenarios):
   collusion-identity  identity mode (the v7.9.10 path)                         -> collusion (documents the weakness)
   scale     taint_source=content                                               -> benign-scale (30 senders x 40 msgs)
   hopcap    scoped loop with hop_cap=1                                         -> loop
+  scale-default  taint_source unset (the shipped default)                      -> benign-scale (30 senders x 40 msgs)
+  patient   behaviour_gated, real clock (minority + patient attacker)          -> patient
+  patient-identity  identity mode, real clock                                  -> patient
 Content-related environment you set in your PowerShell session (FARF_OVERRIDE_POLICY, FARF_OVERRIDE_CLASSIFIER_THRESHOLD, FARF_CLASSIFIER_FLOOR)
 is inherited by the bus. Exit code 0 only if every scenario printed its PASS line."""
 from __future__ import annotations
@@ -29,6 +32,9 @@ def profiles(cool):
         "scale": (8304, {"FARF_TAINT_SOURCE": "content"}, ["scale"]),
         "hopcap": (8305, {**LOOP, "FARF_FB_HOP_CAP": "1"}, ["loop"]),
         "reseedguard": (8307, {**LOOP, "FARF_FB_RESEED_GUARD": "1"}, ["loop"]),
+        "scale-default": (8309, {}, ["scale"]),
+        "patient": (8310, dict(gated), ["patient"]),
+        "patient-identity": (8311, {}, ["patient"]),
     }
 
 
@@ -41,6 +47,8 @@ def scenario_cmd(name, url, cool, texts):
         "content": [py, os.path.join(PC, "v11_content_taint_cloud.py"), "--url", url],
         "personas": [py, os.path.join(PC, "v11_personas_cloud.py"), "--url", url, "--cooling-off", str(cool), "--persona", "both"],
         "collusion": [py, os.path.join(PC, "v11_collusion_cloud.py"), "--url", url, "--cooling-off", str(cool), "--witnesses", "4"],
+        "patient": [py, os.path.join(PC, "v11_collusion_patient_cloud.py"), "--url", url, "--cooling-off", str(cool),
+                    "--horizon", os.environ.get("FARF_PATIENT_HORIZON", "120")],
         "scale": [py, os.path.join(PC, "v11_content_benign_scale.py"), "--url", url] + (["--texts", texts] if texts else []),
     }[name]
 

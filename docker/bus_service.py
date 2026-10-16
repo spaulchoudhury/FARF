@@ -99,6 +99,10 @@ def _build_v7911_kwargs():
               "require_cold": os.environ.get("FARF_FB_REQUIRE_COLD", "1").strip() != "0"}
         if os.environ.get("FARF_FB_HOP_CAP", "").strip():
             fk["hop_cap"] = _env_int("FARF_FB_HOP_CAP", 1)
+        if os.environ.get("FARF_FB_RESEED_GUARD", "").strip() == "1":
+            fk["reseed_guard"] = True
+        if os.environ.get("FARF_FB_RESEED_MEMORY_S", "").strip():
+            fk["reseed_memory_s"] = _env_float("FARF_FB_RESEED_MEMORY_S", 0.0)
         for env, key in (("FARF_FB_BETA", "beta"), ("FARF_FB_MAXMULT", "max_multiplier"),
                          ("FARF_FB_RECOVERY_GAIN", "recovery_gain"), ("FARF_FB_DECAY_S", "decay_s")):
             if os.environ.get(env, "").strip():

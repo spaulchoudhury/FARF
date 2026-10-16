@@ -1,0 +1,69 @@
+{
+  "n_topologies": 60,
+  "n_orgs_range": [
+    3,
+    10
+  ],
+  "gt_distribution": {
+    "mean": 39.1,
+    "min": 0.0,
+    "max": 100.0,
+    "distinct_values": 21
+  },
+  "FARS_vs_resilience_gt": {
+    "rho": 0.366,
+    "ci95": [
+      0.104,
+      0.581
+    ],
+    "p": 0.004058296810924095
+  },
+  "proxy_vs_resilience_gt": {
+    "rho": 0.795,
+    "ci95": [
+      0.628,
+      0.907
+    ],
+    "p": 3.314873502871267e-14
+  },
+  "FARS_vs_proxy_(shared inputs)": {
+    "rho": 0.261,
+    "ci95": [
+      -0.007,
+      0.494
+    ],
+    "p": 0.04405578460749375
+  },
+  "FARS_vs_benign_ok": {
+    "rho": 0.366,
+    "ci95": [
+      0.14,
+      0.556
+    ],
+    "p": 0.003986174210667456
+  },
+  "naive_org_count_vs_gt": {
+    "rho": 0.101,
+    "ci95": [
+      -0.172,
+      0.354
+    ],
+    "p": 0.4432677602904918
+  },
+  "naive_mean_degree_vs_gt": {
+    "rho": -0.263,
+    "ci95": [
+      -0.501,
+      -0.017
+    ],
+    "p": 0.04227090194694987
+  },
+  "naive_quarantined_share_vs_gt (negated)": {
+    "rho": -0.048,
+    "ci95": [
+      -0.299,
+      0.203
+    ],
+    "p": 0.7139331870348484
+  }
+}

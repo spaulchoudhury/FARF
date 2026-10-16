@@ -1,0 +1,18 @@
+=== v7.9.11 minority + patient attacker (real clock) on http://127.0.0.1:8310   mode=behaviour_gated   cooling_off=20.0s   horizon=120s ===
+
+[Part M] minority witnesses (quorum - 1) vote after the attacker has been quiet long enough
+  [PASS] attacker organisation quarantined  
+  registered orgs=5 quorum=3; quiet for 23s, then quorum-1 = 2 witnesses vote
+  [PASS] below-quorum minority does not reinstate the organisation  committed=False reply=None
+
+[Part P] immediate attacker, behaviour_gated bus, horizon 120s
+  delivered=5 reinstatements=2 relapses=2
+SUMMARY mode=behaviour_gated attacker=immediate delivered=5 reinstatements=2 horizon_s=120
+
+[Part P] patient attacker, behaviour_gated bus, horizon 120s
+  delivered=12 reinstatements=3 relapses=3
+SUMMARY mode=behaviour_gated attacker=patient delivered=12 reinstatements=3 horizon_s=120
+  [PASS] gated: the patient attacker delivers more than the impatient one  patient=12 immediate=5
+  [PASS] gated: the patient attacker is reinstated at least once  reinstatements=3
+
+RESULT patient scenario (behaviour_gated): PASS
