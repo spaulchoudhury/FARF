@@ -8,11 +8,11 @@
 # If a section errors, the script carries on; read the error in that section's file.
 
 param(
-  [string]$GcpProject = "<farf-prototype>-26aug",
+  [string]$GcpProject = "<GCP_PROJECT_ID>",
   [string]$GcpRegion  = "asia-south1",
   [string]$Service    = "<farf-prototype>-bus",
-  [string]$GcpRepo    = "<farf-prototype>-27aug",
-  [string]$KeyRing    = "<farf-prototype>-27aug-keyring",
+  [string]$GcpRepo    = "<GCP_REPO_ID>",
+  [string]$KeyRing    = "<GCP_REPO_ID>-keyring",
   [string]$AwsRegion  = "ap-south-1",
   [string]$Cluster    = "<farf-prototype>-cluster",
   [string]$Vpc        = "vpc-0f3d9dbfcbdf90e57"

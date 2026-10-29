@@ -5,10 +5,10 @@
 # Written without being executed (no PowerShell in the authoring environment).
 # Run from the repo root (farf_prototype_v7_9_7) with Docker Desktop running.
 
-$Project   = "<farf-prototype>-26aug"
+$Project   = "<GCP_PROJECT_ID>"
 $Region    = "asia-south1"
 $Service   = "<farf-prototype>-bus"
-$GcpRepo   = "asia-south1-docker.pkg.dev/$Project/<farf-prototype>-27aug"
+$GcpRepo   = "asia-south1-docker.pkg.dev/$Project/<GCP_REPO_ID>"
 $AwsAcct   = "<AWS_ACCOUNT_ID>"
 $AwsRegion = "ap-south-1"
 $EcrHost   = "$AwsAcct.dkr.ecr.$AwsRegion.amazonaws.com"

@@ -1,7 +1,7 @@
 """
 Test 06 -- Tab 7.8 Evaluation Metrics closure.
 
-Closes the gap identified against Research_Proposal_Shubho_v2.pdf Tab
+Closes the gap identified against Research_Proposal_v2.pdf Tab
 7.8: of the 14 named metrics, only FARS correlation + the cross-cutting
 significance battery (test_04) had real computation code. This suite
 runs the remaining 9 (plus the 2 that only existed as informal pentest

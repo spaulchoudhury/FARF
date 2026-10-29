@@ -1,6 +1,6 @@
 # Tab 7.8 Evaluation Metrics — Gap Closure Note
 
-Cross-referenced against `Research_Proposal_Shubho_v2.pdf` Tab 7.8. Of the 14 named
+Cross-referenced against `Research_Proposal_v2.pdf` Tab 7.8. Of the 14 named
 metrics, 3 (FARS Correlation Coefficient, plus the cross-cutting descriptive/
 significance/effect-size battery) already had real, repeated-trial statistical
 computation in `tests/stats_utils.py` + `tests/test_04_statistical_validation.py`.
